@@ -11,7 +11,7 @@ Zoomex V3 Open API allow users to select different collections to build their AP
 ## Authentication
 
 :::info
-Please visit Zoomex's <a href="https://testnet.zoomex.com/zh-TW/user-center/api-manage"> <b>testnet</b></a> or <a href="https://www.zoomex.com/zh-TW/user-center/api-manage"> <b>mainnet</b></a> to generate an API key
+Please visit Zoomex's <a href="https://testnet.zoomex.com/en-US/user-center/api-manage"> <b>testnet</b></a> or <a href="https://www.zoomex.com/en-US/user-center/api-manage"> <b>mainnet</b></a> to generate an API key
 :::
 
 REST API Base Endpoint:
@@ -40,7 +40,7 @@ A smaller `recv_window` is more secure, but your request may fail if the transmi
 :::caution
 Please make sure that the timestamp parameter adheres to the **following rule**:<br/>
 _server_time - recv_window <= timestamp < server_time + 1000_<br/>
-server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](https://zoomexglobal.github.io/docs/zh-my/futuresV2/linear/#t-servertime).
+server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](https://zoomexglobal.github.io/docs/futuresV2/linear/#t-servertime).
 :::
 
 ### Create A Request
@@ -73,14 +73,14 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
 
      ``` shell
      GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
-     Host: api-testnet.zoomex.com
+     Host: openapi-testnet.zoomex.com
      ```
 
    - POST request example
 
      ``` shell
      POST /user/leverage/save HTTP/1.1
-     Host: api-testnet.zoomex.com
+     Host: openapi-testnet.zoomex.com
      Content-Type: application/json
      
      {

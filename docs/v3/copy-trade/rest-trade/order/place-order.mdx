@@ -15,11 +15,11 @@ POST `/cloud/contract/v3/private/copytrading/order/create`
 
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|side |**true** |string |Side |
-|symbol |**true** |string |Symbol |
+|[side](../enum#side) |**true** |string |Side |
+|[symbol](../enum#symbol) |**true** |string |Symbol |
 |[orderType](../enum#ordertype) |**true** |string |Active order type |
 |qty |**true** |string |Order quantity |
-|price|false |string |Order price |
+|price|true |string |Order price, when orderType is Market, pass "0" |
 |takeProfit |false |string |Take profit price |
 |stopLoss |false |string |Stop loss price |
 |[tpTriggerBy](../enum#triggerby) |false |string |Type of take-profit activation price, `LastPrice` by default |

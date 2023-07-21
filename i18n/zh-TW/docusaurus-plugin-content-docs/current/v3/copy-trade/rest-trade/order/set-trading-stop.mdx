@@ -15,7 +15,7 @@ POST `/cloud/contract/v3/private/copytrading/order/trading-stop`
 
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|symbol |<b>true</b> |string |合約類型   |
+|[symbol](../enum#symbol) |<b>true</b> |string |合約類型   |
 |parentOrderId |<b>true</b> |string |母訂單Id  |
 |takeProfit |false |string |止盈觸發價格. 傳 0, 表示清除止盈設置; 傳"", 表示不做修改 |
 |stopLoss |false |string |止損觸發價格. 傳 0, 表示清除止損設置; 傳"", 表示不做修改 |

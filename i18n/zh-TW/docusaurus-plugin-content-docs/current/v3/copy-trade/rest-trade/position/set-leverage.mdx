@@ -15,9 +15,9 @@ GET `/cloud/contract/v3/private/copytrading/position/set-leverage`
 
 | 參數 | 是否必須 | 類型	 | 說明|
 |:----- |:-------|:-----|------ |
-|symbol |**true** |string |合約類型 |
-|buyLeverage |**true** |string |全倉/逐倉切換，需要傳杠桿並且`buy_leverage`和`sell_leverage`必須傳入相同參數。|
-|sellLeverage |**true** |string |全倉/逐倉切換，需要傳杠桿並且`buy_leverage`和`sell_leverage`必須傳入相同參數。 |
+|[symbol](../enum#symbol) |**true** |string |合約類型 |
+|buyLeverage |**true** |string |杠桿，`buyLeverage`和`sellLeverage`必須傳入相同參數。|
+|sellLeverage |**true** |string |杠桿，`buyLeverage`和`sellLeverage`必須傳入相同參數。 |
 
 ### 返回參數
 
