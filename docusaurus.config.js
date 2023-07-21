@@ -14,12 +14,12 @@ const config = {
   url: 'https://zoomexglobal.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docs/',
+  baseUrl: '/doc-v3/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'zoomexglobal', // Usually your GitHub org/user name.
-  projectName: 'docs', // Usually your repo name.
+  projectName: 'doc-v3', // Usually your repo name.
 
   trailingSlash: false,
   onBrokenLinks: 'throw',
