@@ -1,0 +1,55 @@
+---
+title: Create Order
+sidebar_label: Create Order
+sidebar_position: 1
+slug: /copy-trade/trade/create-order
+---
+
+Create Order
+
+### HTTP Request
+
+POST `/cloud/contract/v3/private/copytrading/order/create`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|side |**true** |string |Side |
+|symbol |**true** |string |Symbol |
+|[orderType](../enum#ordertype) |**true** |string |Active order type |
+|qty |**true** |string |Order quantity |
+|price|false |string |Order price |
+|takeProfit |false |string |Take profit price |
+|stopLoss |false |string |Stop loss price |
+|[tpTriggerBy](../enum#triggerby) |false |string |Type of take-profit activation price, `LastPrice` by default |
+|[slTriggerBy](../enum#triggerby) |false |string |Type of stop-loss activation price, `LastPrice` by default |
+|orderLinkId |false |string |Unique user-set order ID. Maximum length of 36 characters |
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |Unique user-set order ID. Maximum length of 36 characters |
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","side":"Sell","orderType":"LIMIT","qty":"1","price":"30350","orderLinkId":"","takeProfit":"29000","stopLoss":"32000","tpTriggerBy":"MarkPrice","slTriggerBy":"IndexPrice","api_key":"XXXXX","timestamp":1689846844096,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "088dadd9-cdc0-4a43-a2ea-b6f7510f8e27",
+        "orderLinkId": ""
+    }
+}
+```

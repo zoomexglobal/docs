@@ -1,0 +1,48 @@
+---
+title: Transfer
+sidebar_label: Transfer
+sidebar_position: 2
+slug: /copy-trade/account/transfer
+---
+
+Transfer
+
+### HTTP Request
+
+POST `/cloud/contract/v3/private/copytrading/wallet/transfer`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|transferId |**true** |string |UUID, which is unique across the platform |
+|coin |**true** |string |Currency. `USDT` only |
+|amount |**true** |string |Exchange to amount |
+|[fromAccountType](../enum#accounttype)|**true** |string |Account type |
+|[toAccountType](../enum#accounttype) |**true** |string |Account type |
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|transferId |string |UUID, which is unique across the platform |
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/wallet/transfer' \
+--header 'Content-Type: application/json' \
+--data-raw '{"transferId":"5f95de08-b10f-43be-9746-7b95c4a37d777","coin":"USDT","amount":"1000","fromAccountType":"CONTRACT","toAccountType":"COPYTRADING","api_key":"XXXXX","timestamp":1689842191686,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "transferId": "5f95de08-b10f-43be-9746-7b95c4a37d777"
+    }
+}
+```

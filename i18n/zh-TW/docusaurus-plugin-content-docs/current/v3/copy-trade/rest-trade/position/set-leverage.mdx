@@ -1,0 +1,42 @@
+---
+title: 交易員設置帶單槓桿
+sidebar_label: 交易員設置帶單槓桿
+sidebar_position: 3
+slug: /copy-trade/position/leverage
+---
+
+交易員設置帶單槓桿, 設置槓桿只能設置整數
+
+### HTTP 請求
+
+GET `/cloud/contract/v3/private/copytrading/position/set-leverage`
+
+### 請求參數
+
+| 參數 | 是否必須 | 類型	 | 說明|
+|:----- |:-------|:-----|------ |
+|symbol |**true** |string |合約類型 |
+|buyLeverage |**true** |string |全倉/逐倉切換，需要傳杠桿並且`buy_leverage`和`sell_leverage`必須傳入相同參數。|
+|sellLeverage |**true** |string |全倉/逐倉切換，需要傳杠桿並且`buy_leverage`和`sell_leverage`必須傳入相同參數。 |
+
+### 返回參數
+
+無
+
+### 請求示例
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/position/set-leverage' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"ETHUSDT","buyLeverage":"25","sellLeverage":"25","api_key":"XXXXX","timestamp":1689851024004,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {}
+}
+```

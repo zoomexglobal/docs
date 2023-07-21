@@ -1,0 +1,87 @@
+---
+title: 概覽
+sidebar_name: 概覽
+---
+
+Zoomex V3 Open API 能給讓用戶基於不同的產品構建API模型。
+
+- **衍生品 - 合約：** 您可以通過 `contract/v3` 接口交易_USDT永續_, _反向永續_。
+- **跟單交易：** 您必須首先成為**交易員**才能使用該套接口。
+
+## 鑒權/認證
+
+:::info
+請先生成 <a href="https://testnet.zoomex.com/zh-TW/user-center/api-manage"><b>測試網</b></a> 或 <a href="https://www.zoomex.com/zh-TW/user-center/api-manage"><b>主網</b></a> API KEY。
+:::
+
+REST接口根URL:
+- **測試網:**<br/>
+https://openapi-testnet.zoomex.com
+- **主網**:<br/>
+https://openapi.zoomex.com
+
+### 公共參數
+
+需要簽名的接口必須包含以下參數:
+
+* `api_key` - api密鑰
+* `timestamp` - UTC毫秒時間戳
+* `sign` - 請求參數簽名<br/>
+
+另外我們提供可選的 `recv_window` 參數（單位是毫秒，默認值為`5000`），來指定請求在多長時間內有效，同時用來防止重放攻擊。
+
+:::caution
+註意，timestamp參數必須符合如下規則:<br/>
+_server_time - recv_window <= timestamp < server_time + 1000_<br/>
+其中server_time是Zoomex服務器時間，您可以通過 [Zoomex服務器時間](https://zoomexglobal.github.io/docs/zh-my/futuresV2/linear/#t-servertime) 接口獲取.
+:::
+
+### 構建請求
+
+:::tip
+為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
+:::
+
+
+**基本步驟:**
+
+1. 所有參數按照字母順序排序，然後按照 [query string](https://en.wikipedia.org/wiki/Query_string) 格式拼接。
+
+   - 拼接參數示例
+
+     ``` shell
+     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     ```
+
+2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
+
+   - 計算簽名（以`nodejs`為例）
+
+     ``` node
+     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ```
+
+3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
+
+   - GET請求格式：
+
+     ``` shell
+     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
+     Host: api-testnet.zoomex.com
+     ```
+
+   - POST請求格式：
+
+     ``` shell
+     POST /user/leverage/save HTTP/1.1
+     Host: api-testnet.zoomex.com
+     Content-Type: application/json
+     
+     {
+         "api_key": "XXXXXXXXXXX",
+         "leverage": 100,
+         "symbol": "BTCUSD",
+         "timestamp": 1542434791000,
+         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
+     }
+     ```

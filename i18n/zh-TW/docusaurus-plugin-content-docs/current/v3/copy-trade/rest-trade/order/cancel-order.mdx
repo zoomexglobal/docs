@@ -1,0 +1,48 @@
+---
+title: 交易員取消訂單
+sidebar_label: 交易員取消訂單
+sidebar_position: 4
+slug: /copy-trade/trade/cancel
+---
+
+交易員取消訂單
+
+### HTTP 請求
+
+POST `/cloud/contract/v3/private/copytrading/order/cancel`
+
+### 請求參數
+
+| 參數 | 是否必須 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[symbol](../enum#symbol) |**true** |string |合約類型 |
+|orderId |false |string |訂單ID. `orderId`和`orderLinkId`二者**必傳**一個 |
+|orderLinkId |false |string |自定義機構ID. `orderId`和`orderLinkId`二者**必傳**一個 |
+
+### 返回參數
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|orderId |string |訂單ID |
+|orderLinkId |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復 |
+
+### 請求示例
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/cancel' \
+--header 'Content-Type: application/json' \
+--data-raw '{"orderId":"261a2470-5ba1-4f81-8db6-e61404ab4d4c","api_key":"XXXXX","timestamp":1689843455316,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### 響應示例
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "261a2470-5ba1-4f81-8db6-e61404ab4d4c",
+        "orderLinkId": ""
+    }
+}
+```

@@ -1,0 +1,49 @@
+---
+title: Create Close Position Order
+sidebar_label: Create Close Position Order
+sidebar_position: 5
+slug: /copy-trade/trade/close-order
+---
+
+Create a specific close order
+
+### HTTP Request
+
+POST `/cloud/contract/v3/private/copytrading/order/close`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[symbol](../enum#symbol) |**true** |string |Symbol |
+|orderLinkId |false |string |Unique user-set order ID. Maximum length of 36 characters  |
+|parentOrderId |false |string |**Required** if not passing parentOrderLinkId |
+|parentOrderLinkId |false |string |**Required** if not passing parentOrderId|
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |Unique user-set order ID. Maximum length of 36 characters |
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/close' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","parentOrderId":"4bd42938-0bde-476f-bb4b-62787c179705","api_key":"XXXXX","timestamp":1689844151543,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "291ad7bc-d174-413a-8831-e1edc42a5333",
+        "orderLinkId": ""
+    }
+}
+```

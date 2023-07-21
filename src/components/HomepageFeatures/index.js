@@ -8,28 +8,25 @@ const FeatureList = [
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Zoomex's latest v3 suite of APIs allow for a smooth and easy integration.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Learn Exchange Mechanisms',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        <b><a href="https://help.zoomex.com/en-US/">Learn</a></b> the intricate details of Zoomex's market rules to fully maximise your API usage.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'Historical Market Data',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Get comprehensive public market data in CSV format to speedily backtest and build strategies.
       </>
     ),
   },

@@ -1,0 +1,58 @@
+---
+title: 交易員獲取錢包余額
+sidebar_label: 交易員獲取錢包余額
+sidebar_position: 1
+slug: /copy-trade/account/wallet
+---
+
+交易員獲取跟單帳戶的錢包余額
+
+### HTTP 請求
+
+GET `/cloud/contract/v3/private/copytrading/wallet/balance`
+
+### 請求參數
+
+無
+
+### 返回參數
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|coin |string |幣種類型 |
+|equity |string |用戶資產 (wallet_balance + unrealised_pnl)  |
+|availableBalance |string |可用余額 = wallet balance - used margin  |
+|usedMargin |string |已用保證金  |
+|orderMargin|string |委托預占用保證金 |
+|positionMargin |string |倉位保證金 |
+|walletBalance |string |錢包余額 |
+|realisedPnl |string |當日已結盈虧 |
+|unrealisedPnl |string |未結盈虧 |
+|cumRealisedPnl|string |累計已結盈虧|
+
+### 請求示例
+
+``` shell
+curl --location --request GET 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/wallet/balance?timestamp=1689842868793&api_key=XXXXX&recv_window=5000&sign=XXXXX'
+```
+
+### 響應示例
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "availableBalance": "15790.73687204",
+        "usedMargin": "1305.7048",
+        "orderMargin": "0",
+        "positionMargin": "1305.7048",
+        "walletBalance": "17096.44167204",
+        "realisedPnl": "2857.55887356",
+        "unrealisedPnl": "-78.86",
+        "cumRealisedPnl": "3096.44167204",
+        "coin": "USDT",
+        "equity": "17017.58167204"
+    }
+}
+```

@@ -1,0 +1,46 @@
+---
+title: 設置止盈止損
+sidebar_label: 設置止盈止損
+sidebar_position: 2
+slug: /copy-trade/trade/trading-stop
+---
+
+設置止盈止損
+
+### HTTP 請求
+
+POST `/cloud/contract/v3/private/copytrading/order/trading-stop`
+
+### 請求參數
+
+| 參數 | 是否必須 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|symbol |<b>true</b> |string |合約類型   |
+|parentOrderId |<b>true</b> |string |母訂單Id  |
+|takeProfit |false |string |止盈觸發價格. 傳 0, 表示清除止盈設置; 傳"", 表示不做修改 |
+|stopLoss |false |string |止損觸發價格. 傳 0, 表示清除止損設置; 傳"", 表示不做修改 |
+|[tpTriggerBy](../enum#triggerby)|false |string |止盈激活價格類型，默認為`LastPrice` |
+|[slTriggerBy](../enum#triggerby)|false |string |止損激活價格類型，默認為`LastPrice` |
+|parentOrderLinkId |false |string |母訂單orderLinkID |
+
+### 返回參數
+
+無
+
+### 請求示例
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/trading-stop' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","parentOrderId":"8d3dae5d-9326-4877-a1ce-037ff1c78880","tpTriggerBy":"MarkPrice","takeProfit":"28000","slTriggerBy":"IndexPrice","stopLoss":"31500","api_key":"XXXXXXXX","timestamp":1689851503158,"recv_window":5000,"sign":"XXXXXXXX"}'
+```
+
+### 響應示例
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {}
+}
+```

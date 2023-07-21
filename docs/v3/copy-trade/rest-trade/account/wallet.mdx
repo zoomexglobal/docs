@@ -1,0 +1,58 @@
+---
+title: Get Wallet Balance
+sidebar_label: Get Wallet Balance
+sidebar_position: 1
+slug: /copy-trade/account/wallet
+---
+
+Get CopyTrading Wallet Balance
+
+### HTTP Request
+
+GET `/cloud/contract/v3/private/copytrading/wallet/balance`
+
+### Request Parameters
+
+None
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|coin |string |Coin |
+|equity |string |User equity (wallet_balance + unrealised_pnl)  |
+|availableBalance |string |Available balance = wallet balance - used margin  |
+|usedMargin |string |Used margin    |
+|orderMargin|string |Pre-occupied order margin  |
+|positionMargin |string |Position margin |
+|walletBalance |string |Wallet balance |
+|realisedPnl |string |Today's realised pnl |
+|unrealisedPnl |string |unrealised pnl|
+|cumRealisedPnl|string |Accumulated realised pnl (all-time total) |
+
+### Request Example
+
+``` shell
+curl --location --request GET 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/wallet/balance?timestamp=1689842868793&api_key=XXXXX&recv_window=5000&sign=XXXXX'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "availableBalance": "15790.73687204",
+        "usedMargin": "1305.7048",
+        "orderMargin": "0",
+        "positionMargin": "1305.7048",
+        "walletBalance": "17096.44167204",
+        "realisedPnl": "2857.55887356",
+        "unrealisedPnl": "-78.86",
+        "cumRealisedPnl": "3096.44167204",
+        "coin": "USDT",
+        "equity": "17017.58167204"
+    }
+}
+```

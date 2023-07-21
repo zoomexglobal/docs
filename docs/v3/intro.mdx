@@ -1,0 +1,93 @@
+---
+title: Introduction
+sidebar_name: Introduction
+---
+
+Zoomex V3 Open API allow users to select different collections to build their API model.
+
+- **Derivatives - contract:** You could trade _USDT Perpetual_, _Inverse Perpetual_ with `contract/v3` endpoints.
+- **Copy Trade:** You must be **Master Trader** to use this API.
+
+## Authentication
+
+:::info
+Please visit Zoomex's <a href="https://testnet.zoomex.com/zh-TW/user-center/api-manage"> <b>testnet</b></a> or <a href="https://www.zoomex.com/zh-TW/user-center/api-manage"> <b>mainnet</b></a> to generate an API key
+:::
+
+REST API Base Endpoint:
+- **Testnet:**<br/>
+https://openapi-testnet.zoomex.com
+- **Mainnet**:<br/>
+https://openapi.zoomex.com
+
+:::caution
+* All requests made to **private** endpoints MUST be authenticated.
+* Requests made to **public** endpoints DO NOT require additional authentication.
+:::
+
+### Parameters for Authenticated Endpoints
+
+The following parameters must be used for authentication:
+
+* `api_key` - api key
+* `timestamp` - UTC timestamp in milliseconds
+* `sign` - a signature derived from the request's parameters<br/>
+
+We also provide `recv_window` (unit in millisecond and default value is 5,000) to specify how long an HTTP request is valid. It is also used to prevent replay attacks.
+
+A smaller `recv_window` is more secure, but your request may fail if the transmission time is greater than your `recv_window`.
+
+:::caution
+Please make sure that the timestamp parameter adheres to the **following rule**:<br/>
+_server_time - recv_window <= timestamp < server_time + 1000_<br/>
+server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](https://zoomexglobal.github.io/docs/zh-my/futuresV2/linear/#t-servertime).
+:::
+
+### Create A Request
+
+:::tip
+To assist in diagnosing advanced network problems, you may consider adding `cdn-request-id` to your request headers. Its value should be unique for each request.
+:::
+
+**Basic steps:**
+
+1. Concatenate all the public parameters in the [query string](https://en.wikipedia.org/wiki/Query_string) format. The parameters must be ordered in **alphabetical** order. This will be used to generate the `sign`.
+
+   - For example
+
+     ``` shell
+     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     ```
+
+2. Use the HMAC_SHA256 algorithm to sign the query string in step 1, and convert it to a hex string to obtain the sign parameter.
+
+   - Calculate the signature (take `nodejs` as an example)
+
+     ``` node
+     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ```
+
+3. Append the sign parameter to the end of the parameters string, and send the HTTP request. Note that the message format for GET and POST requests is different. Please refer to the examples.
+
+   - GET request example
+
+     ``` shell
+     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
+     Host: api-testnet.zoomex.com
+     ```
+
+   - POST request example
+
+     ``` shell
+     POST /user/leverage/save HTTP/1.1
+     Host: api-testnet.zoomex.com
+     Content-Type: application/json
+     
+     {
+         "api_key": "XXXXXXXXXXX",
+         "leverage": 100,
+         "symbol": "BTCUSD",
+         "timestamp": 1542434791000,
+         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
+     }
+     ```

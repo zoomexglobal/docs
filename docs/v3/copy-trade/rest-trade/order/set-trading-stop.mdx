@@ -1,0 +1,46 @@
+---
+title: Set Trading Stop
+sidebar_label: Set Trading Stop
+sidebar_position: 2
+slug: /copy-trade/trade/trading-stop
+---
+
+Set Trading Stop
+
+### HTTP Request
+
+POST `/cloud/contract/v3/private/copytrading/order/trading-stop`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|symbol |<b>true</b> |string |Symbol   |
+|parentOrderId |<b>true</b> |string |parentOrderId  |
+|takeProfit |false |string |Take profit price |
+|stopLoss |false |string |Stop loss price |
+|[tpTriggerBy](../enum#triggerby)|false |string |Type of take-profit activation price |
+|[slTriggerBy](../enum#triggerby)|false |string |Type of stop-loss activation price |
+|parentOrderLinkId |false |string |parentOrderLinkID |
+
+### Response Parameters
+
+None
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/trading-stop' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","parentOrderId":"8d3dae5d-9326-4877-a1ce-037ff1c78880","tpTriggerBy":"MarkPrice","takeProfit":"28000","slTriggerBy":"IndexPrice","stopLoss":"31500","api_key":"XXXXXXXX","timestamp":1689851503158,"recv_window":5000,"sign":"XXXXXXXX"}'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {}
+}
+```

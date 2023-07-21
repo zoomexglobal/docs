@@ -6,21 +6,22 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'API Documentation',
-  tagline: 'Dinosaurs are cool',
+  title: 'Zoomex API Documentation',
+  tagline: '',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://zoomexglobal.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'zoomexglobal', // Usually your GitHub org/user name.
+  projectName: 'docs', // Usually your repo name.
 
+  trailingSlash: false,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
@@ -29,7 +30,10 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'zh-TW'],
+    localeConfigs: {
+      en: { label: 'English' },
+    },
   },
 
   presets: [
@@ -38,19 +42,10 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -60,27 +55,56 @@ const config = {
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
+    {
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      //image: 'img/docusaurus-social-card.jpg',
+      docs: {
+        sidebar: {
+          hideable: false,
+          autoCollapseCategories: false,
+        },
+      },
+
+      //colorMode: {
+      //  defaultMode: 'dark',
+      //  disableSwitch: false,
+      //  respectPrefersColorScheme: true,
+      //},
+
+      // https://docusaurus.io/docs/api/themes/configuration#navbar
       navbar: {
-        title: 'My Site',
+        title: 'Zoomex',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Zoomex Logo',
           src: 'img/logo.svg',
+          //href: 'https://www.zoomex.com/',
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            type: 'doc',
+            docId: 'v3/intro',
             position: 'left',
-            label: 'Tutorial',
+            label: 'V3 API',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
+            label: 'Previous Version',
             position: 'right',
+            items: [
+              {
+                href: 'https://zoomexglobal.github.io/docs/futuresV2/linear/',
+                label: 'USDT Perpetual v2'
+              },
+              {
+                href: 'https://zoomexglobal.github.io/docs/futuresV2/inverse/',
+                label: 'Inverse Perpetual v2'
+              },
+            ]
+          },
+          {
+            type: 'localeDropdown',
+            position: 'right',
+            dropdownItemsBefore: [],
+            dropdownItemsAfter: [],
           },
         ],
       },
@@ -88,52 +112,43 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Telegram – English',
+                href: 'https://t.me/zoomex_com',
               },
               {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Telegram – Chinese',
+                href: 'https://t.me/zoomex_cn',
               },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
+              //{
+              //  label: 'Discord',
+              //  href: 'https://discord.gg/VBwVwS2HUs',
+              //},
             ],
           },
           {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
+                label: 'Github',
+                href: 'https://github.com/zoomexglobal',
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                label: 'Twitter',
+                href: 'https://twitter.com/zoomexofficial?s=21',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        // copyright: `Copyright © ${new Date().getFullYear()} Zoomex Docs, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-    }),
+    },
 };
 
 module.exports = config;

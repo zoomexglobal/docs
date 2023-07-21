@@ -1,0 +1,41 @@
+---
+title: Close All Positions
+sidebar_label: Close All Positions
+sidebar_position: 2
+slug: /copy-trade/position/close-position
+---
+
+Close Position
+
+### HTTP Request
+
+GET `/cloud/contract/v3/private/copytrading/position/close`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|symbol |**true** |string |Symbol |
+|[positionIdx](../enum#positionidx) |**true** |string |Position idx, used to identify positions in different position modes: 0-Single side; 1-Buy side of both side mode; 2-Sell side of both side mode|
+
+### Response Parameters
+
+None
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/position/close' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","positionIdx":2,"api_key":"XXXXX","timestamp":1689850686341,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {}
+}
+```

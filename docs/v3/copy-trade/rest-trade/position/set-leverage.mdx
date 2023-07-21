@@ -1,0 +1,42 @@
+---
+title: Set Leverage
+sidebar_label: Set Leverage
+sidebar_position: 3
+slug: /copy-trade/position/leverage
+---
+
+Set Leverage
+
+### HTTP Request
+
+GET `/cloud/contract/v3/private/copytrading/position/set-leverage`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|symbol |**true** |string |Symbol   |
+|buyLeverage |**true** |string |The value of buy_leverage must be equal to sell_leverage. |
+|sellLeverage |**true** |string |The value of buy_leverage must be equal to sell_leverage. |
+
+### Response Parameters
+
+None
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/position/set-leverage' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"ETHUSDT","buyLeverage":"25","sellLeverage":"25","api_key":"XXXXX","timestamp":1689851024004,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {}
+}
+```

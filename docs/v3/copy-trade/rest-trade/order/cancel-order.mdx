@@ -1,0 +1,48 @@
+---
+title: Cancel Order
+sidebar_label: Cancel Order
+sidebar_position: 4
+slug: /copy-trade/trade/cancel
+---
+
+Cancel Order
+
+### HTTP Request
+
+POST `/cloud/contract/v3/private/copytrading/order/cancel`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[symbol](../enum#symbol) |**true** |string |symbol |
+|orderId |false |string |Order ID. Either passing `orderId` or `orderLinkId` |
+|orderLinkId |false |string |Unique user-set order ID. Maximum length of 36 characters. Either passing `orderId` or `orderLinkId` |
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |Unique user-set order ID. Maximum length of 36 characters |
+
+### Request Example
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/cancel' \
+--header 'Content-Type: application/json' \
+--data-raw '{"orderId":"261a2470-5ba1-4f81-8db6-e61404ab4d4c","api_key":"XXXXX","timestamp":1689843455316,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "261a2470-5ba1-4f81-8db6-e61404ab4d4c",
+        "orderLinkId": ""
+    }
+}
+```

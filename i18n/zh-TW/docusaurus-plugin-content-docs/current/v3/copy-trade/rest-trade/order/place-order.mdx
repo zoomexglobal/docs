@@ -1,0 +1,55 @@
+---
+title: 交易員創建訂單
+sidebar_label: 交易員創建訂單
+sidebar_position: 1
+slug: /copy-trade/trade/create-order
+---
+
+交易員創建訂單
+
+### HTTP 請求
+
+POST `/cloud/contract/v3/private/copytrading/order/create`
+
+### 請求參數
+
+| 參數 | 是否必須 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|side |**true** |string |方向    |
+|symbol |**true** |string |合約類型  |
+|orderType |**true** |string |委托單價格類型  |
+|qty |**true** |string |委托數量 |
+|price|false |string |委托價格 |
+|takeProfit |false |string |止盈價格 |
+|stopLoss |false |string |止損價格 |
+|[tpTriggerBy](../enum#triggerby)|false |string |止盈激活價格類型，默認為LastPrice |
+|[slTriggerBy](../enum#triggerby)|false |string |止損激活價格類型，默認為LastPrice |
+|orderLinkId |false |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復 |
+
+### 返回參數
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|orderId |string |訂單ID |
+|orderLinkId |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復 |
+
+### 請求示例
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","side":"Sell","orderType":"LIMIT","qty":"1","price":"30350","orderLinkId":"","takeProfit":"29000","stopLoss":"32000","tpTriggerBy":"MarkPrice","slTriggerBy":"IndexPrice","api_key":"XXXXX","timestamp":1689846844096,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### 響應示例
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "088dadd9-cdc0-4a43-a2ea-b6f7510f8e27",
+        "orderLinkId": ""
+    }
+}
+```

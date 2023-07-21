@@ -1,0 +1,49 @@
+---
+title: 交易員發起平倉-訂單
+sidebar_label: 交易員發起平倉-訂單
+sidebar_position: 5
+slug: /copy-trade/trade/close-order
+---
+
+交易員發起平倉-訂單
+
+### HTTP 請求
+
+POST `/cloud/contract/v3/private/copytrading/order/close`
+
+### 請求參數
+
+| 參數 | 是否必須 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[symbol](../enum#symbol) |**true** |string |合約類型 |
+|orderLinkId |false |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復  |
+|parentOrderId |false |string |訂單ID。如果未填parentOrderLinkId, 則該字段為**必填** |
+|parentOrderLinkId |false |string |機構ID。如果未填parentOrderId, 則該字段為**必填**|
+
+### 返回參數
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|orderId |string |用戶ID |
+|orderLinkId |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復 |
+
+### 請求示例
+
+``` shell
+curl --location --request POST 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/close' \
+--header 'Content-Type: application/json' \
+--data-raw '{"symbol":"BTCUSDT","parentOrderId":"4bd42938-0bde-476f-bb4b-62787c179705","api_key":"XXXXX","timestamp":1689844151543,"recv_window":5000,"sign":"XXXXX"}'
+```
+
+### 響應示例
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "orderId": "291ad7bc-d174-413a-8831-e1edc42a5333",
+        "orderLinkId": ""
+    }
+}
+```
