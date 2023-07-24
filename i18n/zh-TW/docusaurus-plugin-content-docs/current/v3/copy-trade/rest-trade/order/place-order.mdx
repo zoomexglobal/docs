@@ -19,7 +19,7 @@ POST `/cloud/contract/v3/private/copytrading/order/create`
 |[symbol](../enum#symbol) |**true** |string |合約類型  |
 |[orderType](../enum#ordertype) |**true** |string |委托單價格類型  |
 |qty |**true** |string |委托數量 |
-|price|true |string |委托價格，當orderType為Market時，傳"0" |
+|price|false |string |委托價格，當orderType不是Market時，不能為空 |
 |takeProfit |false |string |止盈價格 |
 |stopLoss |false |string |止損價格 |
 |[tpTriggerBy](../enum#triggerby)|false |string |止盈激活價格類型，默認為LastPrice |

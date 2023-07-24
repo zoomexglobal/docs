@@ -19,7 +19,7 @@ POST `/cloud/contract/v3/private/copytrading/order/create`
 |[symbol](../enum#symbol) |**true** |string |Symbol |
 |[orderType](../enum#ordertype) |**true** |string |Active order type |
 |qty |**true** |string |Order quantity |
-|price|true |string |Order price, when orderType is Market, pass "0" |
+|price|false |string |Order price, when the orderType is not Market, it cannot be empty |
 |takeProfit |false |string |Take profit price |
 |stopLoss |false |string |Stop loss price |
 |[tpTriggerBy](../enum#triggerby) |false |string |Type of take-profit activation price, `LastPrice` by default |
