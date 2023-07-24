@@ -88,3 +88,25 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
          "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
      }
      ```
+
+## Response通用數據結構
+
+### 帶單交易
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|retCode |number |成功/錯誤碼 |
+|retMsg |string |成功/錯誤消息. 成功消息可以是`OK`,`success`,`SUCCESS`|
+|result |Object |業務數據體|
+|retExtInfo |Object |額外信息. 大部分場景下都是`{}`|
+|time |number |當前時間戳 (毫秒)|
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {},
+    "retExtInfo": {},
+    "time": 1690180896378
+}
+```

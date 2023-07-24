@@ -94,3 +94,25 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
          "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
      }
      ```
+
+## Common response parameters
+
+### Copy Trade
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|retCode |number |Success/Error code |
+|retMsg |string |Success/Error msg. Can be `OK`,`success`,`Success` for Success message|
+|result |Object |Business data result|
+|retExtInfo |Object |Extend info. Most of time, it is `{}`|
+|time |number |Current timestamp (ms)|
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {},
+    "retExtInfo": {},
+    "time": 1690180896378
+}
+```
