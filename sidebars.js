@@ -115,6 +115,9 @@ const sidebars = {
       ]
     },
   ],
+  changelogSidebar: [
+    "changelog/v3",
+  ],
 };
 
 module.exports = sidebars;

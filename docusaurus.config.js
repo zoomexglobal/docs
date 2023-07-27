@@ -86,6 +86,12 @@ const config = {
             position: 'left',
             label: 'V3 API',
           },
+          //{
+          //  type: 'doc',
+          //  docId: 'changelog/v3',
+          //  position: 'left',
+          //  label: 'Changelog',
+          //},
           {
             label: 'Previous Version',
             position: 'right',
