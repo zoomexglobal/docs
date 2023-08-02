@@ -23,15 +23,15 @@ GET `/private/v1/asset/sub-member/transfer/list`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |list |array|Object |
-|> transfer_id |string |Transfer ID |
-|> coin |string |Transferred coin |
-|> amount |string |Transferred amount |
-|> user_id |int32 |Account |
-|> sub_user_id |int32 |Sub Account |
-|> timestamp |string |Transfer created timestamp (ms) |
-|> [status](../asset/enum#transferstatus-status) |string |Transfer status |
-|> [type](../asset/enum#transfertype-type) |**true** |string |Determines the direction of transfer |
-|cursor |string|Refer to the `cursor` request parameter |
+|> transfer_id |string |UUID,全局唯一 |
+|> coin |string |幣種類型 |
+|> amount |string |劃轉金額 |
+|> user_id |int32 |帳號 |
+|> sub_user_id |int32 |子帳號 |
+|> timestamp |string |劃轉創建時間戳 (毫秒) |
+|> [status](../asset/enum#transferstatus-status) |string |劃轉狀態 |
+|> [type](../asset/enum#transfertype-type) |string |資金劃轉方向 |
+|cursor |string|游標信息：用來分頁 |
 
 ---
 

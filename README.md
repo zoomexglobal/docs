@@ -24,9 +24,12 @@ $ yarn build
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
 
+### english version
 If you want to run en version, you can run fellow command.
-### npm run build
-### npm run serve
+```
+$ npm run build
+$ npm run serve
+```
 
 ### Deployment
 
