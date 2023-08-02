@@ -12,10 +12,10 @@ GET `/private/v1/asset/sub-member/transfer/list`
 |:----- |:-------|:-----|------ |
 |transfer_id |false |string |UUID, which is unique across the platform|
 |coin |false |string |Coin |
-|[status](../asset/enum#transferstatus) |false |string |Transfer status |
+|[status](../asset/enum#transferstatus-status) |false |string |Transfer status |
 |start_time |false |integer |The start timestamp (ms) |
 |end_time |false |integer |The end timestamp (ms) |
-|[direction](../asset/enum#assetdirection) |false |integer |Pagination |
+|[direction](../asset/enum#assetdirection-direction) |false |integer |Pagination |
 |limit |false |integer |Number of records|
 |cursor |false |string |cursor information: used for pagination. Default value: ""|
 
@@ -29,8 +29,8 @@ GET `/private/v1/asset/sub-member/transfer/list`
 |> user_id |int32 |Account |
 |> sub_user_id |int32 |Sub Account |
 |> timestamp |string |Transfer created timestamp (ms) |
-|> [status](../asset/enum#transferstatus) |string |Transfer status |
-|> [type](../asset/enum#transfertype) |**true** |string |Determines the direction of transfer |
+|> [status](../asset/enum#transferstatus-status) |string |Transfer status |
+|> [type](../asset/enum#transfertype-type) |**true** |string |Determines the direction of transfer |
 |cursor |string|Refer to the `cursor` request parameter |
 
 ---

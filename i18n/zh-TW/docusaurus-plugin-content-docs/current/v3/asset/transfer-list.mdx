@@ -10,12 +10,12 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### 請求參數
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|transferId |false |string |UUID,全局唯一 |
+|transfer_id |false |string |UUID,全局唯一 |
 |coin |false |string |幣種類型 |
-|[status](../asset/enum#transferstatus) |false |string |劃轉狀態 |
-|startTime |false |integer |開始時間戳（秒） |
-|endTime |false |integer |結束時間戳（秒） |
-|[direction](../asset/enum#assetdirection) |false |integer |翻頁 |
+|[status](../asset/enum#transferstatus-status) |false |string |劃轉狀態 |
+|start_time |false |integer |開始時間戳（秒） |
+|end_time |false |integer |結束時間戳（秒） |
+|[direction](../asset/enum#assetdirection-direction) |false |integer |翻頁 |
 |limit |false |integer |記錄條數|
 |cursor |false |string |游標信息：用來分頁|
 
@@ -23,14 +23,14 @@ GET `/private/v1/asset/sub-member/transfer/list`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |list |array|Object |
-|> transferId |string |Transfer ID |
+|> transfer_id |string |Transfer ID |
 |> coin |string |Transferred coin |
 |> amount |string |Transferred amount |
-|> userId |int32 |Account |
-|> subUserId |int32 |Sub Account |
+|> user_id |int32 |Account |
+|> sub_user_id |int32 |Sub Account |
 |> timestamp |string |Transfer created timestamp (ms) |
-|> [status](../asset/enum#transferstatus) |string |Transfer status |
-|> [type](../asset/enum#transfertype) |**true** |string |Determines the direction of transfer |
+|> [status](../asset/enum#transferstatus-status) |string |Transfer status |
+|> [type](../asset/enum#transfertype-type) |**true** |string |Determines the direction of transfer |
 |cursor |string|Refer to the `cursor` request parameter |
 
 ---
