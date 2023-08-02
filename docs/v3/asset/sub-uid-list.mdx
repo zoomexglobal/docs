@@ -1,0 +1,58 @@
+---
+title: Get Sub UID
+sidebar_label: Get Sub UID
+sidebar_position: 4
+---
+
+Query the sub UIDs under a main UID
+
+:::caution
+Can query by the master UID's api key **only**
+:::
+
+### HTTP Request
+GET `/private/v1/asset/sub-member/member-ids`
+
+### Request Parameters
+None
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|sub_user_id |array&lt;string&gt; |All sub UIDs under the main UID |
+|transferable_sub_ids |array&lt;string&gt; |All sub UIDs that have universal transfer enabled |
+
+---
+
+### Request Example
+
+``` shell
+GET /private/v1/asset/sub-member/member-ids?api_key=dVuOdOe0YxIzByQ8tV&sign=c8e474a329c4715bd7b1b80841fa49baf0ef2cbb8373fd731c5ed0181620400a&timestamp=1690947046394 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1670988271299
+X-BAPI-RECV-WINDOW: 50000
+```
+
+### Response Example
+
+```json
+{
+  "result": {
+    "sub_user_id": [
+      1524601,
+      1524613
+    ],
+    "transferable_sub_ids": []
+  },
+  "rate_limit": 1,
+  "rate_limit_status": 59,
+  "ext_code": "",
+  "time_now": 1690947047366,
+  "rate_limit_reset_ms": 1690947047366,
+  "ret_msg": "OK",
+  "ext_info": null,
+  "ret_code": 0
+}
+```

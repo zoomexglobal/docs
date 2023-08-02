@@ -1,0 +1,71 @@
+---
+title: Create Subaccount Transfer
+sidebar_label: Create Subaccount Transfer
+sidebar_position: 2
+---
+
+Transfers funds between the parent and child (sub) accounts.
+
+:::tip
+A subaccount can only be attributed to a parent account.
+:::
+
+### HTTP Request
+POST `/private/v1/asset/sub-member/transfer`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|transfer_id |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). which is unique across the platform |
+|coin |**true** |string |Currency type |
+|amount |**true** |string |Exchange to amount |
+|sub_user_id |**true** |int32 |Subaccount |
+|[type](../asset/enum#transfertype) |**true** |string |Determines the direction of transfer |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|transfer_id |string|UUID, which is unique across the platform |
+
+---
+
+### Request Example
+
+``` shell
+POST /private/v1/asset/sub-member/transfer HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1670988271299
+X-BAPI-RECV-WINDOW: 50000
+Content-Type: application/json
+
+{
+  "amount": "20",
+  "api_key": "dVuOdOe0YxIzByQ8tV",
+  "sign": "6840b7a5b90fd7f3b4d13aa8033991d516e7d5ddc5f7fb94bbb4ac6eb29ae7f7",
+  "sub_user_id": "1524613",
+  "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a",
+  "type": "IN",
+  "timestamp": "1690945245201",
+  "coin": "USDT"
+}
+```
+
+### Response Example
+
+```json
+{
+  "ret_code": 0,
+  "ret_msg": "OK",
+  "ext_code": "",
+  "result": {
+    "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a"
+  },
+  "ext_info": null,
+  "time_now": 1690945245984,
+  "rate_limit_status": 19,
+  "rate_limit_reset_ms": 1690945245984,
+  "rate_limit": 1
+}
+```

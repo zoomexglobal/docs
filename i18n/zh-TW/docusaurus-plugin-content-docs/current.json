@@ -87,7 +87,7 @@
         "message": "帶單交易",
         "description": "帶單交易目錄"
     },
-    "sidebar.v3SideBar.category.Account Asset": {
+    "sidebar.v3SideBar.category.Asset": {
         "message": "帳戶資產",
         "description": "帳戶資產目錄"
     },
