@@ -1,0 +1,116 @@
+---
+title: Order
+sidebar_label: Order
+sidebar_position: 3
+---
+
+Subscribe to the order stream to see changes to your orders in **real-time**.
+
+**Topic:** `order`
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|id |string |Message ID|
+|topic |string |Topic name |
+|creationTime |number |Data created timestamp (ms) |
+|data |array |Object |
+|> category |string |Product type <ul><li>Normal account: `linear`, `inverse`.</li></ul>|
+|> orderId  |string |Order ID |
+|> orderLinkId |string |User customised order ID |
+|> symbol |string |Symbol name |
+|> price |string |Order price |
+|> qty |string |Order qty |
+|> side |string |Side. `Buy`,`Sell`|
+|> [positionIdx](../../enum#positionidx) |integer |Position index. Used to identify positions in different position modes |
+|> [orderStatus](../../enum#orderstatus) |string |Order status |
+|> [cancelType](../../enum#canceltype) |string |Cancel type |
+|> [rejectReason](../../enum#rejectreason) |string |Reject reason.|
+|> avgPrice |string |Average filled price. If unfilled, it is `""` <ul><li>If a partially filled order, and the final orderStatus is Cancelled, then avgPrice is "0"</li></ul> |
+|> leavesQty |string |The remaining qty not executed.|
+|> leavesValue |string |The remaining value not executed.|
+|> cumExecQty |string |Cumulative executed order qty |
+|> cumExecValue |string |Cumulative executed order value |
+|> cumExecFee |string |Cumulative executed trading fee. _For normal `spot`, it is the execution fee per single fill_ |
+|> [timeInForce](../../enum#timeinforce) |string |Time in force |
+|> orderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
+|> [stopOrderType](../../enum#stopordertype) |string |Stop order type |
+|> orderIv |string |Implied volatility |
+|> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price |
+|> takeProfit |string |Take profit price |
+|> stopLoss |string |Stop loss price |
+|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. Spot does not have this field, and Option returns always "" |
+|> tpLimitPrice |string |The limit order price when take profit price is triggered|
+|> slLimitPrice |string |The limit order price when stop loss price is triggered|
+|> [tpTriggerBy](../../enum#triggerby) |string |The price type to trigger take profit |
+|> [slTriggerBy](../../enum#triggerby) |string |The price type to trigger stop loss |
+|> triggerDirection |integer |Trigger direction. `1`: rise, `2`: fall |
+|> [triggerBy](../../enum#triggerby) |string |The price type of trigger price |
+|> lastPriceOnCreated |string |Last price when place the order|
+|> reduceOnly |boolean |Reduce only. `true` means reduce position size |
+|> closeOnTrigger |boolean |Close on trigger. <a href="https://www.bybit.com/en-US/help-center/bybitHC_Article?language=en_US&id=000001050">What is a close on trigger order?</a> |
+|> placeType |string |Place type, `option` used. `iv`, `price`|
+|> createdTime |string |Order created timestamp (ms) |
+|> updatedTime |string |Order updated timestamp (ms) |
+
+### Subscribe Example
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "order"
+    ]
+}
+```
+
+### Stream Example
+
+```json
+{
+    "id": "5923240c6880ab-c59f-420b-9adb-3639adc9dd90",
+    "topic": "order",
+    "creationTime": 1672364262474,
+    "data": [
+        {
+            "symbol": "ETH-30DEC22-1400-C",
+            "orderId": "5cf98598-39a7-459e-97bf-76ca765ee020",
+            "side": "Sell",
+            "orderType": "Market",
+            "cancelType": "UNKNOWN",
+            "price": "72.5",
+            "qty": "1",
+            "orderIv": "",
+            "timeInForce": "IOC",
+            "orderStatus": "Filled",
+            "orderLinkId": "",
+            "lastPriceOnCreated": "",
+            "reduceOnly": false,
+            "leavesQty": "",
+            "leavesValue": "",
+            "cumExecQty": "1",
+            "cumExecValue": "75",
+            "avgPrice": "75",
+            "blockTradeId": "",
+            "positionIdx": 0,
+            "cumExecFee": "0.358635",
+            "createdTime": "1672364262444",
+            "updatedTime": "1672364262457",
+            "rejectReason": "EC_NoError",
+            "stopOrderType": "",
+            "tpslMode": "",
+            "triggerPrice": "",
+            "takeProfit": "",
+            "stopLoss": "",
+            "tpTriggerBy": "",
+            "slTriggerBy": "",
+            "tpLimitPrice": "",
+            "slLimitPrice": "",
+            "triggerDirection": 0,
+            "triggerBy": "",
+            "closeOnTrigger": false,
+            "category": "option",
+            "placeType": "price"
+        }
+    ]
+}
+```

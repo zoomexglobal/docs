@@ -1,0 +1,66 @@
+---
+title: Get Risk Limit
+sidebar_label: Get Risk Limit
+sidebar_position: 13
+---
+
+Query for the <a href="https://help.zoomex.com/zh-TW/article/1368">risk limit</a>.
+> **Covers: USDT perpetual / Inverse contract**
+
+### HTTP Request
+GET `/cloud/trade/v3/market/risk-limit`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type. `linear`,`inverse` |
+|symbol |false |string |Symbol name|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|category |string |Product type |
+|list |array |Object |
+|> id |integer |Risk ID |
+|> symbol |string |Symbol name |
+|> riskLimitValue |string |Position limit |
+|> maintenanceMargin |number |Maintain margin rate |
+|> initialMargin |number |Initial margin rate |
+|> isLowestRisk |integer |`1`: true, `0`: false |
+|> maxLeverage |string |Allowed max leverage |
+
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/market/risk-limit?category=inverse&symbol=BTCUSD HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "inverse",
+        "list": [
+            {
+                "id": 1,
+                "symbol": "BTCUSD",
+                "riskLimitValue": "150",
+                "maintenanceMargin": "0.5",
+                "initialMargin": "1",
+                "isLowestRisk": 1,
+                "maxLeverage": "100.00"
+            },
+        ....
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672054488010
+}
+```

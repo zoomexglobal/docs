@@ -1,0 +1,97 @@
+---
+title: Position
+sidebar_label: Position
+sidebar_position: 1
+---
+
+Subscribe to the position stream to see changes to your position data in **real-time**.
+
+**Topic:** `position`
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|id |string |Message ID|
+|topic |string |Topic name |
+|creationTime |number |Data created timestamp (ms) |
+|data |array |Object |
+|> [category](../../enum#category) |string |Product type|
+|> symbol |string |Symbol name |
+|> side |string |Position side. `Buy`,`Sell` |
+|> size |string |Position size |
+|> [positionIdx](../../enum#positionidx) |integer |Used to identify positions in different position modes|
+|> tradeMode | integer |Trade mode <ul><li>USDT perpetual & Inverse contract: `0`: cross-margin, `1`: isolated margin</li></ul>|
+|> positionValue |string |Position value |
+|> riskId |integer |Risk limit ID.|
+|> riskLimitValue |string |Risk limit value corresponding to riskId.|
+|> entryPrice |string |Entry price |
+|> markPrice |string |Mark price |
+|> leverage |string |Leverage.|
+|> positionBalance |string |Position margin.|
+|> autoAddMargin | integer |Whether to add margin automatically. `0`: false, `1`: true.|
+|> positionMM |string |Position maintenance margin.|
+|> positionIM |string |Position initial margin.|
+|> liqPrice | string  |Position liquidation price, it is the real price for isolated and cross positions.|
+|> bustPrice |string |Est.bankruptcy price. |
+|> tpslMode |string |Depreciated, meaningless here, always "Full". Spot does not return this field. Option returns "" |
+|> takeProfit |string |Take profit price |
+|> stopLoss |string |Stop loss price |
+|> trailingStop |string |Trailing stop |
+|> unrealisedPnl |string |Unrealised profit and loss |
+|> cumRealisedPnl |string |Cumulative realised PnL |
+|> [positionStatus](../../enum#positionstatus) |string |Position status. `Normal`, `Liq`, `Adl` |
+|> [adlRankIndicator](../../enum#adlrankindicator) |integer |Auto-deleverage rank indicator. <a href="https://www.bybit.com/en-US/help-center/s/article/What-is-Auto-Deleveraging-ADL">What is Auto-Deleveraging?</a>|
+|> createdTime |string |Position created timestamp (ms) |
+|> updatedTime |string |Position data updated timestamp (ms) |
+
+### Subscribe Example
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "position"
+    ]
+}
+```
+
+### Stream Example
+
+```json
+{
+    "id": "59232430b58efe-5fc5-4470-9337-4ce293b68edd",
+    "topic": "position",
+    "creationTime": 1672364174455,
+    "data": [
+        {
+            "positionIdx": 0,
+            "tradeMode": 0,
+            "riskId": 41,
+            "riskLimitValue": "200000",
+            "symbol": "XRPUSDT",
+            "side": "Buy",
+            "size": "75",
+            "entryPrice": "0.3615",
+            "leverage": "10",
+            "positionValue": "27.1125",
+            "positionBalance": "0",
+            "markPrice": "0.3374",
+            "positionIM": "2.72589075",
+            "positionMM": "0.28576575",
+            "takeProfit": "0",
+            "stopLoss": "0",
+            "trailingStop": "0",
+            "unrealisedPnl": "-1.8075",
+            "cumRealisedPnl": "0.64782276",
+            "createdTime": "1672121182216",
+            "updatedTime": "1672364174449",
+            "tpslMode": "Full",
+            "liqPrice": "",
+            "bustPrice": "",
+            "category": "linear",
+            "positionStatus": "Normal",
+            "adlRankIndicator": 2
+        }
+    ]
+}
+```
+

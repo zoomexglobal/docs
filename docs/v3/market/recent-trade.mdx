@@ -1,0 +1,68 @@
+---
+title: Get Public Trading History
+sidebar_label: Get Public Trading History
+sidebar_position: 8
+---
+
+Query recent public trading data in Bybit.
+> **Covers: USDT perpetual/ Inverse contract**
+
+You can download archived historical trades here:
+* <a href="https://www.zoomex.com/trade/usdt/">USDT Perpetual</a>
+* <a href="https://www.zoomex.com/trade/inverse/">Inverse Perpetual</a>
+
+### HTTP Request
+GET `/cloud/trade/v3/market/recent-trade`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type. `linear`,`inverse` |
+|[symbol](../enum#symbol) |false |string |Symbol name|
+|limit |false |integer |Limit for data size per page.<ul><li>[1,1000], default: `500`</li></ul>|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|category |string |Products category |
+|list |array |Object |
+|> execId |string |Execution ID |
+|> symbol |string |Symbol name |
+|> price |string |Trade price |
+|> size |string |Trade size |
+|> side |string |Side of taker `Buy`, `Sell`|
+|> time |string |Trade time (ms) |
+
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/market/recent-trade?category=spot&symbol=BTCUSDT&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "spot",
+        "list": [
+            {
+                "execId": "2100000000007764263",
+                "symbol": "BTCUSDT",
+                "price": "16618.49",
+                "size": "0.00012",
+                "side": "Buy",
+                "time": "1672052955758"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672053054358
+}
+```

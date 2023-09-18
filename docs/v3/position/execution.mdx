@@ -1,0 +1,109 @@
+---
+title: Get Execution
+sidebar_label: Get Execution (2 years)
+sidebar_position: 5
+---
+
+Query users' execution records, sorted by `execTime` in descending order. However, for Normal `spot`, they are sorted by `execId` in descending order.
+> **Normal account covers: Spot / USDT perpetual / Inverse contract**
+
+:::tip
+* You may have multiple executions in a single order.
+* You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+:::
+
+### HTTP Request
+GET `/cloud/trade/v3/execution/list`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type <ul><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
+|symbol |false |string |Symbol name|
+|orderId |false |string |Order ID |
+|orderLinkId |false |string |User customised order ID. _Normal account does not support this param_ |
+|baseCoin |false |string |Base coin. _Unified account - inverse and Normal account do not support this param_ |
+|startTime |false |integer |The start timestamp (ms)|
+|endTime |false |integer |The end timestamp (ms)|
+|[execType](../enum#exectype) |false |string |Execution type.|
+|limit |false |integer |Limit for data size per page. [`1`, `100`]. Default: `50`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+| category | string  | Product type|
+| list | array | Object |
+|> symbol |string   |Symbol name |
+|> orderId |string |Order ID |
+|> orderLinkId |string |User customized order ID. _Normal `spot` is not supported_|
+|> side |string |Side. `Buy`,`Sell` |
+|> orderPrice |string |Order price |
+|> orderQty |string |Order qty |
+|> leavesQty |string |The remaining qty not executed. _Normal `spot` is not supported_ |
+|> orderType |string |Order type. `Market`,`Limit` |
+|> [stopOrderType](../enum#stopordertype) |string |Stop order type. If the order is not stop order, any type is not returned. _Normal `spot` is not supported_ |
+|> execFee |string   |Executed trading fee. You can get spot fee currency instruction [here](../enum#spot-fee-currency-instruction) |
+|> execId |string |Execution ID |
+|> execPrice |string |Execution price |
+|> execQty |string |Execution qty |
+|> [execType](../enum#exectype) |string |Executed type.|
+|> execValue |string |Executed order value.|
+|> execTime |string |Executed timestamp（ms） |
+|> isMaker |boolean |Is maker order. `true`: maker, `false`: taker|
+|> feeRate |string |Trading fee rate |
+|> markPrice |string |The mark price of the symbol when executing.|
+|> closedSize |string |Closed position size |
+|nextPageCursor |string |Refer to the `cursor` request parameter|
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/execution/list?category=linear&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672283754132
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "nextPageCursor": "132766%3A2%2C132766%3A2",
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "ETHPERP",
+                "orderType": "Market",
+                "orderLinkId": "",
+                "side": "Buy",
+                "orderId": "8c065341-7b52-4ca9-ac2c-37e31ac55c94",
+                "stopOrderType": "UNKNOWN",
+                "leavesQty": "0",
+                "execTime": "1672282722429",
+                "isMaker": false,
+                "execFee": "0.071409",
+                "feeRate": "0.0006",
+                "execId": "e0cbe81d-0f18-5866-9415-cf319b5dab3b",
+                "markPrice": "1183.54",
+                "execPrice": "1190.15",
+                "orderQty": "0.1",
+                "orderPrice": "1236.9",
+                "execValue": "119.015",
+                "execType": "Trade",
+                "execQty": "0.1",
+                "closedSize": ""
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672283754510
+}
+```

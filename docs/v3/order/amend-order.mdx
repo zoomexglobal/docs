@@ -1,0 +1,78 @@
+---
+title: Amend Order
+sidebar_label: Amend Order
+sidebar_position: 2
+---
+> **Normal account covers: USDT perpetual / Inverse contract**
+
+:::info important
+You can only modify **unfilled** or **partially filled** orders.
+:::
+
+### HTTP Request
+POST `/cloud/trade/v3/order/amend`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|symbol |**true** |string |Symbol name|
+|orderId |false |string |Order ID. Either `orderId` or `orderLinkId` is required |
+|orderLinkId |false |string |User customised order ID. Either `orderId` or `orderLinkId` is required |
+|orderIv |false |string |Implied volatility. `option` **only**. Pass the real value, e.g for 10%, 0.1 should be passed |
+|triggerPrice |false |string |If you expect the price to rise to trigger your conditional order, make sure:<br/> _triggerPrice > market price_<br/>Else, _triggerPrice < market price_|
+|qty |false |string |Order quantity after modification. Do not pass it if not modify the qty|
+|price |false |string |Order price after modification. Do not pass it if not modify the price|
+|takeProfit |false |string |Take profit price after modification. If pass "0", it means cancel the existing take profit of the order. Do not pass it if you do not want to modify the take profit |
+|stopLoss |false |string |Stop loss price after modification. If pass "0", it means cancel the existing stop loss of the order. Do not pass it if you do not want to modify the stop loss |
+|[tpTriggerBy](../enum#triggerby) |false |string |The price type to trigger take profit. When set a take profit, this param is **required** if no initial value for the order|
+|[slTriggerBy](../enum#triggerby) |false |string |The price type to trigger stop loss. When set a take profit, this param is **required** if no initial value for the order|
+|[triggerBy](../enum#triggerby) |false |string |Trigger price type|
+|tpLimitPrice |false |string |Limit order price when take profit is triggered. Only working when original order sets partial limit tp/sl|
+|slLimitPrice |false |string |Limit order price when stop loss is triggered. Only working when original order sets partial limit tp/sl|
+
+---
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |User customised order ID |
+
+### Request Example
+
+```shell
+POST /cloud/trade/v3/order/amend HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672217108106
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "category": "linear",
+    "symbol": "ETHPERP",
+    "orderLinkId": "linear-004",
+    "triggerPrice": "1145",
+    "qty": "0.15",
+    "price": "1050",
+    "takeProfit": "0",
+    "stopLoss": "0"
+}
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "orderId": "c6f055d9-7f21-4079-913d-e6523a9cfffa",
+        "orderLinkId": "linear-004"
+    },
+    "retExtInfo": {},
+    "time": 1672217093461
+}
+```

@@ -1,0 +1,109 @@
+---
+title: 查詢成交紀錄
+sidebar_label: 查詢成交紀錄 (2年)
+sidebar_position: 5
+---
+
+獲取用戶成交紀錄，返回結果按`execTime`降序排列。但是，對於普通帳戶現貨交易，返回結果按`execId`降序排列
+> **普通帳戶覆蓋範圍: 現貨 / USDT永續 / 反向合約**
+
+:::tip
+* 單筆訂單可能會有多次成交.
+* 您可以通過指定symbol, baseCoin, orderId 和 orderLinkId字段來查詢。如果您使用多字段組合，系統的查詢優先級如下: orderId > orderLinkId > symbol > baseCoin.
+:::
+
+### HTTP 請求
+GET `/cloud/trade/v3/execution/list`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>普通帳戶: `spot`, `linear`, `inverse`</li></ul> |
+|symbol |false |string |合約名稱 |
+|orderId |false |string |訂單Id |
+|orderLinkId |false |string |用戶自定義訂單id. 普通帳戶不支持該字段查詢 |
+|baseCoin |false |string |交易幣種. 統一帳戶(反向)和普通帳戶不支持該字段查詢|
+|startTime |false |integer |開始時間戳 (毫秒)|
+|endTime |false |integer |結束時間戳 (毫秒)|
+|[execType](../enum#exectype) |false |string |執行類型.|
+|limit |false |integer |每頁數量限制. [`1`, `100`]. 默認: `50`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+| [category](../enum#category) | string  | 產品類型 |
+| list | array | Object |
+|> symbol |string |合約名稱|
+|> orderId |string |訂單Id |
+|> orderLinkId |string |用戶自定義訂單id. _普通帳戶現貨交易不支持_|
+|> side |string |訂單方向.買： `Buy`,賣：`Sell` |
+|> orderPrice |string |訂單價格 |
+|> orderQty |string |訂單數量 |
+|> leavesQty |string |剩餘委託未成交數量. _普通帳戶現貨交易不支持_|
+|> orderType |string |訂單類型. 市價單：`Market`,限價單：`Limit` |
+|> [stopOrderType](../enum#stopordertype) |string |条件单的订单类型。如果该订单不是条件单，则不会返回任何类型. _普通帳戶現貨交易不支持_ |
+|> execFee |string |交易手續費. 您可以從[這裡](../enum#現貨交易手續費幣種說明)了解現貨手續費幣種信息|
+|> execId |string |成交Id |
+|> execPrice |string |成交價格 |
+|> execQty |string |成交數量 |
+|> [execType](../enum#exectype) |string |交易類型.|
+|> execValue |string |成交價值.|
+|> execTime |string |成交時間（毫秒） |
+|> isMaker |Bool |是否是 Maker 訂單,`true` 為 maker 訂單，`false` 為 taker 訂單 |
+|> feeRate |string |手續費率 |
+|> markPrice |string |成交執行時，該 symbol 當時的標記價格.|
+|> closedSize |string |平倉數量 |
+|nextPageCursor |string |游標，用於翻頁|
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/execution/list?category=linear&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672283754132
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "nextPageCursor": "132766%3A2%2C132766%3A2",
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "ETHPERP",
+                "orderType": "Market",
+                "orderLinkId": "",
+                "side": "Buy",
+                "orderId": "8c065341-7b52-4ca9-ac2c-37e31ac55c94",
+                "stopOrderType": "UNKNOWN",
+                "leavesQty": "0",
+                "execTime": "1672282722429",
+                "isMaker": false,
+                "execFee": "0.071409",
+                "feeRate": "0.0006",
+                "execId": "e0cbe81d-0f18-5866-9415-cf319b5dab3b",
+                "markPrice": "1183.54",
+                "execPrice": "1190.15",
+                "orderQty": "0.1",
+                "orderPrice": "1236.9",
+                "execValue": "119.015",
+                "execType": "Trade",
+                "execQty": "0.1",
+                "closedSize": "0.1"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672283754510
+}
+```

@@ -1,0 +1,88 @@
+---
+title: 查詢市場價格K線數據
+sidebar_label: 查詢市場價格K線數據
+sidebar_position: 1
+---
+
+查詢市場價格K線數據
+> **覆蓋範圍: USDT永續 / 反向合約**
+
+### HTTP請求
+GET `/cloud/trade/v3/market/kline`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------|
+|[category](../enum#category) |<b>true</b> |string |產品類型. `linear`,`inverse`|
+|[symbol](../enum#symbol) |<b>true</b> |string |合約名稱|
+|[interval](../enum#interval) |<b>true</b> |string |時間粒度. `1`,`3`,`5`,`15`,`30`,`60`,`120`,`240`,`360`,`720`,`D`,`M`,`W`|
+|start |false |integer |開始時間戳 (毫秒)|
+|end |false |integer |結束時間戳 (毫秒)|
+|limit |false |integer |每頁數量限制. [`1`, `1000`]. 默認: `200`|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|category |string |產品類型 |
+|symbol |string |合約名稱 |
+|list |array |<ul><li>一個字符串數組構成單個蠟燭</li><li>按照`startTime`降序排列</li></ul>|
+|> list[0]: startTime |string |蠟燭的開始時間戳 (毫秒) |
+|> list[1]: openPrice |string |開始價格 |
+|> list[2]: highPrice |string |最高價格 |
+|> list[3]: lowPrice |string |最低價格 |
+|> list[4]: closePrice |string |結束價格. _如果蠟燭尚未結束，則表示為最新成交價格_|
+|> list[5]: volume |string |交易量. _合約單位: 合約的張數. 現貨單位: 幣種的數量_ |
+|> list[6]: turnover |string |交易額. _單位: 報價貨幣的數量_ |
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/kline?category=inverse&symbol=BTCUSD&interval=60&start=1670601600000&end=1670608800000 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "symbol": "BTCUSD",
+        "category": "inverse",
+        "list": [
+            [
+                "1670608800000",
+                "17071",
+                "17073",
+                "17027",
+                "17055.5",
+                "268611",
+                "15.74462667"
+            ],
+            [
+                "1670605200000",
+                "17071.5",
+                "17071.5",
+                "17061",
+                "17071",
+                "4177",
+                "0.24469757"
+            ],
+            [
+                "1670601600000",
+                "17086.5",
+                "17088",
+                "16978",
+                "17071.5",
+                "6356",
+                "0.37288112"
+            ]
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672025956592
+}
+```

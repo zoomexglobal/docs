@@ -1,0 +1,148 @@
+---
+title: Get Open Orders
+sidebar_label: Get Open Orders (real-time)
+sidebar_position: 4
+---
+Query unfilled or partially filled orders in **real-time**. To query older order records, please use the [order history](order-list#) interface.
+> **Normal account covers: Spot / USDT perpetual / Inverse contract**
+
+:::tip
+- It also supports querying filled, cancelled, and rejected orders which occurred in last 10 minutes (check the `openOnly` param). At most, 500 orders will be returned.
+- You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
+- The records are sorted by the `createdTime` from newest to oldest.
+:::
+
+:::info
+Normal account spot trade can return open orders only
+:::
+
+### HTTP Request
+GET `/cloud/trade/v3/order/realtime`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|category |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`</li></ul>|
+|symbol |false |string |Symbol name. For **linear & inverse**, either `symbol`, `baseCoin`, `settleCoin` is **required** |
+|baseCoin |false |string |Base coin. Supports `linear`, `inverse`|
+|settleCoin |false |string |Settle coin <ul><li><b>linear & inverse</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li></ul> |
+|orderId |false |string |Order ID |
+|orderLinkId |false |string |User customised order ID |
+|openOnly |false |integer |<ul><li>Normal account: `0`(default) - query open orders **only**</li></ul>|
+|orderFilter |false |string|`Order`: active order<ul><li>all kinds of orders by default</li></ul>|
+|limit |false |integer |Limit for data size per page. [`1`, `50`]. Default: `20`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|------ |
+|category |string |Product type |
+|nextPageCursor |string |Refer to the `cursor` request parameter |
+|list |array |Object |
+|> orderId  |string |Order ID |
+|> orderLinkId |string |User customised order ID |
+|> symbol |string |Symbol name |
+|> price |string |Order price |
+|> qty |string |Order qty |
+|> side |string |Side. `Buy`,`Sell`|
+|> isLeverage |string |Whether to borrow.|
+|> [positionIdx](../enum#positionidx) |integer |Position index. Used to identify positions in different position modes.|
+|> [orderStatus](../enum#orderstatus) |string |Order status |
+|> [cancelType](../enum#canceltype) |string |Cancel type |
+|> [rejectReason](../enum#rejectreason) |string |Reject reason. _Normal `spot` is not supported_   |
+|> avgPrice |string |Average filled price. If unfilled, it is `"0"` |
+|> leavesQty |string |The remaining qty not executed. _Normal `spot` is not supported_  |
+|> leavesValue |string |The estimated value not executed. _Normal `spot` is not supported_  |
+|> cumExecQty |string |Cumulative executed order qty |
+|> cumExecValue |string |Cumulative executed order value. _Normal `spot` is not supported_  |
+|> cumExecFee |string |Cumulative executed trading fee. _Normal `spot` is not supported_  |
+|> [timeInForce](../enum#timeinforce) |string |Time in force |
+|> orderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
+|> [stopOrderType](../enum#stopordertype) |string |Stop order type |
+|> orderIv |string |Implied volatility |
+|> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price|
+|> takeProfit |string |Take profit price |
+|> stopLoss |string |Stop loss price |
+|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. Spot does not have this field, and Option returns always "" |
+|> tpLimitPrice |string |The limit order price when take profit price is triggered|
+|> slLimitPrice |string |The limit order price when stop loss price is triggered|
+|> [tpTriggerBy](../enum#triggerby) |string |The price type to trigger take profit |
+|> [slTriggerBy](../enum#triggerby) |string |The price type to trigger stop loss |
+|> triggerDirection |integer |Trigger direction. `1`: rise, `2`: fall |
+|> [triggerBy](../enum#triggerby) |string |The price type of trigger price |
+|> lastPriceOnCreated |string |Last price when place the order |
+|> reduceOnly |boolean |Reduce only. `true` means reduce position size |
+|> closeOnTrigger |boolean |Close on trigger.|
+|> placeType |string |Place type, `option` used. `iv`, `price`|
+|> createdTime |string |Order created timestamp (ms) |
+|> updatedTime |string |Order updated timestamp (ms) |
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/order/realtime?symbol=ETHUSDT&category=linear&openOnly=0&limit=1  HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672219525810
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "list": [
+            {
+                "orderId": "fd4300ae-7847-404e-b947-b46980a4d140",
+                "orderLinkId": "test-000005",
+                "symbol": "ETHUSDT",
+                "price": "1600.00",
+                "qty": "0.10",
+                "side": "Buy",
+                "isLeverage": "",
+                "positionIdx": 1,
+                "orderStatus": "New",
+                "cancelType": "UNKNOWN",
+                "rejectReason": "EC_NoError",
+                "avgPrice": "0",
+                "leavesQty": "0.10",
+                "leavesValue": "160",
+                "cumExecQty": "0.00",
+                "cumExecValue": "0",
+                "cumExecFee": "0",
+                "timeInForce": "GTC",
+                "orderType": "Limit",
+                "stopOrderType": "UNKNOWN",
+                "orderIv": "",
+                "triggerPrice": "0.00",
+                "takeProfit": "2500.00",
+                "stopLoss": "1500.00",
+                "tpTriggerBy": "LastPrice",
+                "slTriggerBy": "LastPrice",
+                "triggerDirection": 0,
+                "triggerBy": "UNKNOWN",
+                "lastPriceOnCreated": "",
+                "reduceOnly": false,
+                "closeOnTrigger": false,
+                "tpslMode": "Full",
+                "tpLimitPrice": "",
+                "slLimitPrice": "",
+                "placeType": "",
+                "createdTime": "1684738540559",
+                "updatedTime": "1684738540561"
+            }
+        ],
+        "nextPageCursor": "page_args%3Dfd4300ae-7847-404e-b947-b46980a4d140%26symbol%3D6%26",
+        "category": "linear"
+    },
+    "retExtInfo": {},
+    "time": 1684765770483
+}
+```

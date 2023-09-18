@@ -1,0 +1,76 @@
+---
+title: Order Book (深度)
+sidebar_label: Order Book (深度)
+sidebar_position: 5
+---
+
+獲取深度數據
+> **覆蓋範圍: USDT永續 / 反向合約**
+
+* 期貨: 最多返回200檔的數據.
+* 現貨: 最多返回50檔的數據.
+* 期權: 僅返回25檔的數據.
+
+:::tip
+響應是當前時間的切片數據
+:::
+
+### HTTP請求
+GET `/cloud/trade/v3/market/orderbook`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型. `linear`, `inverse` |
+|[symbol](../enum#symbol) |**true** |string |合約名稱|
+|limit |false |integer |深度限制.<ul><li>`linear`&`inverse`: [`1`, `200`],默認: `25`.</li></ul>|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|s |string |合約名稱 |
+|b |array |Bid, 買方. 按照價格從大到小 |
+|> b[0] |string |買方報價 |
+|> b[1] |string |買方數量 |
+|a |array |Ask, 賣方. 按照價格從小到大 |
+|> a[0] |string |賣方報價 |
+|> a[1] |string |賣方數量 |
+|ts |integer |行情服務生成數據時間戳（毫秒） |
+|u |integer |表示數據連續性的id. <ul><li>對於期貨, 它和wss推送裡的200檔的`u`對齊</li></ul> |
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/orderbook?category=spot&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "SUCCESS",
+    "result": {
+        "s": "BTC-30DEC22-18000-C",
+        "b": [
+            [
+                "5",
+                "3.12"
+            ]
+        ],
+        "a": [
+            [
+                "175",
+                "4.88"
+            ]
+        ],
+        "u": 1203433656,
+        "ts": 1672043188375
+    },
+    "retExtInfo": {},
+    "time": 1672043199230
+}
+```

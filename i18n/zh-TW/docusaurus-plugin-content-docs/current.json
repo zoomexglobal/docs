@@ -23,6 +23,10 @@
         "message": "市場行情",
         "description": "市場行情的目錄"
     },
+    "sidebar.v3SideBar.category.Market": {
+        "message": "公有行情",
+        "description": "公有行情目錄"
+    },
     "sidebar.v3SideBar.category.Unified Margin": {
         "message": "統一保證金",
         "description": "統一保證金的目錄"

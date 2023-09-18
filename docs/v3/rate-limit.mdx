@@ -1,0 +1,191 @@
+---
+title: Rate Limit
+sidebar_label: Rate Limit
+---
+
+## IP Rate Limit
+:::caution
+If you receive an **HTTP 403** (Access Denied) response, your IP has been either temporarily or permanently banned.
+**You should immediately review the below guidelines to ensure your application does not continue to violate the limit.**
+If you are still banned after 30 minutes, you likely have a permanent ban.
+:::
+
+We do not recommend running your application at the very edge of these limits in case abnormal network activity results
+in an unexpected violation.
+
+* `GET`/`POST` method (shared):
+    * 120 requests per second for 5 consecutive seconds
+
+:::note
+All traffic to `openapi.zoomex.com` share this limit regardless of if it accesses Spot, Derivatives or Options.
+:::
+
+After violating the limit your IP will be banned for a set period of time (usually 30 minutes). Continually violating
+the limit will result in a permanent ban. We cannot undo permanent bans or shorten temporary bans.
+
+## API Rate Limit
+:::caution
+If you receive `"ret_msg": "Too many visits!"` in the JSON response, you have hit the API rate limit.
+:::
+The API rate limit is based on the **rolling time window per second and UID**. In other words, it is per second per UID.
+Every request to the API returns response header shown in the code panel:
+* `X-Bapi-Limit-Status` - your remaining requests for current endpoint
+* `X-Bapi-Limit` - your current limit for current endpoint
+* `X-Bapi-Limit-Reset-Timestamp` - the timestamp indicating when your request limit resets if you have exceeded your rate_limit. Otherwise, this is just the current timestamp (it may not exactly match `timeNow`).
+
+> Http Response Header Example
+
+```http
+▶Response Headers
+Content-Type: application/json; charset=utf-8
+Content-Length: 141
+X-Bapi-Limit: 100
+X-Bapi-Limit-Status: 99
+X-Bapi-Limit-Reset-Timestamp: 1672738134824
+```
+
+### API Rate Limit Table
+#### Trade
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <th>Method</th><th>Path</th><th>linear</th><th>inverse</th><th>upgradable</th>
+    </tr>
+    <tr>
+        <td rowSpan="7">POST</td><td>/cloud/trade/v3/order/create</td><td>10 req/s</td><td>10 req/s</td><td>Y</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/amend</td><td>10 req/s</td><td>10 req/s</td><td>Y</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/cancel</td><td>10 req/s</td><td>10 req/s</td><td>Y</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/cancel-all</td><td>10 req/s</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/create-batch</td><td>-</td><td>-</td><td>Y</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/amend-batch</td><td>-</td><td>-</td><td>Y</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/cancel-batch</td><td>-</td><td>-</td><td>Y</td>
+    </tr>
+    <tr>
+        <td rowSpan="2">GET</td><td>/cloud/trade/v3/order/realtime</td><td>10 req/s</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/order/history</td><td>10 req/s</td><td>10 req/s</td><td>N</td>
+    </tr>
+</table>
+</span>
+
+#### Position
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <th>Method</th><th>Path</th><th>linear/inverse</th><th>upgradable</th>
+    </tr>
+    <tr>
+        <td rowSpan="3">GET</td><td>/cloud/trade/v3/position/list</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/execution/list</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/position/closed-pnl</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td rowSpan="4">POST</td><td>/cloud/trade/v3/position/set-leverage</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/position/set-tpsl-mode</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/position/set-risk-limit</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/position/trading-stop</td><td>10 req/s</td><td>N</td>
+    </tr>
+</table>
+</span>
+
+#### Account
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <th>Method</th><th>Path</th><th>Limit</th><th>upgradable</th>
+    </tr>
+    <tr>
+        <td rowSpan="2">GET</td><td>/cloud/trade/v3/account/wallet-balance</td><td>10 req/s</td><td>N</td>
+    </tr>
+    <tr>
+        <td>/cloud/trade/v3/account/fee-rate</td><td>10 req/s</td><td>N</td>
+    </tr>
+</table>
+</span>
+
+## API Rate Limit Rules For VIPs/PROs
+:::info
+- The values in the table represent the application upper limit of the corresponding level, and do not mean that users at
+this level will automatically enjoy the corresponding API Rate Limit by default.
+
+- Normal account does support USDC derivatives trading
+:::
+
+:::tip instructions for batch endpoints
+- API for batch create/amend/cancel order, the frequency of the API will be consistent with the current configuration,
+but the counting consumption will be consumed according to the actual number of orders. (Number of consumption = number
+of requests * number of orders included in a single request), and the configuration of business lines is independent of each other.
+
+- The batch APIs allows 1-20 orders/request. For example, if a batch order request is made once and contains 10 orders,
+then the request limit will consume 10.
+
+- If part of the last batch of orders requested within 1s exceeds the limit, the part that exceeds the limit will fail, and
+the part that does not exceed the limit will succeed. For example, in the 1 second, the limit is 10, but a batch request
+containing 15 orders is placed at this time, then the first 10 orders will be successfully placed, and the 11-15th orders
+will report an error exceeding the limit, and these orders will fail.
+:::
+
+<span class="blocky_table">
+
+<table class="custom_table">
+    <tr>
+        <th></th><th colSpan="1" align="center">Normal account & UTA</th><th colSpan="1">UTA Pro</th>
+    </tr>
+    <tr>
+        <td>Level\Product</td><td><b>Futures</b></td><td><b>Futures</b></td>
+    </tr>
+    <tr>
+        <td>Default</td><td>10/s</td><td>10/s</td>
+    </tr>
+    <tr>
+        <td>VIP 1</td><td>20/s</td><td>20/s</td>
+    </tr>
+    <tr>
+        <td>VIP 2</td><td>40/s</td><td>40/s</td>
+    </tr>
+    <tr>
+        <td>VIP 3 - Supreme VIP</td><td>60/s</td><td>60/s</td>
+    </tr>
+    <tr>
+        <td>PRO1</td><td>100/s</td><td>150/s</td>
+    </tr>
+    <tr>
+        <td>PRO2</td><td>150/s</td><td>200/s</td>
+    </tr>
+    <tr>
+        <td>PRO3</td><td>200/s</td><td>250/s</td>
+    </tr>
+</table>
+
+</span>
+
+## How to increase API Limit
+Please contact your client manager or email to support@zoomex.com with the following information. We will reply within 1-4 working days:
+1. Your name and your company details
+2. Your Bybit UID or registered email, and the assets you are trading
+3. General description of your trading strategy and reasons for higher rate limits
+4. Screenshot of previous monthly trading volume (maker/taker) on other platforms
+5. Optional: your order history in CSV format

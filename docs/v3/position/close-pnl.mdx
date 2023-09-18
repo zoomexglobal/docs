@@ -1,0 +1,94 @@
+---
+title: Get Closed PnL
+sidebar_label: Get Closed PnL (2 years)
+sidebar_position: 11
+---
+
+Query user's closed profit and loss records. The results are sorted by `createdTime` in descending order.
+> **Normal account covers: USDT perpetual / Inverse contract**
+
+### HTTP Request
+GET `/cloud/trade/v3/position/closed-pnl`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|symbol |false |string |Symbol name|
+|startTime |false |integer |The start timestamp (ms)|
+|endTime |false |integer |The end timestamp (ms)|
+|limit |false |integer |Limit for data size per page. [`1`, `100`]. Default: `50`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+| category | string  | Product type |
+|list |array |Object |
+|> symbol |string |Symbol name |
+|> orderId |string |Order ID |
+|> side |string |`Buy`, `Side` |
+|> qty |string |Order qty |
+|> orderPrice |string |Order price |
+|> orderType |string |Order type. `Market`,`Limit` |
+|> execType |string |Exec type. `Trade`, `BustTrade`, `SessionSettlePnL`, `Settle` |
+|> closedSize |string |Closed size |
+|> cumEntryValue |string |Cumulated Position value |
+|> avgEntryPrice |string |Average entry price |
+|> cumExitValue |string |Cumulated exit position value |
+|> avgExitPrice |string |Average exit price |
+|> closedPnl |string |Closed PnL |
+|> fillCount |string |The number of fills in a single order |
+|> leverage |string |leverage |
+|> createdTime |string |The created time (ms) |
+|> updatedTime |string |The updated time (ms) |
+|nextPageCursor |string |Refer to the `cursor` request parameter |
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/position/closed-pnl?category=linear&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672284128523
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "nextPageCursor": "5a373bfe-188d-4913-9c81-d57ab5be8068%3A1672214887231423699%2C5a373bfe-188d-4913-9c81-d57ab5be8068%3A1672214887231423699",
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "ETHPERP",
+                "orderType": "Market",
+                "leverage": "3",
+                "updatedTime": "1672214887236",
+                "side": "Sell",
+                "orderId": "5a373bfe-188d-4913-9c81-d57ab5be8068",
+                "closedPnl": "-47.4065323",
+                "avgEntryPrice": "1194.97516667",
+                "qty": "3",
+                "cumEntryValue": "3584.9255",
+                "createdTime": "1672214887231423699",
+                "orderPrice": "1122.95",
+                "closedSize": "3",
+                "avgExitPrice": "1180.59833333",
+                "execType": "Trade",
+                "fillCount": "4",
+                "cumExitValue": "3541.795"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672284129153
+}
+```

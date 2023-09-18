@@ -1,0 +1,186 @@
+---
+title: Connect
+sidebar_label: Connect
+slug: /v5/ws/connect
+---
+
+**WebSocket public channel:**
+
+- **Mainnet:**<br/>
+USDT perpetual: `wss://stream.zoomex.com/v3/public/linear`<br/>
+Inverse contract: `wss://stream.zoomex.com/v3/public/inverse`<br/>
+
+- **Testnet:**<br/>
+USDT perpetual: `wss://stream-testnet.zoomex.com/v3/public/linear`<br/>
+Inverse contract: `wss://stream-testnet.zoomex.com/v3/public/inverse`<br/>
+
+**WebSocket private channel:**
+- **Mainnet:**<br/>
+`wss://stream.zoomex.com/v3/private`
+
+- **Testnet:**<br/>
+`wss://stream-testnet.zoomex.com/v3/private`
+
+## Authentication
+:::info
+<b>Public</b> topics do not require authentication. The following section applies to <b>private</b> topics only.
+:::
+
+<p>Apply for authentication when establishing a connection.</p>
+
+```json
+{
+    "req_id": "10001", // optional
+    "op": "auth",
+    "args": [
+        "api_key",
+        1662350400000, // expires; is greater than your current timestamp
+        "signature"
+    ]
+}
+```
+
+> Successful authentication sample response
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "op": "auth",
+    "conn_id": "cejreaspqfh3sjdnldmg-p"
+}
+```
+
+:::note
+Example signature algorithms can be found [here](../../changelog/v3).
+:::
+
+:::caution
+Due to network complexity, your may get disconnected at any time. Please follow the instructions below to ensure that you receive WebSocket messages on time:
+1. Keep connection alive by [sending the heartbeat packet](connect#how-to-send-the-heartbeat-packet)
+2. Reconnect as soon as possible if disconnected
+:::
+
+## IP Limits
+* Do not frequently connect and disconnect the connection.
+* Do not build over 500 connections in 5 minutes. This is counted separately per WebSocket endpoint.
+
+## Public channel - Args limits
+For one public connection, you cannot have length of "args" array over 21,000 characters.
+
+## How to Send the Heartbeat Packet
+
+> How to Send
+
+```javascript
+// req_id is a customised ID, which is optional
+ws.send(JSON.stringify({"req_id": "100001", "op": "ping"}));
+```
+
+> Pong message example of public channels
+
+```json
+{
+    "success": true,
+    "ret_msg": "pong",
+    "conn_id": "465772b1-7630-4fdc-a492-e003e6f0f260",
+    "req_id": "",
+    "op": "ping"
+}
+```
+
+> Pong message example of private channels
+
+```json
+{
+    "req_id": "test",
+    "op": "pong",
+    "args": [
+        "1675418560633"
+    ],
+    "conn_id": "cfcb4ocsvfriu23r3er0-1b"
+}
+```
+
+:::caution
+To avoid network or program issues, we recommend that you send the <code>ping</code> heartbeat packet every <b>20</b> seconds to maintain the WebSocket connection.
+:::
+
+## How to Subscribe to Topics
+### Understanding WebSocket Filters
+
+How to subscribe with a filter
+
+```json
+// Subscribing level 1 orderbook
+{
+    "req_id": "test", // optional
+    "op": "subscribe",
+    "args": [
+        "orderbook.1.BTCUSDT"
+    ]
+}
+```
+
+Subscribing with multiple symbols and topics is supported.
+
+```json
+{
+    "req_id": "test", // optional
+    "op": "subscribe",
+    "args": [
+        "orderbook.1.BTCUSDT",
+        "publicTrade.BTCUSDT",
+        "orderbook.1.ETHUSDT"
+    ]
+}
+```
+
+### Understanding WebSocket Filters: Unsubscription
+
+You can dynamically subscribe and unsubscribe from topics without unsubscribing from the WebSocket like so:
+
+```json
+{
+    "op": "unsubscribe",
+    "args": [
+        "publicTrade.ETHUSD"
+    ],
+    "req_id": "customised_id"
+}
+```
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Understanding the Subscription Response
+> Topic subscription response message example
+
+<Tabs>
+<TabItem value="private" label="Private">
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "op": "subscribe",
+    "conn_id": "cejreassvfrsfvb9v1a0-2m"
+}
+```
+
+</TabItem>
+
+<TabItem value="public-future" label="Linear/Inverse">
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "conn_id": "3cd84cb1-4d06-4a05-930a-2efe5fc70f0f",
+    "req_id": "",
+    "op": "subscribe"
+}
+```
+
+</TabItem>
+
+</Tabs>

@@ -1,0 +1,88 @@
+---
+title: Get Wallet Balance
+sidebar_label: Get Wallet Balance
+sidebar_position: 1
+---
+
+### HTTP Request
+GET `/cloud/trade/v3/account/wallet-balance`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[accountType](../enum#accounttype) |**true** |string |Account type <ul><li>Normal account: `CONTRACT`</li></ul> |
+|coin |false |string |Coin name <ul><li>If not passed, it returns non-zero asset info</li><li>You can pass multiple coins to query, separated by comma. </li></ul>|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|list |array |Object |
+|> totalEquity |string |Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin.|
+|> totalWalletBalance |string |Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。|
+|> totalMarginBalance |string |Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL.|
+|> totalAvailableBalance |string |Available Balance of account converted to usd：Regular mode：totalMarginBalance - totalInitialMargin. |
+|> totalInitialMargin |string |Initial Margin of account converted to usd：∑ Asset Total Initial Margin Base Coin. |
+|> totalMaintenanceMargin |string |Maintenance Margin of account converted to usd: ∑ Asset Total Maintenance Margin Base Coin.|
+|> coin |array |Object |
+|>> coin |string |Coin name, such as BTC, ETH, USDT |
+|>> equity |string |Equity of current coin |
+|>> usdValue |string |USD value of current coin. |
+|>> walletBalance |string |Wallet balance of current coin |
+|>> availableToWithdraw |string |Available amount to withdraw of current coin |
+|>> totalOrderIM |string |Pre-occupied margin for order.|
+|>> totalPositionIM	|string	|Sum of initial margin of all positions + Pre-occupied liquidation fee.|
+|>> totalPositionMM	|string |Sum of maintenance margin for all positions.|
+|>> unrealisedPnl |string |Unrealised P&L |
+|>> cumRealisedPnl |string |Cumulative Realised P&L |
+|>> bonus |string |Bonus.|
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/account/wallet-balance?accountType=UNIFIED&coin=BTC HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672125440406
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "list": [
+            {
+                "totalEquity": "18070.32797922",
+                "totalMarginBalance": "18070.32797922",
+                "totalInitialMargin": "182.60183684",
+                "totalAvailableBalance": "17887.72614237",
+                "totalWalletBalance": "18070.43799271",
+                "totalMaintenanceMargin": "0.38106773",
+                "coin": [
+                    {
+                        "bonus": "0",
+                        "availableToWithdraw": "0.805994",
+                        "totalOrderIM": "0",
+                        "equity": "0.805994",
+                        "totalPositionMM": "0",
+                        "usdValue": "12920.95352538",
+                        "unrealisedPnl": "0",
+                        "totalPositionIM": "0",
+                        "walletBalance": "0.805994",
+                        "cumRealisedPnl": "0",
+                        "coin": "BTC"
+                    }
+                ]
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672125441042
+}
+```

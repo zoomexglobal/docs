@@ -1,0 +1,71 @@
+---
+title: 查詢合約風險限額
+sidebar_label: 查詢合約風險限額
+sidebar_position: 13
+---
+
+查詢期貨合約的風險限額表
+> **覆蓋範圍: USDT永續 / 反向合約**
+
+:::tip
+什麼是風險限額？<a href="https://help.zoomex.com/zh-TW/article/1368">風險限額(USDT合約)</a>
+:::
+
+### HTTP請求
+GET `/cloud/trade/v3/market/risk-limit`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型. `linear`,`inverse` |
+|symbol |false |string |合約名稱|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|category |string |產品類型 |
+|list |array |Object |
+|> id |integer |風險限額id |
+|> symbol |string |合約名稱 |
+|> riskLimitValue |string |風險限制額度 |
+|> maintenanceMargin |number |維持保證金率 |
+|> initialMargin |number |初始保證金率 |
+|> section |array |section數組 |
+|> isLowestRisk |integer |是否是最低風險限額. `1`: true, `0`: false |
+|> maxLeverage |string |該風險限額允許的最大槓桿 |
+
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/risk-limit?category=inverse&symbol=BTCUSD HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "inverse",
+        "list": [
+            {
+                "id": 1,
+                "symbol": "BTCUSD",
+                "riskLimitValue": "150",
+                "maintenanceMargin": "0.5",
+                "initialMargin": "1",
+                "isLowestRisk": 1,
+                "maxLeverage": "100.00"
+            },
+        ....
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672054488010
+}
+```

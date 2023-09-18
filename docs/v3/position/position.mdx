@@ -1,0 +1,115 @@
+---
+title: Get Position Info
+sidebar_label: Get Position Info
+sidebar_position: 1
+---
+
+Query real-time position data, such as position size, cumulative realizedPNL.
+> **Normal account covers: USDT perpetual / Inverse contract**
+
+### HTTP Request
+GET `/cloud/trade/v3/position/list`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../v3/enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|symbol |false |string |Symbol name<ul><li>If `symbol` passed, it returns data regardless of having position or not.</li><li>If `symbol`=null and `settleCoin` specified, it returns position size greater than zero.</li></ul>|
+|baseCoin |false |string |Base coin. `option` **only**. Return all option positions if not passed|
+|settleCoin |false |string |Settle coin. For `linear` & `inverse`, either `symbol` or `settleCoin` is **required**. `symbol` has a higher priority |
+|limit |false |integer |Limit for data size per page. [`1`, `200`]. Default: `20`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|category |string  |Product type |
+|list|array |Object |
+|> [positionIdx](../v3/enum#positionidx) | integer |Position idx, used to identify positions in different position modes<ul><li>`0`: One-Way Mode</li><li>`1`: Buy side of both side mode</li><li>`2`: Sell side of both side mode</li> </ul>|
+|> riskId |integer |Risk limit ID.|
+|> riskLimitValue |string  | Risk limit value.|
+|> symbol |string  |Symbol name |
+|> side |string  |Position side. `Buy`: long, `Sell`: short. _Note: under one-way mode, it returns `None` if empty position_ |
+|> size |string  |Position size |
+|> avgPrice |string  |Average entry price <li>For USDC Perp & Futures, it indicates average entry price, and it will not be changed with 8-hour session settlement</li> |
+|> positionValue | string  |Position value|
+|> tradeMode | integer |Trade mode <ul><li>Normal: `0`: cross-margin, `1`: isolated margin</li></ul>|
+|> autoAddMargin | integer |Whether to add margin automatically. `0`: false, `1`: true. For UTA, it is meaningful only when UTA enables `ISOLATED_MARGIN` |
+|> [positionStatus](../v3/enum#positionstatus) | String |Position status. `Normal`, `Liq`, `Adl` |
+|> leverage | string  |Position leverage. Valid for contract.|
+|> markPrice | string  |Last mark price |
+|> liqPrice | string  |Position liquidation price <ul><li>it is the real price for isolated and cross positions.</li></ul>|
+|> bustPrice | string  |Bankruptcy price. |
+|> positionIM | string  |Initial margin.|
+|> positionMM | string  |Maintenance margin. |
+|> positionBalance | string  |Position margin.|
+|> tpslMode | string  |Depreciated, meaningless here, always "Full". Spot does not return this field. Option returns ""|
+|> takeProfit | string  |Take profit price|
+|> stopLoss | string  |Stop loss price|
+|> trailingStop | string  |Trailing stop (The distance from market price)|
+|> unrealisedPnl | string  |Unrealised PnL|
+|> cumRealisedPnl | string  |Cumulative realised pnl|
+|> [adlRankIndicator](../v3/enum#adlrankindicator) |integer |Auto-deleverage rank indicator. <a href="https://www.bybit.com/en-US/help-center/s/article/What-is-Auto-Deleveraging-ADL">What is Auto-Deleveraging?</a>|
+|> createdTime | string  |Position created timestamp (ms)|
+|> updatedTime | string  |Position updated timestamp (ms)|
+|nextPageCursor | string  |Refer to the `cursor` request parameter |
+
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/position/list?category=inverse&symbol=BTCUSD HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672280218882
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "list": [
+            {
+                "positionIdx": 0,
+                "riskId": 1,
+                "riskLimitValue": "150",
+                "symbol": "BTCUSD",
+                "side": "Sell",
+                "size": "299",
+                "avgPrice": "30004.5006751",
+                "positionValue": "0.00996518",
+                "tradeMode": 0,
+                "positionStatus": "Normal",
+                "autoAddMargin": 1,
+                "adlRankIndicator": 2,
+                "leverage": "10",
+                "positionBalance": "0.00100189",
+                "markPrice": "26926.00",
+                "liqPrice": "999999.00",
+                "bustPrice": "999999.00",
+                "positionMM": "0.0000015",
+                "positionIM": "0.00009965",
+                "tpslMode": "Full",
+                "takeProfit": "0.00",
+                "stopLoss": "0.00",
+                "trailingStop": "0.00",
+                "unrealisedPnl": "0.00113932",
+                "cumRealisedPnl": "-0.00121275",
+                "createdTime": "1676538056258",
+                "updatedTime": "1684742400015"
+            }
+        ],
+        "nextPageCursor": "",
+        "category": "inverse"
+    },
+    "retExtInfo": {},
+    "time": 1684767531904
+}
+```

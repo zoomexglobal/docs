@@ -1,0 +1,73 @@
+---
+title: 查詢溢價指數價格K線數據
+sidebar_label: 查詢溢價指數價格K線數據
+sidebar_position: 4
+---
+
+查詢溢價指數價格K線數據
+> **覆蓋範圍: USDT和反向合約**
+
+### HTTP請求
+GET `/cloud/trade/v3/market/premium-index-price-kline`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------|
+|[category](../enum#category) |<b>true</b> |string |產品類型. `linear`|
+|symbol |<b>true</b> |string |合約名稱|
+|[interval](../enum#interval) |<b>true</b> |string |時間粒度. `1`,`3`,`5`,`15`,`30`,`60`,`120`,`240`,`360`,`720`,`D`,`M`,`W` |
+|start |false |integer |開始時間戳 (毫秒)|
+|end |false |integer |結束時間戳 (毫秒)|
+|limit |false |integer |每頁數量限制. [`1`, `1000`]. 默認: `200`|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|[category](../enum#category) |string |產品類型 |
+|symbol |string |合約名稱 |
+|list |array |<ul><li>一個字符串數組構成單個蠟燭</li><li>按照`startTime`降序排列</li></ul>|
+|> list[0] |string |蠟燭的開始時間戳 (毫秒) |
+|> list[1] |string |開始價格 |
+|> list[2] |string |最高價格 |
+|> list[3] |string |最低價格 |
+|> list[4] |string |結束價格. _如果蠟燭尚未結束，則表示為最新成交價格_|
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/premium-index-price-kline?category=linear&symbol=BTCUSDT&interval=D&start=1652112000000&end=1652544000000 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "symbol": "BTCPERP",
+        "category": "linear",
+        "list": [
+            [
+                "1672026540000",
+                "0.000000",
+                "0.000000",
+                "0.000000",
+                "0.000000"
+            ],
+            [
+                "1672026480000",
+                "0.000000",
+                "0.000000",
+                "0.000000",
+                "0.000000"
+            ]
+            ]
+    },
+    "retExtInfo": {},
+    "time": 1672026605042
+}
+```

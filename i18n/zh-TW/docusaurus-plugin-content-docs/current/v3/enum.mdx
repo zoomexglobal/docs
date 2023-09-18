@@ -1,0 +1,317 @@
+---
+title: 枚舉定義
+sidebar_label: 枚舉定義
+---
+
+### locale
+* `de-DE`
+* `en-US`
+* `es-AR`
+* `es-ES`
+* `es-MX`
+* `fr-FR`
+* `kk-KZ`
+* `id-ID`
+* `uk-UA`
+* `ja-JP`
+* `ru-RU`
+* `th-TH`
+* `pt-BR`
+* `tr-TR`
+* `vi-VN`
+* `zh-TW`
+* `ar-SA`
+* `hi-IN`
+* `fil-PH`
+
+### announcementType
+* `new_crypto`
+* `latest_bybit_news`
+* `delistings`
+* `latest_activities`
+* `product_updates`
+* `maintenance_updates`
+* `new_fiat_listings`
+* `other`
+
+### announcementTag
+* `Derivatives`
+* `BTC`
+* `ETH`
+* `Trading Bots`
+* `USDC`
+* `Leveraged Tokens`
+* `USDT`
+* `Margin Trading`
+* `Partnerships`
+* `Launchpad`
+* `Upgrades`
+* `ByVotes`
+* `Delistings`
+* `VIP`
+* `Futures`
+* `Institutions`
+* `Options`
+* `WEB3`
+* `Copy Trading`
+* `Earn`
+* `Bybit Savings`
+* `Dual Asset`
+* `Liquidity Mining`
+* `Shark Fin`
+* `Launchpool`
+* `NFT     GrabPic`
+* `Buy Crypto`
+* `P2P Trading`
+* `Fiat Deposit`
+* `Crypto Deposit`
+* `Спот`
+* `Спот лістинги`
+* `Торгові боти`
+* `Токени з кредитним плечем`
+* `Маржинальна торгівля`
+* `Партнерство`
+* `Оновлення`
+* `Делістинги`
+* `Ф'ючерси`
+* `Опціони`
+* `Копітрейдинг`
+* `Bybit Накопичення`
+* `Бівалютні інвестиції`
+* `Майнінг ліквідності`
+* `Купівля криптовалюти`
+* `P2P торгівля`
+* `Фіатні депозити`
+* `Криптодепозити`
+* `Копитрейдинг`
+* `Торговые боты`
+* `Деривативы`
+* `P2P`
+* `Спот листинги`
+* `Деривативи`
+* `MT4`
+* `Lucky Draw`
+* `Unified Trading Account`
+* `Єдиний торговий акаунт`
+* `Единый торговый аккаунт`
+* `Институциональный трейдинг`
+* `Інституціональний трейдинг`
+* `Делистинг`
+
+### category
+_統一帳戶_
+* `linear`&emsp;USDT永續
+* `inverse`&emsp;反向合約
+
+_普通帳戶_
+* `linear`&emsp;USDT永續
+* `inverse`&emsp;反向合約
+
+### orderStatus
+* `Created`&emsp;訂單已經被系統接收但還沒有推送到撮合引擎中
+* `New`&emsp;訂單成功下達
+* `Rejected`
+* `PartiallyFilled`
+* `PartiallyFilledCanceled`&emsp;僅現貨存在該枚舉值
+* `Filled`
+* `Cancelled`&emsp;期貨交易，當訂單是該狀態時，是可能存在部分成交的
+* `Untriggered`
+* `Triggered`
+* `Deactivated`
+* `Active`&emsp;條件單已經被觸發，並且活動單已經成功創建。該狀態是條件單成功觸發後的終態
+
+### timeInForce
+* `GTC`&emsp;一直有效至取消
+* `IOC`&emsp;立即成交或取消
+* `FOK`&emsp;完全成交或取消
+* <a href="https://www.bybit.com/zh-TW/help-center/bybitHC_Article?language=zh_TW&id=000001051">PostOnly</a>&emsp;被動委託
+
+### execType
+* `Trade`
+* `AdlTrade`&emsp;<a href="https://www.bybit.com/zh-TW/help-center/bybitHC_Article?language=zh_TW&id=000001124">自動減倉</a>
+* `Funding`&emsp;<a href="https://www.bybit.com/zh-TW/help-center/HelpCenterKnowledge/bybitHC_Article?id=000001123&language=zh_TW">資金費率</a>
+* `BustTrade`&emsp;強平
+* `Delivery`&emsp;USDC交割
+* `BlockTrade`
+
+### stopOrderType
+* `TakeProfit`&emsp;止盈單
+* `StopLoss`&emsp;止損單
+* `TrailingStop`&emsp;追蹤止損單
+* `Stop`&emsp;條件單
+* `PartialTakeProfit`&emsp;部分止盈單
+* `PartialStopLoss`&emsp;部分止損單
+* `tpslOrder`&emsp;現貨止盈止損單
+
+### tickDirection
+* `PlusTick`&emsp;價格上漲
+* `ZeroPlusTick`&emsp;交易的價格與前一筆交易的價格相同，前一筆交易的價格高於前一筆交易的價格
+* `MinusTick`&emsp;價格下跌
+* `ZeroMinusTick`&emsp;交易的價格與前一筆交易的價格相同，前一筆交易的價格低於前一筆交易的價格
+
+### interval
+* `1` `3` `5` `15` `30` `60` `120` `240` `360` `720`&emsp;分鐘
+* `D`&emsp;天
+* `W`&emsp;週
+* `M`&emsp;月
+
+### positionIdx
+* `0`&emsp;單向持倉
+* `1`&emsp;買側的雙向持倉
+* `2`&emsp;賣側的雙向持倉
+
+### positionStatus
+* `Normal`
+* `Liq`&emsp;強平中
+* `Adl`&emsp;自動減倉中
+
+### rejectReason
+* `EC_NoError`
+* `EC_Others`
+* `EC_UnknownMessageType`
+* `EC_MissingClOrdID`
+* `EC_MissingOrigClOrdID`
+* `EC_ClOrdIDOrigClOrdIDAreTheSame`
+* `EC_DuplicatedClOrdID`
+* `EC_OrigClOrdIDDoesNotExist`
+* `EC_TooLateToCancel`
+* `EC_UnknownOrderType`
+* `EC_UnknownSide`
+* `EC_UnknownTimeInForce`
+* `EC_WronglyRouted`
+* `EC_MarketOrderPriceIsNotZero`
+* `EC_LimitOrderInvalidPrice`
+* `EC_NoEnoughQtyToFill`
+* `EC_NoImmediateQtyToFill`
+* `EC_PerCancelRequest`
+* `EC_MarketOrderCannotBePostOnly`
+* `EC_PostOnlyWillTakeLiquidity`
+* `EC_CancelReplaceOrder`
+* `EC_InvalidSymbolStatus`
+
+### accountType
+* `CONTRACT`&emsp;合約帳戶
+* `FUND`&emsp;資金帳戶
+
+### transferStatus
+* `SUCCESS`
+* `PENDING`
+* `FAILED`
+
+### depositStatus
+* `0`&emsp;未知
+* `1`&emsp;等待確認
+* `2`&emsp;處理中
+* `3`&emsp;成功
+* `4`&emsp;儲值失敗
+
+### withdrawStatus
+* `SecurityCheck`
+* `Pending`
+* `success`
+* `CancelByUser`
+* `Reject`
+* `Fail`
+* `BlockchainConfirmed`
+
+### triggerBy
+* `LastPrice`
+* `IndexPrice`
+* `MarkPrice`
+
+### cancelType
+* `CancelByUser`
+* `CancelByReduceOnly`
+* `CancelByPrepareLiq` `CancelAllBeforeLiq`&emsp;由於強平而取消
+* `CancelByPrepareAdl` `CancelAllBeforeAdl`&emsp;由於自動減倉而取消
+* `CancelByAdmin`
+* `CancelByTpSlTsClear`
+* `CancelByPzSideCh`
+* `CancelBySmp`
+
+_期權:_
+* `CancelByUser`
+* `CancelByReduceOnly`
+* `CancelAllBeforeLiq`&emsp;由於強平而取消
+* `CancelAllBeforeAdl`&emsp;由於自動減倉而取消
+* `CancelBySettle`
+* `CancelByCannotAffordOrderCost`
+* `CancelByPmTrialMmOverEquity`
+* `CancelByAccountBlocking`
+* `CancelByDelivery`
+* `CancelByMmpTriggered`
+* `CancelByCrossSelfMuch`
+* `CancelByCrossReachMaxTradeNum`
+* `CancelByDCP`
+* `CancelBySmp`
+
+### period
+* BTC: `7`,`14`,`21`,`30`,`60`,`90`,`180`,`270`天
+* ETH: `7`,`14`,`21`,`30`,`60`,`90`,`180`,`270`天
+* SOL: `7`,`14`,`21`,`30`,`60`,`90`天
+
+### contractType
+* `InversePerpetual`&emsp;反向永續
+* `LinearPerpetual`&emsp;正向永續: USDT永續和USDC永續
+* `LinearFutures`&emsp;USDC交割
+* `InverseFutures`&emsp;反向交割
+
+### status
+* `PreLaunch`&emsp;預上線
+* `Trading`&emsp;線上可交易
+* `Settling`&emsp;清算中
+* `Delivering`&emsp;交割中
+* `Closed`&emsp;已下線
+
+### type
+* `TRANSFER_IN`
+* `TRANSFER_OUT`
+* `TRADE`
+* `SETTLEMENT`
+* `DELIVERY`
+* `LIQUIDATION`
+* `BONUS`
+* `FEE_REFUND`
+* `INTEREST`
+* `CURRENCY_BUY`
+* `CURRENCY_SELL`
+
+### unifiedMarginStatus
+* `1`&emsp;普通帳戶
+
+### ltStatus
+* `1`&emsp;槓桿代幣支持申贖
+* `2`&emsp;槓桿代幣支持申購，但無法贖回
+* `3`&emsp;槓桿代幣支持贖回，但是無法申購
+* `4`&emsp;槓桿代幣無法申贖
+* `5`&emsp;調倉中
+
+### symbol
+_USDT永續_:
+* `BTCUSDT`
+* `ETHUSDT`
+
+_反向永續_:
+* `BTCUSD`
+* `ETHUSD`
+
+### adlRankIndicator
+* `0`&emsp;空倉時默認值
+* `1`
+* `2`
+* `3`
+* `4`
+* `5`
+
+### vipLevel
+* No VIP
+* PRO-1
+* PRO-2
+* PRO-3
+* VIP-1
+* VIP-2
+* VIP-3
+* MM-1
+* MM-2
+* MM-3
+

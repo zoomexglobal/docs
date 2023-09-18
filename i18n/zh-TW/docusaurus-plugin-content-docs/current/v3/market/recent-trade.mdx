@@ -1,0 +1,68 @@
+---
+title: 查詢平台成交歷史
+sidebar_label: 查詢平台成交歷史
+sidebar_position: 8
+---
+
+獲取平台最近成交數據
+> **覆蓋範圍: USDT永續/ 反向合約**
+
+您可以從這裡下載到歸檔的更多的歷史成交數據:
+* <a href="https://www.zoomex.com/trade/usdt/">USDT永續</a>
+* <a href="https://www.zoomex.com/trade/inverse/">反向合約</a>
+
+### HTTP請求
+GET `/cloud/trade/v3/market/recent-trade`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型. `linear`,`inverse` |
+|[symbol](../enum#symbol) |false |string |合約名稱|
+|limit |false |integer |每頁數量限制.<ul><li>[1,1000], 默認: `500`</li></ul>|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|category |string |產品類型 |
+|list |array |Object |
+|> execId |string |成交id |
+|> symbol |string |合約名稱 |
+|> price |string |成交價格 |
+|> size |string |成交數量 |
+|> side |string |吃單方向. `Buy`, `Sell` |
+|> time |string |成交時間戳 (毫秒) |
+
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/recent-trade?category=spot&symbol=BTCUSDT&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "spot",
+        "list": [
+            {
+                "execId": "2100000000007764263",
+                "symbol": "BTCUSDT",
+                "price": "16618.49",
+                "size": "0.00012",
+                "side": "Buy",
+                "time": "1672052955758"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672053054358
+}
+```

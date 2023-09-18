@@ -1,0 +1,162 @@
+---
+title: Ticker
+sidebar_label: Ticker
+sidebar_position: 3
+---
+
+Subscribe to the ticker stream.
+
+:::note
+* This topic utilises the snapshot field and delta field. If a response param is not found in the message, then its value has not changed.
+* Spot & Option tickers message are `snapshot` **only**
+:::
+Push frequency: Derivatives - **100ms**
+
+**Topic:**<br/>
+`tickers.{symbol}`
+
+### Response Parameters
+<Tabs groupId="market-category">
+<TabItem value="linear" label="Linear/Inverse" default>
+    <table border="0.8">
+        <tr>
+            <th>Parameter</th><th>Type</th><th>Comments</th>
+        </tr>
+        <tr>
+            <td>topic</td><td>string</td><td>Topic name</td>
+        </tr>
+        <tr>
+            <td>type</td><td>string</td><td>Data type. <code>snapshot</code>,<code>delta</code></td>
+        </tr>
+        <tr>
+            <td>cs</td><td>integer</td><td>Cross sequence</td>
+        </tr>
+        <tr>
+            <td>ts</td><td>number</td><td>The timestamp (ms) that the system generates the data</td>
+        </tr>
+        <tr>
+            <td>data</td><td>array</td><td>Object</td>
+        </tr>
+        <tr>
+            <td>> symbol</td><td>string</td><td>Symbol name </td>
+        </tr>
+        <tr>
+            <td>> <a href="../../enum#tickdirection">tickDirection</a></td><td>string</td><td>Tick direction </td>
+        </tr>
+        <tr>
+            <td>> price24hPcnt</td><td>string</td><td>Percentage change of market price in the last 24 hours </td>
+        </tr>
+        <tr>
+            <td>> lastPrice</td><td>string</td><td>Last price </td>
+        </tr>
+        <tr>
+            <td>> prevPrice24h</td><td>string</td><td>Market price 24 hours ago </td>
+        </tr>
+        <tr>
+            <td>> highPrice24h</td><td>string</td><td>The highest price in the last 24 hours </td>
+        </tr>
+        <tr>
+            <td>> lowPrice24h</td><td>string</td><td>The lowest price in the last 24 hours </td>
+        </tr>
+        <tr>
+            <td>> prevPrice1h</td><td>string</td><td>Market price an hour ago </td>
+        </tr>
+        <tr>
+            <td>> markPrice</td><td>string</td><td>Mark price </td>
+        </tr>
+        <tr>
+            <td>> indexPrice</td><td>string</td><td>Index price </td>
+        </tr>
+        <tr>
+            <td>> openInterest</td><td>string</td><td>Open interest size </td>
+        </tr>
+        <tr>
+            <td>> openInterestValue</td><td>string</td><td>Open interest value </td>
+        </tr>
+        <tr>
+            <td>> turnover24h</td><td>string</td><td>Turnover for 24h </td>
+        </tr>
+        <tr>
+            <td>> volume24h</td><td>string</td><td>Volume for 24h </td>
+        </tr>
+        <tr>
+            <td>> nextFundingTime</td><td>string</td><td>Next funding timestamp (ms) </td>
+        </tr>
+        <tr>
+            <td>> fundingRate</td><td>string</td><td>Funding rate </td>
+        </tr>
+        <tr>
+            <td>> bid1Price</td><td>string</td><td>Best bid price </td>
+        </tr>
+        <tr>
+            <td>> bid1Size</td><td>string</td><td>Best bid size </td>
+        </tr>
+        <tr>
+            <td>> ask1Price</td><td>string</td><td>Best ask price </td>
+        </tr>
+        <tr>
+            <td>> ask1Size</td><td>string</td><td>Best ask size </td>
+        </tr>
+    </table>
+</TabItem>
+
+</Tabs>
+
+### Subscribe Example
+
+```javascript
+const socket = new WebSocket('wss://stream-testnet.zoomex.com/v3/public/linear');
+
+socket.onopen = function() {
+  const subscribeMsg = {
+    "op": "subscribe",
+    "args": ["tickers.BTCUSDT"]
+  };
+  socket.send(JSON.stringify(subscribeMsg));
+};
+
+socket.onmessage = function(event) {
+};
+
+socket.onclose = function(event) {
+};
+```
+
+### Response Example
+
+<Tabs groupId="market-category">
+<TabItem value="linear" label="Linear">
+
+```json
+{
+    "topic": "tickers.BTCUSDT",
+    "type": "snapshot",
+    "data": {
+        "symbol": "BTCUSDT",
+        "tickDirection": "PlusTick",
+        "price24hPcnt": "0.017103",
+        "lastPrice": "17216.00",
+        "prevPrice24h": "16926.50",
+        "highPrice24h": "17281.50",
+        "lowPrice24h": "16915.00",
+        "prevPrice1h": "17238.00",
+        "markPrice": "17217.33",
+        "indexPrice": "17227.36",
+        "openInterest": "68744.761",
+        "openInterestValue": "1183601235.91",
+        "turnover24h": "1570383121.943499",
+        "volume24h": "91705.276",
+        "nextFundingTime": "1673280000000",
+        "fundingRate": "-0.000212",
+        "bid1Price": "17215.50",
+        "bid1Size": "84.489",
+        "ask1Price": "17216.00",
+        "ask1Size": "83.020"
+    },
+    "cs": 24987956059,
+    "ts": 1673272861686
+}
+```
+
+</TabItem>
+</Tabs>

@@ -1,0 +1,66 @@
+---
+title: 查詢歷史資金費率
+sidebar_label: 查詢歷史資金費率
+sidebar_position: 7
+---
+
+查詢資金費率，每個symbol的資金費率產生週期不同。假設資金費率為8小時，當前時間是UTC12點，則返回的是上一個結算即UTC8點產生的資金費率。如要查詢symbol的資金費率時間間隔，請查詢[可交易產品規格](instrument#)接口
+> **覆蓋範圍: USDT永續 / 反向永續**
+
+:::tip 時間入参規則
+- 只傳`startTime`會報錯
+- 只傳`endTime`，則返回endTime往前的200條數據
+- 都不傳，返回當前時間的往前200條數據
+:::
+
+### HTTP請求
+GET `/cloud/trade/v3/market/funding/history`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型. `linear`,`inverse`|
+|symbol |**true**|string |合約名稱|
+|startTime |false |integer |開始時間戳 (毫秒)|
+|endTime |false |integer |結束時間戳 (毫秒)|
+|limit |false |integer |每頁數量限制. [`1`, `200`]. 默認: `200`|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|category |string |產品類型|
+|list |array |Object |
+|> symbol |string |合約名稱 |
+|> fundingRate |string |資金費率 |
+|> fundingRateTimestamp |string |資金費率時間戳 (毫秒) |
+
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/funding/history?category=linear&symbol=ETHPERP&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "ETHPERP",
+                "fundingRate": "0.0001",
+                "fundingRateTimestamp": "1672041600000"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672051897447
+}
+```

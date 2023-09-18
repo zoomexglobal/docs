@@ -1,0 +1,94 @@
+---
+title: 查詢平倉盈虧
+sidebar_label: 查詢平倉盈虧
+sidebar_position: 11
+---
+
+獲取當前用戶的所有平倉盈虧數據，返回結果按照`createdTime`降序排列.
+> **普通帳戶覆蓋範圍: USDT永續 / 反向合約**
+
+### HTTP 請求
+GET `/cloud/trade/v3/position/closed-pnl`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>普通帳戶: `linear`, `inverse`. 這裡`category`字段不參與業務邏輯，僅做路由使用</li></ul> |
+|symbol |false |string |合約名稱|
+|startTime |false |integer |開始時間戳 (毫秒)|
+|endTime |false |integer |結束時間戳 (毫秒)|
+|limit |false |integer |每頁數量限制. [`1`, `100`]. 默認: `50`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+| [category](../enum#category) | string  | 產品類型 |
+|list |array |Object |
+|> symbol |string |合約名稱 |
+|> orderId |string |訂單Id |
+|> side |string |買賣方向 `Buy`, `Side` |
+|> qty |string |訂單數量 |
+|> orderPrice |string |訂單價格 |
+|> orderType |string |訂單類型. `Market`,`Limit` |
+|> execType |string |執行類型. `Trade`, `BustTrade`, `SessionSettlePnL`, `Settle` |
+|> closedSize |string |平倉數量 |
+|> cumEntryValue |string |被平倉位的累計入場價值 |
+|> avgEntryPrice |string |平均入場價格 |
+|> cumExitValue |string |被平倉位的累計出場價值 |
+|> avgExitPrice |string |平均出場價格 |
+|> closedPnl |string |被平倉位的盈虧 |
+|> fillCount |string |成交筆數 |
+|> leverage |string |持倉槓桿 |
+|> createdTime |string |創建時間 (毫秒) |
+|> updatedTime |string |更新時間 (毫秒) |
+|nextPageCursor |string |游標，用於翻頁 |
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/position/closed-pnl?category=linear&limit=1 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672284128523
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "nextPageCursor": "5a373bfe-188d-4913-9c81-d57ab5be8068%3A1672214887231423699%2C5a373bfe-188d-4913-9c81-d57ab5be8068%3A1672214887231423699",
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "ETHPERP",
+                "orderType": "Market",
+                "leverage": "3",
+                "updatedTime": "1672214887236",
+                "side": "Sell",
+                "orderId": "5a373bfe-188d-4913-9c81-d57ab5be8068",
+                "closedPnl": "-47.4065323",
+                "avgEntryPrice": "1194.97516667",
+                "qty": "3",
+                "cumEntryValue": "3584.9255",
+                "createdTime": "1672214887231423699",
+                "orderPrice": "1122.95",
+                "closedSize": "3",
+                "avgExitPrice": "1180.59833333",
+                "execType": "Trade",
+                "fillCount": "4",
+                "cumExitValue": "3541.795"
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672284129153
+}
+```

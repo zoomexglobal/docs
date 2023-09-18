@@ -1,0 +1,175 @@
+---
+title: 查詢可交易產品的規格信息
+sidebar_label: 查詢可交易產品的規格信息
+sidebar_position: 4.5
+---
+
+查詢全站可交易產品的基礎配置規則信息
+> **覆蓋範圍: USDT永續 / 反向合約**
+
+:::caution
+* 當通過`baseCoin`查詢時, 不管category=`linear`或`inverse`, 返回結果中都會包含USDT永續和反向合約的交易對.
+:::
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+### HTTP請求
+GET `/cloud/trade/v3/market/instruments-info`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |<b>true</b> |string |產品類型. `linear`,`inverse`|
+|symbol |false |string |合約名稱|
+|[status](../enum#status) |false |string |交易對狀態篩選|
+|baseCoin |false |string |交易貨幣.|
+|limit |false |integer |每頁數量限制. [`1`, `1000`]. 默認: `500`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+<Tabs groupId="market-category">
+<TabItem value="linear" label="Linear/Inverse" default>
+    <table border="0.8">
+        <tr>
+            <th>參數</th><th>類型</th><th>說明</th>
+        </tr>
+        <tr>
+            <td>category</td><td>string</td><td>產品類型</td>
+        </tr>
+        <tr>
+            <td>nextPageCursor</td><td>string</td><td>游標，用於翻頁</td>
+        </tr>
+        <tr>
+            <td>list</td><td>array</td><td>Object</td>
+        </tr>
+        <tr>
+            <td>> symbol</td><td>string</td><td>合約名稱 </td>
+        </tr>
+        <tr>
+            <td>> <a href="../enum#contracttype">contractType</a></td><td>string</td><td>合約類型</td>
+        </tr>
+        <tr>
+            <td>> <a href="../enum#status">status</a></td><td>string</td><td>合約狀態 </td>
+        </tr>
+        <tr>
+            <td>> baseCoin</td><td>string</td><td>交易幣種 </td>
+        </tr>
+        <tr>
+            <td>> quoteCoin</td><td>string</td><td>報價幣種 </td>
+        </tr>
+        <tr>
+            <td>> launchTime</td><td>string</td><td>發佈時間 (ms) </td>
+        </tr>
+        <tr>
+            <td>> priceScale</td><td>string</td><td>價格精度 </td>
+        </tr>
+        <tr>
+            <td>> leverageFilter</td><td>Object</td><td>槓桿屬性 </td>
+        </tr>
+        <tr>
+            <td>>> minLeverage</td><td>string</td><td>最小槓桿 </td>
+        </tr>
+        <tr>
+            <td>>> maxLeverage</td><td>string</td><td>最大槓桿 </td>
+        </tr>
+        <tr>
+            <td>>> leverageStep</td><td>string</td><td>修改槓桿的步長 </td>
+        </tr>
+        <tr>
+            <td>> priceFilter</td><td>Object</td><td>價格屬性 </td>
+        </tr>
+        <tr>
+            <td>>> minPrice</td><td>string</td><td>訂單最小價格 </td>
+        </tr>
+        <tr>
+            <td>>> maxPrice</td><td>string</td><td>訂單最大價格 </td>
+        </tr>
+        <tr>
+            <td>>> tickSize</td><td>string</td><td>修改價格的步長 </td>
+        </tr>
+        <tr>
+            <td>> lotSizeFilter</td><td>Object</td><td>訂單數量屬性 </td>
+        </tr>
+        <tr>
+            <td>>> maxOrderQty</td><td>string</td><td>單筆訂單最大下單量 </td>
+        </tr>
+        <tr>
+            <td>>> minOrderQty</td><td>string</td><td>單筆訂單最小下單量 </td>
+        </tr>
+        <tr>
+            <td>>> qtyStep</td><td>string</td><td>修改下單量的步長 </td>
+        </tr>
+        <tr>
+            <td>>> postOnlyMaxOrderQty</td><td>string</td><td>PostOnly單允許的最大下單量 </td>
+        </tr>
+        <tr>
+            <td>> fundingInterval</td><td>integer</td><td>資金費率結算週期 (分鐘) </td>
+        </tr>
+        <tr>
+            <td>> settleCoin</td><td>string</td><td>結算幣種 </td>
+        </tr>
+        <tr>
+            <td>> <a href="../enum#copytrading">copyTrading</a></td><td>string</td><td>當前交易對是否支持帶單交易 </td>
+        </tr>
+    </table>
+</TabItem>
+
+</Tabs>
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/market/instruments-info?category=linear&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "linear",
+        "list": [
+            {
+                "symbol": "BTCUSDT",
+                "contractType": "LinearPerpetual",
+                "status": "Trading",
+                "baseCoin": "BTC",
+                "quoteCoin": "USDT",
+                "launchTime": "1585526400000",
+                "deliveryTime": "0",
+                "deliveryFeeRate": "",
+                "priceScale": "2",
+                "leverageFilter": {
+                    "minLeverage": "1",
+                    "maxLeverage": "100.00",
+                    "leverageStep": "0.01"
+                },
+                "priceFilter": {
+                    "minPrice": "0.50",
+                    "maxPrice": "999999.00",
+                    "tickSize": "0.50"
+                },
+                "lotSizeFilter": {
+                    "maxOrderQty": "100.000",
+                    "minOrderQty": "0.001",
+                    "qtyStep": "0.001",
+                    "postOnlyMaxOrderQty": "1000.000"
+                },
+                "unifiedMarginTrade": true,
+                "fundingInterval": 480,
+                "settleCoin": "USDT"
+            }
+        ],
+        "nextPageCursor": ""
+    },
+    "retExtInfo": {},
+    "time": 1672712495660
+}
+```
+

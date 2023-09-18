@@ -1,0 +1,88 @@
+---
+title: 查詢錢包餘額
+sidebar_label: 查詢錢包餘額
+sidebar_position: 1
+---
+
+### HTTP 請求
+GET `/cloud/trade/v3/account/wallet-balance`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[accountType](../enum#accounttype) |**true** |string |帳戶類型. <ul><li>普通帳戶: `CONTRACT`(期貨)</li></ul>|
+|coin |false |string |幣種名稱 <ul><li>不傳則返回非零資產信息</li><li>可以傳多個幣進行查詢，以逗號分隔</li></ul>|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|list |array |Object |
+|> totalEquity |string |賬戶維度換算成usd的資產淨值：Account Margin Balance Base Coin + Account Option Value Base Coin。|
+|> totalWalletBalance |string |賬戶維度換算成usd的產錢包餘額：∑ Asset Wallet Balance By USD value of each asset。|
+|> totalMarginBalance |string |賬戶維度換算成usd的保證金餘額：totalWalletBalance + totalPerpUPL。|
+|> totalAvailableBalance |string |賬戶維度換算成usd的可用餘額：RM：totalMarginBalance - totalInitialMargin。|
+|> totalInitialMargin |string |賬戶維度換算成usd的總初始保證金：∑ Asset Total Initial Margin Base Coin。|
+|> totalMaintenanceMargin |string |賬戶維度換算成usd的總維持保證金: ∑ Asset Total Maintenance Margin Base Coin。|
+|> coin |arrays |幣種列表|
+|>> coin |string |幣種名稱，例如 BTC，ETH，USDT|
+|>> equity |string |當前幣種的資產淨值|
+|>> usdValue |string |當前幣種折算成 usd 的價值|
+|>> walletBalance |string |當前幣種的錢包餘額|
+|>> availableToWithdraw |string |當前幣種的可劃轉提現金額 |
+|>> totalOrderIM |string |以當前幣種結算的訂單委託預佔用保證金|
+|>> totalPositionIM	|string	|以當前幣種結算的所有倉位起始保證金求和 + 所有倉位的預佔用平倉手續費.|
+|>> totalPositionMM	|string |以當前幣種結算的所有倉位維持保證金求和.|
+|>> unrealisedPnl |string |以當前幣種結算的所有倉位的未結盈虧之和|
+|>> cumRealisedPnl |string |以當前幣種結算的所有倉位的累計已結盈虧之和|
+|>> bonus |string |體驗金.|
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/account/wallet-balance?accountType=UNIFIED&coin=BTC HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672125440406
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "list": [
+            {
+                "totalEquity": "18070.32797922",
+                "totalMarginBalance": "18070.32797922",
+                "totalInitialMargin": "182.60183684",
+                "totalAvailableBalance": "17887.72614237",
+                "totalWalletBalance": "18070.43799271",
+                "totalMaintenanceMargin": "0.38106773",
+                "coin": [
+                    {
+                        "bonus": "0",
+                        "availableToWithdraw": "0.805994",
+                        "totalOrderIM": "0",
+                        "equity": "0.805994",
+                        "totalPositionMM": "0",
+                        "usdValue": "12920.95352538",
+                        "unrealisedPnl": "0",
+                        "totalPositionIM": "0",
+                        "walletBalance": "0.805994",
+                        "cumRealisedPnl": "0",
+                        "coin": "BTC"
+                    }
+                ]
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672125441042
+}
+```

@@ -1,0 +1,76 @@
+---
+title: Get Orderbook
+sidebar_label: Get Orderbook
+sidebar_position: 5
+---
+
+Query for orderbook depth data.
+> **Covers: USDT perpetual / Inverse contract**
+
+* future: 200-level of orderbook data
+* spot: 50-level of orderbook data
+* option: 25-level of orderbook data
+
+:::tip
+The response is in the snapshot format.
+:::
+
+### HTTP Request
+GET `/cloud/trade/v3/market/orderbook`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type. `linear`, `inverse` |
+|symbol |**true** |string |Symbol name|
+|limit |false |integer |Limit size for each bid and ask<ul><li>`linear`&`inverse`: [`1`, `200`]. Default: `25`.</li></ul>|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|s |string |Symbol name |
+|b |array |Bid, buyer. Sort by price desc |
+|> b[0] |string |Bid price |
+|> b[1] |string |Bid size |
+|a |array |Ask, seller. Order by price asc |
+|> a[0] |string |Ask price |
+|> a[1] |string |Ask size |
+|ts |integer |The timestamp (ms) that the system generates the data |
+|u |integer |Update ID, is always in sequence<ul><li>For future, it is corresponding to `u` in the wss 200-level orderbook</li></ul> |
+
+---
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/market/orderbook?category=spot&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "s": "BTCUSDT",
+        "a": [
+            [
+                "16638.64",
+                "0.008479"
+            ]
+        ],
+        "b": [
+            [
+                "16638.27",
+                "0.305749"
+            ]
+        ],
+        "ts": 1672765737733,
+        "u": 5277055
+    },
+    "retExtInfo": {},
+    "time": 1672765737734
+}
+```

@@ -1,0 +1,184 @@
+---
+title: 訂閱WebSocket
+sidebar_label: 訂閱WebSocket
+slug: /v5/ws/connect
+---
+
+**WebSocket公共頻道:**
+
+- **主網:**<br/>
+USDT永續: `wss://stream.zoomex.com/v3/public/linear`<br/>
+反向合約: `wss://stream.zoomex.com/v3/public/inverse`<br/>
+
+- **測試網:**<br/>
+USDT永續: `wss://stream-testnet.zoomex.com/v3/public/linear`<br/>
+反向合約: `wss://stream-testnet.zoomex.com/v3/public/inverse`<br/>
+
+**WebSocket私有頻道:**
+- **主網:**<br/>
+`wss://stream.zoomex.com/v3/private`
+
+- **測試網:**<br/>
+`wss://stream-testnet.zoomex.com/v3/private`
+
+## 鑒權
+:::info
+<b>公共頻道</b>不需要鑒權，以下部分僅適用於<b>私有頻道</b>的訂閱。
+:::
+
+<p>構建連接時，創建鑒權請求。</p>
+
+```json
+{
+    "req_id": "10001", // 可選項
+    "op": "auth",
+    "args": [
+        "api_key",
+        1662350400000, //過期時間應當大於當前時間戳
+        "singature"
+    ]
+}
+```
+
+> 鑒權成功的響應示例
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "op": "auth",
+    "conn_id": "cejreaspqfh3sjdnldmg-p"
+}
+```
+
+:::note
+簽名生成的示例可以參考[這裡](../../changelog/v3)。
+:::
+
+:::caution
+由於網絡的複雜性，您可能隨時遇到斷連。請參考以下建議確保您能即時接收到推送：
+1. 通過發送[心跳](connect#如何發送心跳)來維持連接;
+2. 遇到斷連時，立即重新連接。
+:::
+
+## IP限頻
+* 不要嘗試頻繁地構建連接與斷開連接；
+* 不要在5分鐘內構建超過500個連接。
+
+## 公有頻道訂閱參數限制
+args裡的數組元素長度總和不能超過21,000個字符
+
+## 如何發送心跳
+
+```javascript
+// req_id is a customised id, which is optional
+ws.send(JSON.stringify({"req_id": "100001", "op": "ping"}));
+```
+
+> 公共頻道接收到pong的響應示例
+
+```json
+{
+    "success": true,
+    "ret_msg": "pong",
+    "conn_id": "465772b1-7630-4fdc-a492-e003e6f0f260",
+    "req_id": "",
+    "op": "ping"
+}
+```
+
+> 私有頻道接收到pong的響應示例
+
+```json
+{
+    "req_id": "test",
+    "op": "pong",
+    "args": [
+        "1675418560633"
+    ],
+    "conn_id": "cfcb4ocsvfriu23r3er0-1b"
+}
+```
+
+:::caution
+為了維持連接，我們推薦您每<b>20</b>秒發送一次心跳。
+:::
+
+## 如何訂閱topic
+### 理解Websocket裡的args
+
+通過傳入args來訂閱指定topic
+
+```json
+// 訂閱1檔的orderbook
+{
+    "req_id": "test", // 可選
+    "op": "subscribe",
+    "args": [
+        "orderbook.1.BTCUSDT"
+    ]
+}
+```
+
+通過逗號隔開，可以同時訂閱多個topic或者多個symbol
+
+```json
+{
+    "req_id": "test", // 可選
+    "op": "subscribe",
+    "args": [
+        "orderbook.1.BTCUSDT",
+        "publicTrade.BTCUSDT",
+        "orderbook.1.ETHUSDT"
+    ]
+}
+```
+
+### 理解如何取消訂閱
+
+您可以通過發送請求來動態地停止訂閱:
+
+```json
+{
+    "op": "unsubscribe",
+    "args": [
+        "publicTrade.ETHUSD"
+    ],
+    "req_id": "customised_id"
+}
+```
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## 理解訂閱的響應
+> 訂閱成功後的響應示例
+
+<Tabs>
+<TabItem value="private" label="私有頻道">
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "op": "subscribe",
+    "conn_id": "cejreassvfrsfvb9v1a0-2m"
+}
+```
+
+</TabItem>
+
+<TabItem value="public-future" label="公有期貨">
+
+```json
+{
+    "success": true,
+    "ret_msg": "",
+    "conn_id": "3cd84cb1-4d06-4a05-930a-2efe5fc70f0f",
+    "req_id": "",
+    "op": "subscribe"
+}
+```
+
+</TabItem>
+
+</Tabs>

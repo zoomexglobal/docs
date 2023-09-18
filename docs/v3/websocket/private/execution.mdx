@@ -1,0 +1,85 @@
+---
+title: Execution
+sidebar_label: Execution
+sidebar_position: 2
+---
+
+Subscribe to the execution stream to see your executions in **real-time**.
+
+:::tip
+You may have multiple executions for one order in a single message.
+:::
+
+**Topic:** `execution`
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|id |string |Message ID|
+|topic |string |Topic name |
+|creationTime |number |Data created timestamp (ms) |
+|data |array |Object |
+|> [category](../../enum#category) | string  | Product type <ul><li>Normal account: `linear`, `inverse`.</li></ul>|
+|> symbol |string   |Symbol name |
+|> orderId |string |Order ID |
+|> orderLinkId |string |User customized order ID |
+|> side |string |Side. `Buy`,`Sell` |
+|> orderPrice |string |Order price.|
+|> orderQty |string |Order qty. |
+|> leavesQty |string |The remaining qty not executed. |
+|> orderType |string |Order type. `Market`,`Limit` |
+|> [stopOrderType](../../enum#stopordertype) |string |Stop order type. If the order is not stop order, any type is not returned. _Normal `spot` is not supported_ |
+|> execFee |string |Executed trading fee. You can get spot fee currency instruction [here](../../enum#spot-fee-currency-instruction) _Normal `spot` is not supported_ |
+|> execId |string |Execution ID |
+|> execPrice |string |Execution price |
+|> execQty |string |Execution qty |
+|> [execType](../../enum#exectype) |string |Executed type. _Normal `spot` is not supported_ |
+|> execValue |string |Executed order value. _Normal `spot` is not supported_ |
+|> execTime |string |Executed timestamp（ms） |
+|> isMaker |boolean |Is maker order. `true`: maker, `false`: taker|
+|> feeRate |string |Trading fee rate. |
+|> closedSize |string |Closed position size |
+
+### Subscribe Example
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "execution"
+    ]
+}
+```
+
+### Stream Example
+
+```json
+{
+    "id": "592324803b2785-26fa-4214-9963-bdd4727f07be",
+    "topic": "execution",
+    "creationTime": 1672364174455,
+    "data": [
+        {
+            "category": "linear",
+            "symbol": "XRPUSDT",
+            "execFee": "0.005061",
+            "execId": "7e2ae69c-4edf-5800-a352-893d52b446aa",
+            "execPrice": "0.3374",
+            "execQty": "25",
+            "execType": "Trade",
+            "execValue": "8.435",
+            "isMaker": false,
+            "feeRate": "0.0006",
+            "leavesQty": "0",
+            "orderId": "f6e324ff-99c2-4e89-9739-3086e47f9381",
+            "orderLinkId": "",
+            "orderPrice": "0.3207",
+            "orderQty": "25",
+            "orderType": "Market",
+            "stopOrderType": "UNKNOWN",
+            "side": "Sell",
+            "execTime": "1672364174443",
+            "closedSize": ""
+        }
+    ]
+}
+```

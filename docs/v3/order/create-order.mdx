@@ -1,0 +1,114 @@
+---
+title: Place Order
+sidebar_label: Place Order
+sidebar_position: 1
+---
+This endpoint supports to create the order for USDT perpetual and inverse futures.
+> **Normal account covers: USDT perpetual / Inverse contract**
+
+:::info
+- **Supported order type (`orderType`):**<br/>
+Limit order: `orderType`=_Limit_, it is necessary to specify order qty and price.<br/>
+<a href="https://help.zoomex.com/zh-TW/article/1252">Market order</a>: <code>orderType</code>=<i>Market</i>, execute at the best price in the market until the transaction is completed. When selecting a market order, the `price` is empty. In the futures trading system, in order to protect the serious slippage of the market order, the trading system will convert the market order into a limit order for matching. will be cancelled. The slippage threshold refers to the percentage that the order price deviates from the latest transaction price. The current threshold is set to 3% for BTC contracts and 5% for other contracts.
+
+- **Supported timeInForce strategy:**<br/>
+`GTC`<br/>
+`IOC`<br/>
+`FOK`<br/>
+`PostOnly`: If the order would be filled immediately when submitted, it will be **cancelled**. The purpose of this is to protect your order during the submission process. If the matching system cannot entrust the order to the order book due to price changes on the market, it will be cancelled. For the PostOnly order type, the quantity that can be submitted in a single order is more than other types of orders, please refer to the parameter `lotSizeFilter > postOnlyMaxOrderQty` in the [instruments-info](../market/instrument#) endpoint.
+
+- **How to create conditional order:**<br/>
+When submitting an order, if `triggerPrice` is set, the order will be automatically converted into a conditional order. In addition, the conditional order does not occupy the margin. If the margin is insufficient after the conditional order is triggered, the order will be cancelled.
+
+- **Take profit / Stop loss**: You can set TP/SL while placing orders. Besides, you could modify the position's TP/SL.
+
+- **Order quantity**: The quantity of perpetual contracts you are going to buy/sell. For the order quantity,  only supports positive number at present.
+
+- **Order price**: Place a limit order, this parameter is **required**. If you have position, the price should be higher than the _liquidation price_.
+For the minimum unit of the price change, please refer to the `priceFilter` > `tickSize` field in the [instruments-info](../market/instrument#) endpoint.
+
+- **orderLinkId**: You can customize the active order ID. We can link this ID to the order ID in the system. Once the
+active order is successfully created, we will send the unique order ID in the system to you. Then, you can use this order
+ID to cancel active orders, and if both orderId and orderLinkId are entered in the parameter input,  will prioritize the orderId to process the corresponding order. Meanwhile, your customized order ID should be no longer than 36 characters and should be **unique**.
+
+- **Open orders up limit:**<br/>
+**Future:** Each account can hold a maximum of _500_ **active** orders simultaneously. This is contract-specific, so the following situation is allowed: _the same account can hold 300 BTCUSD active orders and 280 ETHUSD active orders at the same time._ For **conditional** orders, each account can hold a maximum of **10 active orders** simultaneously. When the upper limit of orders is reached, you can still place orders with parameters of **reduceOnly** or **closeOnTrigger**.<br/>
+
+- **Rate limit:**<br/>
+Please refer to [rate limit table](../rate-limit#trade).
+:::
+
+
+### HTTP Request
+POST `/cloud/trade/v3/order/create`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|category |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`</li></ul> |
+|symbol |**true** |string |Symbol name|
+|side |**true** |string |`Buy`, `Sell`|
+|orderType |**true** |string |`Market`, `Limit`|
+|qty |**true** |string |Order quantity. For **Spot Market Buy order**, please note that qty should be quote curreny amount|
+|price |false |string |Order price. If you have net position, price needs to be greater than liquidation price |
+|triggerDirection |false |integer |Conditional order param. Used to identify the expected direction of the conditional order. <ul><li>`1`: triggered when market price rises to `triggerPrice`</li><li>`2`: triggered when market price falls to `triggerPrice`</li> </ul>|
+|triggerPrice |false |string |<ul><li>For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:<br/> _triggerPrice > market price_<br/>Else, _triggerPrice < market price_</li></ul>|
+|[triggerBy](../enum#triggerby) |false |string |Conditional order param. Trigger price type. `LastPrice`, `IndexPrice`, `MarkPrice`|
+|[timeInForce](../enum#timeinforce) |false |string |<a href="https://www..com/en-US/help-center/HC_Article?language=en_US&id=000001044">Time in force</a> <ul><li>Market order will use `IOC` directly</li><li>If not passed, `GTC` is used by default</li> </ul>|
+|[positionIdx](../enum#positionidx) |false |integer |Used to identify positions in different position modes. Under hedge-mode, this param is **required**<ul><li>`0`: one-way mode</li><li>`1`: hedge-mode Buy side</li><li>`2`: hedge-mode Sell side</li></ul>|
+|orderLinkId |false |string |User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.<br/>_`future` orderLinkId rules_:<br/><ul><li>optional param</li><li>The same orderLinkId can be used for both USDC PERP and USDT PERP.</li>_`option` orderLinkId rules_:<br/><li>**required** param</li><li>always unique</li></ul>|
+|takeProfit |false |string |Take profit price|
+|stopLoss |false |string |Stop loss price|
+|[tpTriggerBy](../enum#triggerby) |false |string |The price type to trigger take profit. `MarkPrice`, `IndexPrice`, default: `LastPrice` |
+|[slTriggerBy](../enum#triggerby) |false |string |The price type to trigger stop loss. `MarkPrice`, `IndexPrice`, default: `LastPrice` |
+|reduceOnly |false |boolean |<a href="https://help.zoomex.com/zh-TW/article/1256">What is a reduce-only order?</a> `true` means your position can only reduce in size if this order is triggered. <ul><li>You **must** specify it as `true` when you are about to close/reduce the position</li><li>When reduceOnly is true, take profit/stop loss cannot be set</li></ul> |
+|closeOnTrigger |false |boolean |For a closing order. It can only reduce your position, not increase it. If the account has insufficient available balance when the closing order is triggered, then other active orders of similar contracts will be cancelled or reduced. It can be used to ensure your stop loss reduces your position regardless of current available margin. |
+|[smpType](../enum#smptype) |false |string |Smp execution type. |
+|tpslMode |false |string |TP/SL mode <ul><li>`Full`: entire position for TP/SL. Then, tpOrderType or slOrderType must be `Market`</li><li>`Partial`: partial position tp/sl. Limit TP/SL order are supported. Note: When create limit tp/sl, tpslMode is **required** and it must be `Partial`</li></ul>|
+|tpLimitPrice |false |string |The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit|
+|slLimitPrice |false |string |The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit|
+|tpOrderType |false |string |The order type when take profit is triggered. `Market`(default), `Limit`. For tpslMode=Full, it only supports tpOrderType=Market|
+|slOrderType |false |string |The order type when stop loss is triggered. `Market`(default), `Limit`. For tpslMode=Full, it only supports slOrderType=Market|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |User customised order ID |
+
+
+---
+
+### Request Example
+
+```shell
+POST /cloud/trade/v3/order/create HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672211928338
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+
+// USDT Perp open long position (one-way mode)
+{"category":"linear","symbol":"BTCUSDT","side":"Buy","orderType":"Limit","qty":"1","price":"25000","timeInForce":"GTC","positionIdx":0,"orderLinkId":"usdt-test-01","reduceOnly":false,"takeProfit":"28000","stopLoss":"20000","tpslMode":"Partial","tpOrderType":"Limit","slOrderType":"Limit","tpLimitPrice":"27500","slLimitPrice":"20500"}
+
+// USDT Perp close long position (one-way mode)
+{"category": "linear", "symbol": "BTCUSDT", "side": "Sell", "orderType": "Limit", "qty": "1", "price": "30000", "timeInForce": "GTC", "positionIdx": 0, "orderLinkId": "usdt-test-02", "reduceOnly": true}
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "orderId": "1321003749386327552",
+        "orderLinkId": "spot-test-postonly"
+    },
+    "retExtInfo": {},
+    "time": 1672211918471
+}
+```
