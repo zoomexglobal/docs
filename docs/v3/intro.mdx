@@ -43,7 +43,7 @@ A smaller `recv_window` is more secure, but your request may fail if the transmi
 :::caution
 Please make sure that the timestamp parameter adheres to the **following rule**:<br/>
 _server_time - recv_window <= timestamp < server_time + 1000_<br/>
-server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](https://zoomexglobal.github.io/docs-legacy/futuresV2/linear/#t-servertime).
+server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](../v3/market/time#).
 :::
 
 ### Create A Request
