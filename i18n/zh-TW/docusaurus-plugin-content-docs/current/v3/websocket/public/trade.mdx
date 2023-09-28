@@ -10,12 +10,12 @@ sidebar_position: 2
 推送頻率: **實時**
 
 **Topic:**<br/>
-`publicTrade.{symbol}` **注意**: 期權使用baseCoin, e.g., publicTrade.BTC
+`publicTrade.{symbol}`
 
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|id |string |消息 id. _期權沒有該字段_ |
+|id |string |消息 id. |
 |topic |string |Topic名 |
 |type |string |數據類型. `snapshot`|
 |ts |number |行情服務生成數據的時間戳 (毫秒) |
@@ -27,7 +27,6 @@ sidebar_position: 2
 |> p |string |成交價格 |
 |> [L](../../enum#tickdirection) |string |價格變化的方向. _期權沒有該字段_ |
 |> i |string |成交Id |
-|> BT |boolean |成交類型是否為大宗交易|
 
 ### 訂閱示例
 

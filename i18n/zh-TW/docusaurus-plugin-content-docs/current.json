@@ -51,7 +51,7 @@
         "message": "WebSocket推送",
         "description": "WebSocket推送的目錄"
     },
-    "sidebar.v3SideBar.category.Public Channel": {
+    "sidebar.v3SideBar.category.Public": {
         "message": "公共頻道",
         "description": "公共頻道目錄"
     },
@@ -83,7 +83,7 @@
         "message": "機構借貸",
         "description": "機構借貸目錄"
     },
-    "sidebar.v3SideBar.category.Private Channel": {
+    "sidebar.v3SideBar.category.Private": {
         "message": "私有頻道",
         "description": "私有頻道目錄"
     },

@@ -62,7 +62,7 @@ GET `/cloud/trade/v3/order/history`
 |> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price |
 |> takeProfit |string |Take profit price |
 |> stopLoss |string |Stop loss price |
-|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. Spot does not have this field, and Option returns always "" |
+|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. |
 |> tpLimitPrice |string |The limit order price when take profit price is triggered|
 |> slLimitPrice |string |The limit order price when stop loss price is triggered|
 |> [tpTriggerBy](../enum#triggerby) |string |The price type to trigger take profit |
@@ -72,7 +72,7 @@ GET `/cloud/trade/v3/order/history`
 |> lastPriceOnCreated |string |Last price when place the order |
 |> reduceOnly |boolean |Reduce only. `true` means reduce position size |
 |> closeOnTrigger |boolean |Close on trigger. |
-|> placeType |string |Place type, `option` used. `iv`, `price`|
+|> placeType |string |Place type|
 |> createdTime |string |Order created timestamp (ms) |
 |> updatedTime |string |Order updated timestamp (ms) |
 |nextPageCursor |string |Refer to the `cursor` request parameter |

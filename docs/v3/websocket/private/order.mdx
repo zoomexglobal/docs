@@ -39,7 +39,7 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price |
 |> takeProfit |string |Take profit price |
 |> stopLoss |string |Stop loss price |
-|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. Spot does not have this field, and Option returns always "" |
+|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. |
 |> tpLimitPrice |string |The limit order price when take profit price is triggered|
 |> slLimitPrice |string |The limit order price when stop loss price is triggered|
 |> [tpTriggerBy](../../enum#triggerby) |string |The price type to trigger take profit |
@@ -48,8 +48,8 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |> [triggerBy](../../enum#triggerby) |string |The price type of trigger price |
 |> lastPriceOnCreated |string |Last price when place the order|
 |> reduceOnly |boolean |Reduce only. `true` means reduce position size |
-|> closeOnTrigger |boolean |Close on trigger. <a href="https://www.bybit.com/en-US/help-center/bybitHC_Article?language=en_US&id=000001050">What is a close on trigger order?</a> |
-|> placeType |string |Place type, `option` used. `iv`, `price`|
+|> closeOnTrigger |boolean |Close on trigger. <a href="https://www.zoomex.com/en-US/help-center/bybitHC_Article?language=en_US&id=000001050">What is a close on trigger order?</a> |
+|> placeType |string |Place type|
 |> createdTime |string |Order created timestamp (ms) |
 |> updatedTime |string |Order updated timestamp (ms) |
 
@@ -143,7 +143,7 @@ client.on('pong', function (data, flags) {
             "triggerDirection": 0,
             "triggerBy": "",
             "closeOnTrigger": false,
-            "category": "option",
+            "category": "linear",
             "placeType": "price"
         }
     ]

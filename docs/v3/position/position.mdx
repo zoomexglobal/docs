@@ -15,7 +15,7 @@ GET `/cloud/trade/v3/position/list`
 |:----- |:-------|:-----|------ |
 |[category](../v3/enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul> |
 |symbol |false |string |Symbol name<ul><li>If `symbol` passed, it returns data regardless of having position or not.</li><li>If `symbol`=null and `settleCoin` specified, it returns position size greater than zero.</li></ul>|
-|baseCoin |false |string |Base coin. `option` **only**. Return all option positions if not passed|
+|baseCoin |false |string |Base coin. |
 |settleCoin |false |string |Settle coin. For `linear` & `inverse`, either `symbol` or `settleCoin` is **required**. `symbol` has a higher priority |
 |limit |false |integer |Limit for data size per page. [`1`, `200`]. Default: `20`|
 |cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
@@ -43,13 +43,13 @@ GET `/cloud/trade/v3/position/list`
 |> positionIM | string  |Initial margin.|
 |> positionMM | string  |Maintenance margin. |
 |> positionBalance | string  |Position margin.|
-|> tpslMode | string  |Depreciated, meaningless here, always "Full". Spot does not return this field. Option returns ""|
+|> tpslMode | string  |Depreciated, meaningless here, always "Full". |
 |> takeProfit | string  |Take profit price|
 |> stopLoss | string  |Stop loss price|
 |> trailingStop | string  |Trailing stop (The distance from market price)|
 |> unrealisedPnl | string  |Unrealised PnL|
 |> cumRealisedPnl | string  |Cumulative realised pnl|
-|> [adlRankIndicator](../v3/enum#adlrankindicator) |integer |Auto-deleverage rank indicator. <a href="https://www.bybit.com/en-US/help-center/s/article/What-is-Auto-Deleveraging-ADL">What is Auto-Deleveraging?</a>|
+|> [adlRankIndicator](../v3/enum#adlrankindicator) |integer |Auto-deleverage rank indicator. <a href="https://www.zoomex.com/en-US/help-center/s/article/What-is-Auto-Deleveraging-ADL">What is Auto-Deleveraging?</a>|
 |> createdTime | string  |Position created timestamp (ms)|
 |> updatedTime | string  |Position updated timestamp (ms)|
 |nextPageCursor | string  |Refer to the `cursor` request parameter |
