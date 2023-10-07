@@ -39,7 +39,7 @@ GET `/cloud/trade/v3/market/recent-trade`
 ### Request Example
 
 ```shell
-GET /cloud/trade/v3/market/recent-trade?category=spot&symbol=BTCUSDT&limit=1 HTTP/1.1
+GET /cloud/trade/v3/market/recent-trade?category=linear&symbol=BTCUSDT&limit=1 HTTP/1.1
 Host: openapi-testnet.zoomex.com
 ```
 
@@ -50,7 +50,7 @@ Host: openapi-testnet.zoomex.com
     "retCode": 0,
     "retMsg": "OK",
     "result": {
-        "category": "spot",
+        "category": "linear",
         "list": [
             {
                 "execId": "2100000000007764263",

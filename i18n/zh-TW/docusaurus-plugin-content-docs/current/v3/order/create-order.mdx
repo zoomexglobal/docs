@@ -3,7 +3,7 @@ title: 創建委託單
 sidebar_label: 創建委託單
 sidebar_position: 1
 ---
-本接口提供幣幣交易，合約訂單創建。
+本接口提供合約訂單創建。
 > **普通帳戶覆蓋範圍: USDT永續 / 反向合約**
 
 :::info
@@ -35,10 +35,6 @@ sidebar_position: 1
 請參見[接口頻率限制表](../rate-limit#交易)
 :::
 
-:::tip
-對於普通帳戶進行全倉槓桿交易時，您需要先去進行借貸
-:::
-
 ### HTTP請求
 POST `/cloud/trade/v3/order/create`
 
@@ -49,7 +45,7 @@ POST `/cloud/trade/v3/order/create`
 |symbol |**true** |string |合約名稱|
 |side |**true** |string |`Buy`, `Sell`|
 |orderType |**true** |string |訂單類型. `Market`, `Limit`|
-|qty |**true** |string |訂單數量. 若category=spot, 且是Market Buy單，則qty表示為報價幣種金額 |
+|qty |**true** |string |訂單數量. |
 |price |false |string |訂單價格. 如果您有持倉, 價格需要大於強平價|
 |triggerDirection |false |integer |條件單參數. 用於辨別期望的方向. <ul><li>`1`: 當市場價上漲到了`triggerPrice`時觸發條件單</li><li>`2`: 當市場價下跌到了`triggerPrice`時觸發條件單</li></ul>|
 |triggerPrice |false |string |<ul><li>對於期貨, 是條件單觸發價格參數. 若您希望市場價是要上升後觸發, 確保:<br/> _triggerPrice > 市場價格_<br/>否則, _triggerPrice < 市場價格_</li></ul>|
@@ -106,7 +102,7 @@ Content-Type: application/json
     "retMsg": "OK",
     "result": {
         "orderId": "1321003749386327552",
-        "orderLinkId": "spot-test-postonly"
+        "orderLinkId": "test-postonly"
     },
     "retExtInfo": {},
     "time": 1672211918471

@@ -3,8 +3,8 @@ title: Switch Position Mode
 sidebar_label: Switch Position Mode
 sidebar_position: 2.8
 ---
-It supports to switch the position mode for **USDT perpetual** and **Inverse futures**. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
-> **Normal account covers: USDT perpetual / Inverse Futures**
+It supports to switch the position mode for **USDT perpetual** . If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
+> **Normal account covers: USDT perpetual**
 
 :::tip
 * Priority for configuration to take effect: symbol > coin > system default
@@ -72,7 +72,7 @@ POST `/cloud/trade/v3/position/switch-mode`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li> Unified account: `linear`, USDT Perp; `inverse`, Inverse Futures</li><li>Normal account: `linear`, USDT Perp; `inverse`, Inverse Futures. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|category |**true** |string |Product type <ul><li>Normal account: `linear`, USDT Perp; `inverse`, Inverse Futures. _Please note that `category` is **not** involved with business logic_</li></ul> |
 |symbol |false |string |Symbol name. Either `symbol` or `coin` is **required**. `symbol` has a higher priority |
 |coin |false |string |Coin |
 |mode |**true** |integer |Position mode. `0`: Merged Single. `3`: Both Sides|
@@ -95,8 +95,8 @@ Content-Type: application/json
 Content-Length: 87
 
 {
-    "category":"inverse",
-    "symbol":"BTCUSDH23",
+    "category":"linear",
+    "symbol":"BTCUSDT",
     "coin": null,
     "mode": 0
 }

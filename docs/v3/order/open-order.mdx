@@ -12,9 +12,6 @@ Query unfilled or partially filled orders in **real-time**. To query older order
 - The records are sorted by the `createdTime` from newest to oldest.
 :::
 
-:::info
-Normal account spot trade can return open orders only
-:::
 
 ### HTTP Request
 GET `/cloud/trade/v3/order/realtime`
@@ -49,13 +46,13 @@ GET `/cloud/trade/v3/order/realtime`
 |> [positionIdx](../enum#positionidx) |integer |Position index. Used to identify positions in different position modes.|
 |> [orderStatus](../enum#orderstatus) |string |Order status |
 |> [cancelType](../enum#canceltype) |string |Cancel type |
-|> [rejectReason](../enum#rejectreason) |string |Reject reason. _Normal `spot` is not supported_   |
+|> [rejectReason](../enum#rejectreason) |string |Reject reason. |
 |> avgPrice |string |Average filled price. If unfilled, it is `"0"` |
-|> leavesQty |string |The remaining qty not executed. _Normal `spot` is not supported_  |
-|> leavesValue |string |The estimated value not executed. _Normal `spot` is not supported_  |
+|> leavesQty |string |The remaining qty not executed. |
+|> leavesValue |string |The estimated value not executed. |
 |> cumExecQty |string |Cumulative executed order qty |
-|> cumExecValue |string |Cumulative executed order value. _Normal `spot` is not supported_  |
-|> cumExecFee |string |Cumulative executed trading fee. _Normal `spot` is not supported_  |
+|> cumExecValue |string |Cumulative executed order value. |
+|> cumExecFee |string |Cumulative executed trading fee. |
 |> [timeInForce](../enum#timeinforce) |string |Time in force |
 |> orderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
 |> [stopOrderType](../enum#stopordertype) |string |Stop order type |

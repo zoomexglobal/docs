@@ -12,9 +12,6 @@ sidebar_position: 4
 - 返回的結果將以`createdTime`從新到舊排序.
 :::
 
-:::info
-普通帳戶現貨交易僅能查詢活動委託單
-:::
 
 ### HTTP請求
 GET `/cloud/trade/v3/order/realtime`
@@ -49,13 +46,13 @@ GET `/cloud/trade/v3/order/realtime`
 |> [positionIdx](../enum#positionidx) |integer |倉位標識。用戶不同倉位模式 |
 |> [orderStatus](../enum#orderstatus) |string |訂單狀態 |
 |> [cancelType](../enum#canceltype) |string |訂單被取消類型 |
-|> [rejectReason](../enum#rejectreason) |string |拒絕原因. _普通帳戶現貨交易不支持_ |
+|> [rejectReason](../enum#rejectreason) |string |拒絕原因. |
 |> avgPrice |string |訂單平均成交價格. 若沒有成交，則返回`"0"` |
-|> leavesQty |string |訂單剩餘未成交的數量. _普通帳戶現貨交易不支持_ |
-|> leavesValue |string |訂單剩餘未成交的價值. _普通帳戶現貨交易不支持_ |
+|> leavesQty |string |訂單剩餘未成交的數量.  |
+|> leavesValue |string |訂單剩餘未成交的價值.  |
 |> cumExecQty |string |訂單累計成交數量 |
-|> cumExecValue |string |訂單累計成交價值. _普通帳戶現貨交易不支持_  |
-|> cumExecFee |string |訂單累計成交的手續費. _普通帳戶現貨交易不支持_  |
+|> cumExecValue |string |訂單累計成交價值.  |
+|> cumExecFee |string |訂單累計成交的手續費.  |
 |> [timeInForce](../enum#timeinforce) |string |執行策略 |
 |> orderType |string |訂單類型. `Market`,`Limit`. 對於止盈止損單, 則表示為觸發後的訂單類型 |
 |> [stopOrderType](../enum#stopordertype) |string |條件單類型 |
@@ -63,7 +60,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> triggerPrice |string |觸發價格. 若`stopOrderType`=_TrailingStop_, 則這是激活價格. 否則, 它是觸發價格|
 |> takeProfit |string |止盈價格 |
 |> stopLoss |string |止損價格 |
-|> tpslMode |string |止盈止損模式 `Full`: 全部倉位止盈止損, `Partial`: 部分倉位止盈止損. 現貨不返回該字段, 期權總是返回""|
+|> tpslMode |string |止盈止損模式 `Full`: 全部倉位止盈止損, `Partial`: 部分倉位止盈止損. |
 |> tpLimitPrice |string |觸發止盈後轉換為限價單的價格 |
 |> slLimitPrice |string |觸發止損後轉換為限價單的價格 |
 |> [tpTriggerBy](../enum#triggerby) |string |觸發止盈的價格類型 |
@@ -73,7 +70,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> lastPriceOnCreated |string |下單時的市場價格 |
 |> reduceOnly |boolean |只減倉. `true`表明這是只減倉單 |
 |> closeOnTrigger |boolean |觸發後平倉委託.|
-|> placeType |string |下單類型, 僅期權使用. `iv`, `price`|
+|> placeType |string |下單類型. `iv`, `price`|
 |> createdTime |string |創建訂單的時間戳 (毫秒) |
 |> updatedTime |string |訂單更新的時間戳 (毫秒) |
 

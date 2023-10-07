@@ -24,85 +24,7 @@ sidebar_label: 枚舉定義
 * `hi-IN`
 * `fil-PH`
 
-### announcementType
-* `new_crypto`
-* `latest_bybit_news`
-* `delistings`
-* `latest_activities`
-* `product_updates`
-* `maintenance_updates`
-* `new_fiat_listings`
-* `other`
-
-### announcementTag
-* `Derivatives`
-* `BTC`
-* `ETH`
-* `Trading Bots`
-* `USDC`
-* `Leveraged Tokens`
-* `USDT`
-* `Margin Trading`
-* `Partnerships`
-* `Launchpad`
-* `Upgrades`
-* `ByVotes`
-* `Delistings`
-* `VIP`
-* `Futures`
-* `Institutions`
-* `Options`
-* `WEB3`
-* `Copy Trading`
-* `Earn`
-* `Zoomex Savings`
-* `Dual Asset`
-* `Liquidity Mining`
-* `Shark Fin`
-* `Launchpool`
-* `NFT     GrabPic`
-* `Buy Crypto`
-* `P2P Trading`
-* `Fiat Deposit`
-* `Crypto Deposit`
-* `Спот`
-* `Спот лістинги`
-* `Торгові боти`
-* `Токени з кредитним плечем`
-* `Маржинальна торгівля`
-* `Партнерство`
-* `Оновлення`
-* `Делістинги`
-* `Ф'ючерси`
-* `Опціони`
-* `Копітрейдинг`
-* `Zoomex Накопичення`
-* `Бівалютні інвестиції`
-* `Майнінг ліквідності`
-* `Купівля криптовалюти`
-* `P2P торгівля`
-* `Фіатні депозити`
-* `Криптодепозити`
-* `Копитрейдинг`
-* `Торговые боты`
-* `Деривативы`
-* `P2P`
-* `Спот листинги`
-* `Деривативи`
-* `MT4`
-* `Lucky Draw`
-* `Unified Trading Account`
-* `Єдиний торговий акаунт`
-* `Единый торговый аккаунт`
-* `Институциональный трейдинг`
-* `Інституціональний трейдинг`
-* `Делистинг`
-
 ### category
-_統一帳戶_
-* `linear`&emsp;USDT永續
-* `inverse`&emsp;反向合約
-
 _普通帳戶_
 * `linear`&emsp;USDT永續
 * `inverse`&emsp;反向合約
@@ -112,7 +34,6 @@ _普通帳戶_
 * `New`&emsp;訂單成功下達
 * `Rejected`
 * `PartiallyFilled`
-* `PartiallyFilledCanceled`&emsp;僅現貨存在該枚舉值
 * `Filled`
 * `Cancelled`&emsp;期貨交易，當訂單是該狀態時，是可能存在部分成交的
 * `Untriggered`
@@ -124,14 +45,13 @@ _普通帳戶_
 * `GTC`&emsp;一直有效至取消
 * `IOC`&emsp;立即成交或取消
 * `FOK`&emsp;完全成交或取消
-* <a href="https://www.zoomex.com/zh-TW/help-center/bybitHC_Article?language=zh_TW&id=000001051">PostOnly</a>&emsp;被動委託
+* <a href="https://www.zoomex.com/zh-TW/help-center/zoomexHC_Article?language=zh_TW&id=000001051">PostOnly</a>&emsp;被動委託
 
 ### execType
 * `Trade`
-* `AdlTrade`&emsp;<a href="https://www.zoomex.com/zh-TW/help-center/bybitHC_Article?language=zh_TW&id=000001124">自動減倉</a>
-* `Funding`&emsp;<a href="https://www.zoomex.com/zh-TW/help-center/HelpCenterKnowledge/bybitHC_Article?id=000001123&language=zh_TW">資金費率</a>
+* `AdlTrade`&emsp;自動減倉
+* `Funding`&emsp;資金費率
 * `BustTrade`&emsp;強平
-* `Delivery`&emsp;USDC交割
 * `BlockTrade`
 
 ### stopOrderType
@@ -141,7 +61,6 @@ _普通帳戶_
 * `Stop`&emsp;條件單
 * `PartialTakeProfit`&emsp;部分止盈單
 * `PartialStopLoss`&emsp;部分止損單
-* `tpslOrder`&emsp;現貨止盈止損單
 
 ### tickDirection
 * `PlusTick`&emsp;價格上漲
@@ -229,22 +148,6 @@ _普通帳戶_
 * `CancelByPzSideCh`
 * `CancelBySmp`
 
-_期權:_
-* `CancelByUser`
-* `CancelByReduceOnly`
-* `CancelAllBeforeLiq`&emsp;由於強平而取消
-* `CancelAllBeforeAdl`&emsp;由於自動減倉而取消
-* `CancelBySettle`
-* `CancelByCannotAffordOrderCost`
-* `CancelByPmTrialMmOverEquity`
-* `CancelByAccountBlocking`
-* `CancelByDelivery`
-* `CancelByMmpTriggered`
-* `CancelByCrossSelfMuch`
-* `CancelByCrossReachMaxTradeNum`
-* `CancelByDCP`
-* `CancelBySmp`
-
 ### period
 * BTC: `7`,`14`,`21`,`30`,`60`,`90`,`180`,`270`天
 * ETH: `7`,`14`,`21`,`30`,`60`,`90`,`180`,`270`天
@@ -252,9 +155,7 @@ _期權:_
 
 ### contractType
 * `InversePerpetual`&emsp;反向永續
-* `LinearPerpetual`&emsp;正向永續: USDT永續和USDC永續
-* `LinearFutures`&emsp;USDC交割
-* `InverseFutures`&emsp;反向交割
+* `LinearPerpetual`&emsp;正向永續: USDT永續
 
 ### status
 * `PreLaunch`&emsp;預上線

@@ -4,7 +4,7 @@ sidebar_label: 查詢成交紀錄 (2年)
 sidebar_position: 5
 ---
 
-獲取用戶成交紀錄，返回結果按`execTime`降序排列。但是，對於普通帳戶現貨交易，返回結果按`execId`降序排列
+獲取用戶成交紀錄，返回結果按`execTime`降序排列。
 > **普通帳戶覆蓋範圍:  USDT永續 / 反向合約**
 
 :::tip
@@ -18,11 +18,9 @@ GET `/cloud/trade/v3/execution/list`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |產品類型 <ul><li>普通帳戶: `spot`, `linear`, `inverse`</li></ul> |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>普通帳戶: `linear`, `inverse`</li></ul> |
 |symbol |false |string |合約名稱 |
 |orderId |false |string |訂單Id |
-|orderLinkId |false |string |用戶自定義訂單id. 普通帳戶不支持該字段查詢 |
-|baseCoin |false |string |交易幣種. 統一帳戶(反向)和普通帳戶不支持該字段查詢|
 |startTime |false |integer |開始時間戳 (毫秒)|
 |endTime |false |integer |結束時間戳 (毫秒)|
 |[execType](../enum#exectype) |false |string |執行類型.|
@@ -36,14 +34,14 @@ GET `/cloud/trade/v3/execution/list`
 | list | array | Object |
 |> symbol |string |合約名稱|
 |> orderId |string |訂單Id |
-|> orderLinkId |string |用戶自定義訂單id. _普通帳戶現貨交易不支持_|
+|> orderLinkId |string |用戶自定義訂單id. |
 |> side |string |訂單方向.買： `Buy`,賣：`Sell` |
 |> orderPrice |string |訂單價格 |
 |> orderQty |string |訂單數量 |
-|> leavesQty |string |剩餘委託未成交數量. _普通帳戶現貨交易不支持_|
+|> leavesQty |string |剩餘委託未成交數量. |
 |> orderType |string |訂單類型. 市價單：`Market`,限價單：`Limit` |
-|> [stopOrderType](../enum#stopordertype) |string |条件单的订单类型。如果该订单不是条件单，则不会返回任何类型. _普通帳戶現貨交易不支持_ |
-|> execFee |string |交易手續費. 您可以從[這裡](../enum#現貨交易手續費幣種說明)了解現貨手續費幣種信息|
+|> [stopOrderType](../enum#stopordertype) |string |条件单的订单类型。如果该订单不是条件单，则不会返回任何类型. |
+|> execFee |string |交易手續費. |
 |> execId |string |成交Id |
 |> execPrice |string |成交價格 |
 |> execQty |string |成交數量 |
@@ -80,7 +78,7 @@ X-BAPI-RECV-WINDOW: 5000
         "category": "linear",
         "list": [
             {
-                "symbol": "ETHPERP",
+                "symbol": "ETHUSDT",
                 "orderType": "Market",
                 "orderLinkId": "",
                 "side": "Buy",

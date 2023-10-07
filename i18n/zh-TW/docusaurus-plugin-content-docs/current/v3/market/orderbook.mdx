@@ -41,7 +41,7 @@ GET `/cloud/trade/v3/market/orderbook`
 ### 請求示例
 
 ```shell
-GET /cloud/trade/v3/market/orderbook?category=spot&symbol=BTCUSDT HTTP/1.1
+GET /cloud/trade/v3/market/orderbook?category=linear&symbol=BTCUSDT HTTP/1.1
 Host: openapi-testnet.zoomex.com
 ```
 
@@ -50,25 +50,25 @@ Host: openapi-testnet.zoomex.com
 ```json
 {
     "retCode": 0,
-    "retMsg": "SUCCESS",
+    "retMsg": "OK",
     "result": {
-        "s": "BTC-30DEC22-18000-C",
-        "b": [
-            [
-                "5",
-                "3.12"
-            ]
-        ],
+        "s": "BTCUSDT",
         "a": [
             [
-                "175",
-                "4.88"
+                "16638.64",
+                "0.008479"
             ]
         ],
-        "u": 1203433656,
-        "ts": 1672043188375
+        "b": [
+            [
+                "16638.27",
+                "0.305749"
+            ]
+        ],
+        "ts": 1672765737733,
+        "u": 5277055
     },
     "retExtInfo": {},
-    "time": 1672043199230
+    "time": 1672765737734
 }
 ```

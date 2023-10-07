@@ -56,7 +56,7 @@ POST `/cloud/trade/v3/order/create`
 |[triggerBy](../enum#triggerby) |false |string |Conditional order param. Trigger price type. `LastPrice`, `IndexPrice`, `MarkPrice`|
 |[timeInForce](../enum#timeinforce) |false |string |<a href="https://www..com/en-US/help-center/HC_Article?language=en_US&id=000001044">Time in force</a> <ul><li>Market order will use `IOC` directly</li><li>If not passed, `GTC` is used by default</li> </ul>|
 |[positionIdx](../enum#positionidx) |false |integer |Used to identify positions in different position modes. Under hedge-mode, this param is **required**<ul><li>`0`: one-way mode</li><li>`1`: hedge-mode Buy side</li><li>`2`: hedge-mode Sell side</li></ul>|
-|orderLinkId |false |string |User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.<br/>_`future` orderLinkId rules_:<br/><ul><li>optional param</li><li>The same orderLinkId can be used for both USDC PERP and USDT PERP.</li></ul>|
+|orderLinkId |false |string |User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported.<br/>_`future` orderLinkId rules_:<br/><ul><li>optional param</li></ul>|
 |takeProfit |false |string |Take profit price|
 |stopLoss |false |string |Stop loss price|
 |[tpTriggerBy](../enum#triggerby) |false |string |The price type to trigger take profit. `MarkPrice`, `IndexPrice`, default: `LastPrice` |
@@ -106,7 +106,7 @@ Content-Type: application/json
     "retMsg": "OK",
     "result": {
         "orderId": "1321003749386327552",
-        "orderLinkId": "spot-test-postonly"
+        "orderLinkId": "test-postonly"
     },
     "retExtInfo": {},
     "time": 1672211918471

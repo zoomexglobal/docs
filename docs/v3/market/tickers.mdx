@@ -16,7 +16,7 @@ GET `/cloud/trade/v3/market/tickers`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type. `spot`,`linear`,`inverse`|
+|[category](../enum#category) |**true** |string |Product type. `linear`,`inverse`|
 |[symbol](../enum#symbol) |false |string |Symbol name |
 
 ### Response Parameters
@@ -76,21 +76,6 @@ GET `/cloud/trade/v3/market/tickers`
         </tr>
         <tr>
             <td>> nextFundingTime</td><td>string</td><td>Next funding time (ms) </td>
-        </tr>
-        <tr>
-            <td>> predictedDeliveryPrice</td><td>string</td><td>Predicated delivery price. It has value when 30 min before delivery </td>
-        </tr>
-        <tr>
-            <td>> basisRate</td><td>string</td><td>Basis rate </td>
-        </tr>
-        <tr>
-            <td>> basis</td><td>string</td><td>Basis </td>
-        </tr>
-        <tr>
-            <td>> deliveryFeeRate</td><td>string</td><td>Delivery fee rate </td>
-        </tr>
-        <tr>
-            <td>> deliveryTime</td><td>string</td><td>Delivery timestamp (ms) </td>
         </tr>
         <tr>
             <td>> ask1Size</td><td>string</td><td>Best ask size </td>

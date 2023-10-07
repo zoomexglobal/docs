@@ -17,7 +17,7 @@ in an unexpected violation.
     * 120 requests per second for 5 consecutive seconds
 
 :::note
-All traffic to `openapi.zoomex.com` share this limit regardless of if it accesses Spot, Derivatives or Options.
+All traffic to `openapi.zoomex.com` share this limit.
 :::
 
 After violating the limit your IP will be banned for a set period of time (usually 30 minutes). Continually violating
@@ -130,8 +130,6 @@ X-Bapi-Limit-Reset-Timestamp: 1672738134824
 :::info
 - The values in the table represent the application upper limit of the corresponding level, and do not mean that users at
 this level will automatically enjoy the corresponding API Rate Limit by default.
-
-- Normal account does support USDC derivatives trading
 :::
 
 :::tip instructions for batch endpoints

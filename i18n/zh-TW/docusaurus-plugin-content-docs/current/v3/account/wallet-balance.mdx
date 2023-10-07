@@ -41,7 +41,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### 請求示例
 
 ```shell
-GET /cloud/trade/v3/account/wallet-balance?accountType=UNIFIED&coin=BTC HTTP/1.1
+GET /cloud/trade/v3/account/wallet-balance?accountType=CONTRACT HTTP/1.1
 Host: openapi-testnet.zoomex.com
 X-BAPI-SIGN: XXXXX
 X-BAPI-API-KEY: XXXXX
@@ -58,31 +58,98 @@ X-BAPI-RECV-WINDOW: 5000
     "result": {
         "list": [
             {
-                "totalEquity": "18070.32797922",
-                "totalMarginBalance": "18070.32797922",
-                "totalInitialMargin": "182.60183684",
-                "totalAvailableBalance": "17887.72614237",
-                "totalWalletBalance": "18070.43799271",
-                "totalMaintenanceMargin": "0.38106773",
+                "accountType": "CONTRACT",
+                "accountIMRate": "",
+                "accountMMRate": "",
+                "totalEquity": "",
+                "totalWalletBalance": "",
+                "totalMarginBalance": "",
+                "totalAvailableBalance": "",
+                "totalPerpUPL": "",
+                "totalInitialMargin": "",
+                "totalMaintenanceMargin": "",
+                "accountLTV": "",
                 "coin": [
                     {
-                        "bonus": "0",
-                        "availableToWithdraw": "0.805994",
+                        "coin": "BTC",
+                        "equity": "0",
+                        "usdValue": "",
+                        "walletBalance": "0",
+                        "borrowAmount": "",
+                        "availableToBorrow": "",
+                        "availableToWithdraw": "0",
+                        "accruedInterest": "",
                         "totalOrderIM": "0",
-                        "equity": "0.805994",
-                        "totalPositionMM": "0",
-                        "usdValue": "12920.95352538",
-                        "unrealisedPnl": "0",
                         "totalPositionIM": "0",
-                        "walletBalance": "0.805994",
-                        "cumRealisedPnl": "0",
-                        "coin": "BTC"
+                        "totalPositionMM": "",
+                        "unrealisedPnl": "0",
+                        "cumRealisedPnl": "0.12384551"
+                    },
+                    {
+                        "coin": "ETH",
+                        "equity": "0.30050274",
+                        "usdValue": "",
+                        "walletBalance": "0.30050274",
+                        "borrowAmount": "",
+                        "availableToBorrow": "",
+                        "availableToWithdraw": "0.30050274",
+                        "accruedInterest": "",
+                        "totalOrderIM": "0",
+                        "totalPositionIM": "0",
+                        "totalPositionMM": "",
+                        "unrealisedPnl": "0",
+                        "cumRealisedPnl": "0"
+                    },
+                    {
+                        "coin": "EOS",
+                        "equity": "900.3811056",
+                        "usdValue": "",
+                        "walletBalance": "900.3811056",
+                        "borrowAmount": "",
+                        "availableToBorrow": "",
+                        "availableToWithdraw": "900.3811056",
+                        "accruedInterest": "",
+                        "totalOrderIM": "0",
+                        "totalPositionIM": "0",
+                        "totalPositionMM": "",
+                        "unrealisedPnl": "0",
+                        "cumRealisedPnl": "0"
+                    },
+                    {
+                        "coin": "XRP",
+                        "equity": "1100.7278334",
+                        "usdValue": "",
+                        "walletBalance": "1100.7278334",
+                        "borrowAmount": "",
+                        "availableToBorrow": "",
+                        "availableToWithdraw": "1100.7278334",
+                        "accruedInterest": "",
+                        "totalOrderIM": "0",
+                        "totalPositionIM": "0",
+                        "totalPositionMM": "",
+                        "unrealisedPnl": "0",
+                        "cumRealisedPnl": "0"
+                    },
+                    {
+                        "coin": "USDT",
+                        "equity": "60028.59717864",
+                        "usdValue": "",
+                        "walletBalance": "59991.29717864",
+                        "borrowAmount": "",
+                        "availableToBorrow": "",
+                        "availableToWithdraw": "55992.23760272",
+                        "accruedInterest": "",
+                        "totalOrderIM": "0",
+                        "totalPositionIM": "3999.05957592",
+                        "totalPositionMM": "",
+                        "unrealisedPnl": "37.3",
+                        "cumRealisedPnl": "-59483.31410791"
                     }
                 ]
             }
         ]
     },
     "retExtInfo": {},
-    "time": 1672125441042
+    "time": 1696667951890
 }
 ```

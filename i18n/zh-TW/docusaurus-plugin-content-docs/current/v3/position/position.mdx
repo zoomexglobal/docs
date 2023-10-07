@@ -31,10 +31,9 @@ GET `/cloud/trade/v3/position/list`
 |> symbol | string | 合約名称 |
 |> side| string | 持倉方向，Buy：多头；Sell：空头. 注意： 單向模式下，未持倉時，返回`None` |
 |> size| string | 當前倉位的合约數量 |
-|> avgPrice| string | 當前倉位的平均入場價格 <li>對於8小時結算的USDC合約倉位, 該字段表示的是平均開倉價格, 不隨著結算而改變</li> |
+|> avgPrice| string | 當前倉位的平均入場價格 |
 |> positionValue | string |仓位的價值 |
 |> tradeMode| integer | 交易模式。<ul><li>普通帳戶: `0`: 全倉, `1`: 逐倉</li></ul> |
-|> autoAddMargin | integer |是否自動追加保證金. `0`: 否, `1`: 是. 僅當統一帳戶(除反向合約)開啟了帳戶維度的逐倉保證金模式, 該字段才有意義 |
 |> [positionStatus](../v3/enum#positionstatus) | String |倉位状态. `Normal`,`Liq`, `Adl` |
 |> leverage| string | 當前倉位的槓桿，**仅适用于合约**.|
 |> markPrice| string  | symbol 的最新標記價格  |
@@ -42,7 +41,7 @@ GET `/cloud/trade/v3/position/list`
 |> bustPrice| string  | 倉位破產價格. |
 |> positionIM| string  | 倉位起始保證金. |
 |> positionMM| string  | 倉位維持保證金. |
-|> tpslMode| string  | 該字段廢棄, 無意義, 總是返回"Full". 期權總是返回"" |
+|> tpslMode| string  | 該字段廢棄, 無意義, 總是返回"Full". |
 |> positionBalance | string  |倉位保證金. |
 |> takeProfit| string  | 止盈價格 |
 |> stopLoss| string  | 止損價格|
