@@ -40,7 +40,7 @@ GET `/cloud/trade/v3/market/funding/history`
 ### 請求示例
 
 ```shell
-GET /cloud/trade/v3/market/funding/history?category=linear&symbol=ETHPERP&limit=1 HTTP/1.1
+GET /cloud/trade/v3/market/funding/history?category=linear&symbol=ETHUSDT&limit=1 HTTP/1.1
 Host: openapi-testnet.zoomex.com
 ```
 
@@ -54,7 +54,7 @@ Host: openapi-testnet.zoomex.com
         "category": "linear",
         "list": [
             {
-                "symbol": "ETHPERP",
+                "symbol": "ETHUSDT",
                 "fundingRate": "0.0001",
                 "fundingRateTimestamp": "1672041600000"
             }
