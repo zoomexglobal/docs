@@ -1,0 +1,127 @@
+---
+title: 錢包
+sidebar_label: 錢包
+sidebar_position: 4
+---
+
+訂閱錢包數據推送
+
+**Topic:** `wallet`
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|id |string |消息id|
+|topic |string |Topic名 |
+|creationTime |number |消息數據創建時間 |
+|data |array |Object |
+|> accountType |string |帳戶類型. <ul><li>普通帳戶: `CONTRACT`</li></ul> |
+|> accountLTV |string |帳戶LTV: account total borrowed size / (account total equity + account total borrowed size). |
+|> accountIMRate |string |帳戶初始保證金率: Account Total Initial Margin Base Coin / Account Margin Balance Base Coin.|
+|> accountMMRate |string |帳戶維持保證金率: Account Total Maintenance Margin Base Coin / Account Margin Balance Base Coin。|
+|> totalEquity |string |賬戶維度換算成usd的資產淨值：Account Margin Balance Base Coin + Account Option Value Base Coin。|
+|> totalWalletBalance |string |賬戶維度換算成usd的產錢包餘額：∑ Asset Wallet Balance By USD value of each asset。|
+|> totalMarginBalance |string |賬戶維度換算成usd的保證金餘額：totalWalletBalance + totalPerpUPL。|
+|> totalAvailableBalance |string |賬戶維度換算成usd的可用餘額：RM：totalMarginBalance - totalInitialMargin。|
+|> totalPerpUPL |string |賬戶維度換算成usd的永續浮動盈虧：∑ Each perp upl by base coin。|
+|> totalInitialMargin |string |賬戶維度換算成usd的總初始保證金：∑ Asset Total Initial Margin Base Coin。|
+|> totalMaintenanceMargin |string |賬戶維度換算成usd的總維持保證金: ∑ Asset Total Maintenance Margin Base Coin。|
+|> coin |array |Object. 幣種列表|
+|>> coin |string |幣種名稱，例如 BTC，ETH，USDT|
+|>> equity |string |當前幣種的資產淨值|
+|>> usdValue |string |當前幣種折算成 usd 的價值，如果該幣種不能作為保證金的抵押品，則該數值為0|
+|>> walletBalance |string |當前幣種的錢包餘額|
+|>> availableToWithdraw |string |當前幣種的可劃轉提現金額 |
+|>> accruedInterest	|string	|當前幣種的預計要在下一個利息週期收取的利息金額|
+|>> totalOrderIM |string |以當前幣種結算的訂單委託預佔用保證金.|
+|>> totalPositionIM	|string	|以當前幣種結算的所有倉位起始保證金求和 + 所有倉位的預佔用平倉手續費. |
+|>> totalPositionMM	|string |以當前幣種結算的所有倉位維持保證金求和. |
+|>> unrealisedPnl |string |以當前幣種結算的所有倉位的未結盈虧之和|
+|>> cumRealisedPnl |string |以當前幣種結算的所有倉位的累計已結盈虧之和|
+
+### 訂閱示例
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "wallet"
+    ]
+}
+```
+
+```javascript
+var url = require('url');
+var WebSocket = require('ws');
+var crypto = require('crypto');
+var endpoint = "wss://stream-testnet.zoomex.com/v3/private"
+console.log('attempting to connect to WebSocket %j', endpoint);
+var client = new WebSocket(endpoint);
+const apiKey="XXXXXXXXX";
+const apiSecret="XXXXXXXXX";
+client.on('open', function () {
+	console.log('"open" event!');
+	console.log('WebSocket Client Connected');
+	const expires = new Date().getTime() + 10000;
+	const signature = crypto.createHmac("sha256", apiSecret).update("GET/realtime" + expires).digest("hex");
+	const payload={
+		op: "auth",
+		args: [apiKey, expires.toFixed(0), signature],
+	}
+	client.send(JSON.stringify(payload));
+	setInterval(()=>{client.ping()}, 30000);
+	client.ping();
+	client.send(JSON.stringify({"op": "subscribe", "args": ['wallet']}));
+});
+
+client.on('message', function (data) {
+	console.log('"message" event! %j', JSON.parse(Buffer.from(data).toString()));
+});
+client.on('ping', function (data, flags) {
+	console.log("ping received");
+});
+client.on('pong', function (data, flags) {
+	console.log("pong received");
+});
+```
+
+### 推送示例
+
+```json
+{
+    "topic": "wallet",
+    "id": "0df2a9a8-5975-4252-9f4f-2856b51f47f6",
+    "creationTime": 1696654328771,
+    "data": [
+        {
+            "accountType": "CONTRACT",
+            "accountIMRate": "",
+            "accountMMRate": "",
+            "accountLTV": "",
+            "totalEquity": "",
+            "totalWalletBalance": "",
+            "totalMarginBalance": "",
+            "totalAvailableBalance": "",
+            "totalPerpUPL": "",
+            "totalInitialMargin": "",
+            "totalMaintenanceMargin": "",
+            "coin": [
+                {
+                    "coin": "USDT",
+                    "equity": "9385500.84045358",
+                    "usdValue": "",
+                    "walletBalance": "9385525.87726358",
+                    "availableToWithdraw": "9380099.99253585",
+                    "borrowAmount": "",
+                    "availableToBorrow": "",
+                    "accruedInterest": "",
+                    "totalOrderIM": "2326.584104",
+                    "totalPositionIM": "3099.30062373",
+                    "totalPositionMM": "",
+                    "unrealisedPnl": "-25.03681",
+                    "cumRealisedPnl": "-5983.07783642"
+                }
+            ]
+        }
+    ]
+}
+```

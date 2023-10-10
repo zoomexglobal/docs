@@ -1,0 +1,39 @@
+---
+title: Get Zoomex Server Time
+sidebar_label: Get Zoomex Server Time
+sidebar_position: 0.5
+---
+
+### HTTP Request
+GET `/cloud/trade/v3/market/time`
+
+### Request Parameters
+None
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+| timeSecond | string | Zoomex server timestamp (sec)  |
+| timeNano | string | Zoomex server timestamp (nano)  |
+
+### Request Example
+
+```shell
+GET /cloud/trade/v3/market/time HTTP/1.1
+Host: openapi.zoomex.com
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "timeSecond": "1688639403",
+        "timeNano": "1688639403423213947"
+    },
+    "retExtInfo": {},
+    "time": 1688639403423
+}
+```

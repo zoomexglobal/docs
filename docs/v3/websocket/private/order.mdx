@@ -1,0 +1,151 @@
+---
+title: Order
+sidebar_label: Order
+sidebar_position: 3
+---
+
+Subscribe to the order stream to see changes to your orders in **real-time**.
+
+**Topic:** `order`
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|id |string |Message ID|
+|topic |string |Topic name |
+|creationTime |number |Data created timestamp (ms) |
+|data |array |Object |
+|> category |string |Product type <ul><li>Normal account: `linear`, `inverse`.</li></ul>|
+|> orderId  |string |Order ID |
+|> orderLinkId |string |User customised order ID |
+|> symbol |string |Symbol name |
+|> price |string |Order price |
+|> qty |string |Order qty |
+|> side |string |Side. `Buy`,`Sell`|
+|> [positionIdx](../../enum#positionidx) |integer |Position index. Used to identify positions in different position modes |
+|> [orderStatus](../../enum#orderstatus) |string |Order status |
+|> [cancelType](../../enum#canceltype) |string |Cancel type |
+|> [rejectReason](../../enum#rejectreason) |string |Reject reason.|
+|> avgPrice |string |Average filled price. If unfilled, it is `""` <ul><li>If a partially filled order, and the final orderStatus is Cancelled, then avgPrice is "0"</li></ul> |
+|> leavesQty |string |The remaining qty not executed.|
+|> leavesValue |string |The remaining value not executed.|
+|> cumExecQty |string |Cumulative executed order qty |
+|> cumExecValue |string |Cumulative executed order value |
+|> cumExecFee |string |Cumulative executed trading fee. |
+|> [timeInForce](../../enum#timeinforce) |string |Time in force |
+|> orderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
+|> [stopOrderType](../../enum#stopordertype) |string |Stop order type |
+|> orderIv |string |Implied volatility |
+|> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price |
+|> takeProfit |string |Take profit price |
+|> stopLoss |string |Stop loss price |
+|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. |
+|> tpLimitPrice |string |The limit order price when take profit price is triggered|
+|> slLimitPrice |string |The limit order price when stop loss price is triggered|
+|> [tpTriggerBy](../../enum#triggerby) |string |The price type to trigger take profit |
+|> [slTriggerBy](../../enum#triggerby) |string |The price type to trigger stop loss |
+|> triggerDirection |integer |Trigger direction. `1`: rise, `2`: fall |
+|> [triggerBy](../../enum#triggerby) |string |The price type of trigger price |
+|> lastPriceOnCreated |string |Last price when place the order|
+|> reduceOnly |boolean |Reduce only. `true` means reduce position size |
+|> closeOnTrigger |boolean |Close on trigger. |
+|> placeType |string |Place type|
+|> createdTime |string |Order created timestamp (ms) |
+|> updatedTime |string |Order updated timestamp (ms) |
+
+### Subscribe Example
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "order"
+    ]
+}
+```
+
+```javascript
+var url = require('url');
+var WebSocket = require('ws');
+var crypto = require('crypto');
+var endpoint = "wss://stream-testnet.zoomex.com/v3/private"
+console.log('attempting to connect to WebSocket %j', endpoint);
+var client = new WebSocket(endpoint);
+const apiKey="XXXXXXXXX";
+const apiSecret="XXXXXXXXX";
+client.on('open', function () {
+	console.log('"open" event!');
+	console.log('WebSocket Client Connected');
+	const expires = new Date().getTime() + 10000;
+	const signature = crypto.createHmac("sha256", apiSecret).update("GET/realtime" + expires).digest("hex");
+	const payload={
+		op: "auth",
+		args: [apiKey, expires.toFixed(0), signature],
+	}
+	client.send(JSON.stringify(payload));
+	setInterval(()=>{client.ping()}, 30000);
+	client.ping();
+	client.send(JSON.stringify({"op": "subscribe", "args": ['order']}));
+});
+
+client.on('message', function (data) {
+	console.log('"message" event! %j', JSON.parse(Buffer.from(data).toString()));
+});
+client.on('ping', function (data, flags) {
+	console.log("ping received");
+});
+client.on('pong', function (data, flags) {
+	console.log("pong received");
+});
+```
+
+### Stream Example
+
+```json
+{
+    "id": "5923240c6880ab-c59f-420b-9adb-3639adc9dd90",
+    "topic": "order",
+    "creationTime": 1672364262474,
+    "data": [
+        {
+            "symbol": "ETHUSDT",
+            "orderId": "5cf98598-39a7-459e-97bf-76ca765ee020",
+            "side": "Sell",
+            "orderType": "Market",
+            "cancelType": "UNKNOWN",
+            "price": "72.5",
+            "qty": "1",
+            "orderIv": "",
+            "timeInForce": "IOC",
+            "orderStatus": "Filled",
+            "orderLinkId": "",
+            "lastPriceOnCreated": "",
+            "reduceOnly": false,
+            "leavesQty": "",
+            "leavesValue": "",
+            "cumExecQty": "1",
+            "cumExecValue": "75",
+            "avgPrice": "75",
+            "blockTradeId": "",
+            "positionIdx": 0,
+            "cumExecFee": "0.358635",
+            "createdTime": "1672364262444",
+            "updatedTime": "1672364262457",
+            "rejectReason": "EC_NoError",
+            "stopOrderType": "",
+            "tpslMode": "",
+            "triggerPrice": "",
+            "takeProfit": "",
+            "stopLoss": "",
+            "tpTriggerBy": "",
+            "slTriggerBy": "",
+            "tpLimitPrice": "",
+            "slLimitPrice": "",
+            "triggerDirection": 0,
+            "triggerBy": "",
+            "closeOnTrigger": false,
+            "category": "linear",
+            "placeType": "price"
+        }
+    ]
+}
+```

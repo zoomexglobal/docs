@@ -1,0 +1,127 @@
+---
+title: Wallet
+sidebar_label: Wallet
+sidebar_position: 4
+---
+
+Subscribe to the wallet stream to see changes to your wallet in **real-time**.
+
+**Topic:** `wallet`
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|id |string |Message ID|
+|topic |string |Topic name |
+|creationTime |number |Data created timestamp (ms) |
+|data |array |Object |
+|> accountType |string |Account type. <ul><li>Normal account: `CONTRACT`</li></ul> |
+|> accountLTV |string |Account LTV: account total borrowed size / (account total equity + account total borrowed size). |
+|> accountIMRate |string |Initial Margin Rate: Account Total Initial Margin Base Coin / Account Margin Balance Base Coin.|
+|> accountMMRate |string |Maintenance Margin Rate: Account Total Maintenance Margin Base Coin / Account Margin Balance Base Coin.|
+|> totalEquity |string |Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin.|
+|> totalWalletBalance |string |Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。|
+|> totalMarginBalance |string |Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL. |
+|> totalAvailableBalance |string |Available Balance of account converted to usd：Regular mode：totalMarginBalance - totalInitialMargin.|
+|> totalPerpUPL |string |Unrealised P&L of perpetuals of account converted to usd：∑ Each perp upl by base coin. |
+|> totalInitialMargin |string |Initial Margin of account converted to usd：∑ Asset Total Initial Margin Base Coin.|
+|> totalMaintenanceMargin |string |Maintenance Margin of account converted to usd: ∑ Asset Total Maintenance Margin Base Coin.|
+|> coin |array |Object |
+|>> coin |string |Coin name, such as BTC, ETH, USDT|
+|>> equity |string |Equity of current coin |
+|>> usdValue |string |USD value of current coin. If this coin cannot be collateral, then it is 0|
+|>> walletBalance |string |Wallet balance of current coin |
+|>> availableToWithdraw |string |Available amount to withdraw of current coin |
+|>> accruedInterest	|string	|Accrued interest |
+|>> totalOrderIM |string |Pre-occupied margin for order.|
+|>> totalPositionIM	|string	|Sum of initial margin of all positions + Pre-occupied liquidation fee. |
+|>> totalPositionMM	|string |Sum of maintenance margin for all positions.|
+|>> unrealisedPnl |string |Unrealised P&L |
+|>> cumRealisedPnl |string |Cumulative Realised P&L |
+
+### Subscribe Example
+```json
+{
+    "op": "subscribe",
+    "args": [
+        "wallet"
+    ]
+}
+```
+
+```javascript
+var url = require('url');
+var WebSocket = require('ws');
+var crypto = require('crypto');
+var endpoint = "wss://stream-testnet.zoomex.com/v3/private"
+console.log('attempting to connect to WebSocket %j', endpoint);
+var client = new WebSocket(endpoint);
+const apiKey="XXXXXXXXX";
+const apiSecret="XXXXXXXXX";
+client.on('open', function () {
+	console.log('"open" event!');
+	console.log('WebSocket Client Connected');
+	const expires = new Date().getTime() + 10000;
+	const signature = crypto.createHmac("sha256", apiSecret).update("GET/realtime" + expires).digest("hex");
+	const payload={
+		op: "auth",
+		args: [apiKey, expires.toFixed(0), signature],
+	}
+	client.send(JSON.stringify(payload));
+	setInterval(()=>{client.ping()}, 30000);
+	client.ping();
+	client.send(JSON.stringify({"op": "subscribe", "args": ['wallet']}));
+});
+
+client.on('message', function (data) {
+	console.log('"message" event! %j', JSON.parse(Buffer.from(data).toString()));
+});
+client.on('ping', function (data, flags) {
+	console.log("ping received");
+});
+client.on('pong', function (data, flags) {
+	console.log("pong received");
+});
+```
+
+### Stream Example
+
+```json
+{
+    "topic": "wallet",
+    "id": "0df2a9a8-5975-4252-9f4f-2856b51f47f6",
+    "creationTime": 1696654328771,
+    "data": [
+        {
+            "accountType": "CONTRACT",
+            "accountIMRate": "",
+            "accountMMRate": "",
+            "accountLTV": "",
+            "totalEquity": "",
+            "totalWalletBalance": "",
+            "totalMarginBalance": "",
+            "totalAvailableBalance": "",
+            "totalPerpUPL": "",
+            "totalInitialMargin": "",
+            "totalMaintenanceMargin": "",
+            "coin": [
+                {
+                    "coin": "USDT",
+                    "equity": "9385500.84045358",
+                    "usdValue": "",
+                    "walletBalance": "9385525.87726358",
+                    "availableToWithdraw": "9380099.99253585",
+                    "borrowAmount": "",
+                    "availableToBorrow": "",
+                    "accruedInterest": "",
+                    "totalOrderIM": "2326.584104",
+                    "totalPositionIM": "3099.30062373",
+                    "totalPositionMM": "",
+                    "unrealisedPnl": "-25.03681",
+                    "cumRealisedPnl": "-5983.07783642"
+                }
+            ]
+        }
+    ]
+}
+```

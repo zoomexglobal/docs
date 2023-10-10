@@ -23,6 +23,10 @@
         "message": "市場行情",
         "description": "市場行情的目錄"
     },
+    "sidebar.v3SideBar.category.Market": {
+        "message": "公有行情",
+        "description": "公有行情目錄"
+    },
     "sidebar.v3SideBar.category.Unified Margin": {
         "message": "統一保證金",
         "description": "統一保證金的目錄"
@@ -47,7 +51,7 @@
         "message": "WebSocket推送",
         "description": "WebSocket推送的目錄"
     },
-    "sidebar.v3SideBar.category.Public Channel": {
+    "sidebar.v3SideBar.category.Public": {
         "message": "公共頻道",
         "description": "公共頻道目錄"
     },
@@ -79,7 +83,7 @@
         "message": "機構借貸",
         "description": "機構借貸目錄"
     },
-    "sidebar.v3SideBar.category.Private Channel": {
+    "sidebar.v3SideBar.category.Private": {
         "message": "私有頻道",
         "description": "私有頻道目錄"
     },

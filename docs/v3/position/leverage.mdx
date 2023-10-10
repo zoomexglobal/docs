@@ -1,0 +1,57 @@
+---
+title: Set Leverage
+sidebar_label: Set Leverage
+sidebar_position: 2
+---
+
+Set the leverage
+> **Normal account covers: USDT perpetual / Inverse contract**
+
+### HTTP Request
+POST `/cloud/trade/v3/position/set-leverage`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul>|
+|symbol |**true** |string |Symbol name|
+|buyLeverage |**true** |string |[`1`, max leverage of corresponding [risk limit](../market/risk-limit#)]. _Note: Under one-way mode, `buyLeverage` must be the same as `sellLeverage`_ |
+|sellLeverage |**true** |string |[`1`, max leverage of corresponding risk limit]. _Note: Under one-way mode, `buyLeverage` must be the same as `sellLeverage`_|
+
+
+---
+
+### Response Parameters
+None
+
+### Request Example
+
+```shell
+POST /cloud/trade/v3/position/set-leverage HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672281605082
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "category": "linear",
+    "symbol": "BTCUSDT",
+    "buyLeverage": "6",
+    "sellLeverage": "6"
+
+}
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {},
+    "retExtInfo": {},
+    "time": 1672281607343
+}
+```
