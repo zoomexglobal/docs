@@ -92,20 +92,20 @@ const config = {
           //  position: 'left',
           //  label: 'Changelog',
           //},
-          {
-            label: 'Previous Version',
-            position: 'right',
-            items: [
-              {
-                href: 'https://zoomexglobal.github.io/docs-legacy/futuresV2/linear/',
-                label: 'USDT Perpetual v2'
-              },
-              {
-                href: 'https://zoomexglobal.github.io/docs-legacy/futuresV2/inverse/',
-                label: 'Inverse Perpetual v2'
-              },
-            ]
-          },
+          // {
+          //   label: 'Previous Version',
+          //   position: 'right',
+          //   items: [
+          //     {
+          //       href: 'https://zoomexglobal.github.io/docs-legacy/futuresV2/linear/',
+          //       label: 'USDT Perpetual v2'
+          //     },
+          //     {
+          //       href: 'https://zoomexglobal.github.io/docs-legacy/futuresV2/inverse/',
+          //       label: 'Inverse Perpetual v2'
+          //     },
+          //   ]
+          // },
           {
             type: 'localeDropdown',
             position: 'right',
