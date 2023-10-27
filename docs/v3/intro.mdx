@@ -94,6 +94,34 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
          "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
      }
      ```
+4. Demo
+     ``` javascript
+     const cryptoJS = require("crypto-js");
+     var now = Date.now();
+     const recvWindow = 1000000;
+     pm.variables.set("timestamp", now);
+     pm.variables.set("recvWindow", recvWindow);
+     const apiKey = pm.environment.get("api_key");
+     const secret = pm.environment.get("secretKey");
+     var sign = "";
+     if (pm.request.method == "POST") {
+     var reqRawBody = JSON.parse(pm.request.body.raw);
+
+         reqRawBody.api_key = apiKey;
+         reqRawBody.timestamp = now;
+         reqRawBody.recv_window = recvWindow;
+         var orderedParams =  pm.variables.replaceIn("{{timestamp}}")+apiKey+pm.variables.replaceIn("{{recvWindow}}")+pm.request.body.raw;
+         console.log(orderedParams);
+         var sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex);
+         pm.variables.set("signed", sign);
+         console.log(sign)
+
+     } else {
+     var orderedParams =  pm.variables.replaceIn("{{timestamp}}")+apiKey+pm.variables.replaceIn("{{recvWindow}}")+ pm.request.url.getQueryString();
+     var sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex);
+     pm.variables.set("signed", sign);
+     }
+    ```
 
 ## Common response parameters
 
