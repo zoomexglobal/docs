@@ -95,32 +95,50 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
      }
      ```
 4. Demo
-     ``` javascript
-     const cryptoJS = require("crypto-js");
-     var now = Date.now();
-     const recvWindow = 1000000;
-     pm.variables.set("timestamp", now);
-     pm.variables.set("recvWindow", recvWindow);
-     const apiKey = pm.environment.get("api_key");
-     const secret = pm.environment.get("secretKey");
-     var sign = "";
-     if (pm.request.method == "POST") {
-     var reqRawBody = JSON.parse(pm.request.body.raw);
+     ``` python
+     import requests
+    import time
+    import hashlib
+    import hmac
+    import uuid
 
-         reqRawBody.api_key = apiKey;
-         reqRawBody.timestamp = now;
-         reqRawBody.recv_window = recvWindow;
-         var orderedParams =  pm.variables.replaceIn("{{timestamp}}")+apiKey+pm.variables.replaceIn("{{recvWindow}}")+pm.request.body.raw;
-         console.log(orderedParams);
-         var sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex);
-         pm.variables.set("signed", sign);
-         console.log(sign)
+    api_key='XXXXXXX'
+    secret_key='XXXXXXXX'
+    httpClient=requests.Session()
+    recv_window=str(5000)
+    url="https://openapi-testnet.zoomex.com"
 
-     } else {
-     var orderedParams =  pm.variables.replaceIn("{{timestamp}}")+apiKey+pm.variables.replaceIn("{{recvWindow}}")+ pm.request.url.getQueryString();
-     var sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex);
-     pm.variables.set("signed", sign);
-     }
+    def HTTP_Request(endPoint,method,payload,Info):
+    global time_stamp
+    time_stamp=str(int(time.time() * 10 ** 3))
+    signature=genSignature(payload)
+    headers = {
+    'X-BAPI-API-KEY': api_key,
+    'X-BAPI-SIGN': signature,
+    'X-BAPI-SIGN-TYPE': '2',
+    'X-BAPI-TIMESTAMP': time_stamp,
+    'X-BAPI-RECV-WINDOW': recv_window,
+    'Content-Type': 'application/json'
+    }
+    if(method=="POST"):
+    response = httpClient.request(method, url+endPoint, headers=headers, data=payload)
+    else:
+    response = httpClient.request(method, url+endPoint+"?"+payload, headers=headers)
+    print(response.text)
+    print(Info + " Elapsed Time : " + str(response.elapsed))
+
+    def genSignature(payload):
+    param_str= str(time_stamp) + api_key + recv_window + payload
+    hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
+    signature = hash.hexdigest()
+    return signature
+
+    #Create Order
+    endpoint="/cloud/trade/v3/order/create"
+    method="POST"
+    orderLinkId=uuid.uuid4().hex
+    params='{"category":"linear","symbol": "BTCUSDT","side": "Buy","positionIdx": 0,"orderType": "Market","qty": "0.001","price": "","timeInForce": "GTC","orderLinkId": "' + orderLinkId + '"}'
+    HTTP_Request(endpoint,method,params,"Create")
     ```
 
 ## Common response parameters
