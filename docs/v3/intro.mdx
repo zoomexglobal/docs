@@ -59,15 +59,19 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
    - For example
 
      ``` shell
-     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     params='category=linear&symbol=BTCUSDT'
      ```
 
 2. Use the HMAC_SHA256 algorithm to sign the query string in step 1, and convert it to a hex string to obtain the sign parameter.
 
    - Calculate the signature (take `nodejs` as an example)
 
-     ``` node
-     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ``` python
+     def genSignature(payload):
+        param_str= str(time_stamp) + api_key + recv_window + payload
+        hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
+        signature = hash.hexdigest()
+        return signature
      ```
 
 3. Append the sign parameter to the end of the parameters string, and send the HTTP request. Note that the message format for GET and POST requests is different. Please refer to the examples.

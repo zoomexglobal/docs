@@ -53,15 +53,19 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
    - 拼接參數示例
 
      ``` shell
-     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     param_str= api_key+str(time_stamp) + recv_window + payload
      ```
 
 2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
 
    - 計算簽名（以`nodejs`為例）
 
-     ``` node
-     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ``` python
+     def genSignature(payload):
+        param_str= str(time_stamp) + api_key + recv_window + payload
+        hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
+        signature = hash.hexdigest()
+        return signature
      ```
 
 3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
