@@ -120,8 +120,6 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
     response = httpClient.request(method, url+endPoint+"?"+payload, headers=headers)
     print(response.text)
     print(Info + " Elapsed Time : " + str(response.elapsed))
-
-
     def genSignature(payload):
     param_str= str(time_stamp) + api_key + recv_window + payload
     hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
