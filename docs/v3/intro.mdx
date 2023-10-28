@@ -59,16 +59,18 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
    - For example
 
      ``` shell
-     params='category=linear&symbol=BTCUSDT'
+     param_str= time_stamp+ api_key + recv_window + payload
+     示例：
+     param_str="timestamp=1542434791747&api_key=XXXXXXXXXXX&recv_window=10000&category=linear&symbol=BTCUSDT"
      ```
 
 2. Use the HMAC_SHA256 algorithm to sign the query string in step 1, and convert it to a hex string to obtain the sign parameter.
 
-   - Calculate the signature (take `nodejs` as an example)
+   - Calculate the signature (take `python` as an example)
 
      ``` python
      def genSignature(payload):
-        param_str= str(time_stamp) + api_key + recv_window + payload
+        param_str= api_key + str(time_stamp) + recv_window + payload
         hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
         signature = hash.hexdigest()
         return signature
@@ -76,28 +78,6 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
 
 3. Append the sign parameter to the end of the parameters string, and send the HTTP request. Note that the message format for GET and POST requests is different. Please refer to the examples.
 
-   - GET request example
-
-     ``` shell
-     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     ```
-
-   - POST request example
-
-     ``` shell
-     POST /user/leverage/save HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     Content-Type: application/json
-     
-     {
-         "api_key": "XXXXXXXXXXX",
-         "leverage": 100,
-         "symbol": "BTCUSD",
-         "timestamp": 1542434791000,
-         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
-     }
-     ```
 4. Demo
      ``` python
      import requests
@@ -131,7 +111,7 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
         print(response.text)
         print(Info + " Elapsed Time : " + str(response.elapsed))
     def genSignature(payload):
-        param_str= str(time_stamp) + api_key + recv_window + payload
+        param_str= time_stamp+ api_key + recv_window + payload
         hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
         signature = hash.hexdigest()
         return signature

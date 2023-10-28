@@ -53,12 +53,14 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
    - 拼接參數示例
 
      ``` shell
-     param_str= api_key+str(time_stamp) + recv_window + payload
+     param_str= time_stamp+ api_key + recv_window + payload
+     示例：
+     param_str="timestamp=1542434791747&api_key=XXXXXXXXXXX&recv_window=10000&category=linear&symbol=BTCUSDT"
      ```
 
 2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
 
-   - 計算簽名（以`nodejs`為例）
+   - 計算簽名（python示例）
 
      ``` python
      def genSignature(payload):
@@ -70,28 +72,6 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 
 3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
 
-   - GET請求格式：
-
-     ``` shell
-     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     ```
-
-   - POST請求格式：
-
-     ``` shell
-     POST /user/leverage/save HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     Content-Type: application/json
-     
-     {
-         "api_key": "XXXXXXXXXXX",
-         "leverage": 100,
-         "symbol": "BTCUSD",
-         "timestamp": 1542434791000,
-         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
-     }
-     ```
 4. 示例
     ```python
     import requests
@@ -125,7 +105,7 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
         print(response.text)
         print(Info + " Elapsed Time : " + str(response.elapsed))
     def genSignature(payload):
-        param_str= str(time_stamp) + api_key + recv_window + payload
+        param_str= time_stamp+ api_key + recv_window + payload
         hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
         signature = hash.hexdigest()
         return signature
