@@ -54,29 +54,11 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
 
 **Basic steps:**
 
-1. Concatenate all the public parameters in the [query string](https://en.wikipedia.org/wiki/Query_string) format. The parameters must be ordered in **alphabetical** order. This will be used to generate the `sign`.
+1. timestamp + API key + (recv_window) + (queryString | jsonBodyString)
 
-   - For example
+2. Use the HMAC_SHA256 or RSA_SHA256 algorithm to sign the string in step 1, and convert it to a hex string (HMAC_SHA256) / base64 (RSA_SHA256) to obtain the sign parameter.
 
-     ``` shell
-     param_str= time_stamp+ api_key + recv_window + payload
-     示例：
-     param_str="timestamp=1542434791747&api_key=XXXXXXXXXXX&recv_window=10000&category=linear&symbol=BTCUSDT"
-     ```
-
-2. Use the HMAC_SHA256 algorithm to sign the query string in step 1, and convert it to a hex string to obtain the sign parameter.
-
-   - Calculate the signature (take `python` as an example)
-
-     ``` python
-     def genSignature(payload):
-        param_str= api_key + str(time_stamp) + recv_window + payload
-        hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
-        signature = hash.hexdigest()
-        return signature
-     ```
-
-3. Append the sign parameter to the end of the parameters string, and send the HTTP request. Note that the message format for GET and POST requests is different. Please refer to the examples.
+3. Append the sign parameter to request header, and send the HTTP request. Note: the plain text for GET and POST requests is different. Please refer to blew examples.
 
 4. Demo
      ``` python
@@ -131,8 +113,6 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
     ```
 
 ## Common response parameters
-
-### Copy Trade
 
 | Parameter | Type | Comments|
 |:----- |:-----|----- |

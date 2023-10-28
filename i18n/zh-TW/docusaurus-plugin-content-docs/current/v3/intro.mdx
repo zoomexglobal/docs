@@ -3,7 +3,7 @@ title: 概覽
 sidebar_name: 概覽
 ---
 
-Zoomex V3 Open API 能給讓用戶基於不同的產品構建API模型。
+Zoomex V3 Open API 能讓用戶基於不同的產品構建API模型。
 
 <!--
 - **衍生品 - 合約：** 您可以通過 `contract/v3` 接口交易_USDT永續_, _反向永續_。
@@ -48,29 +48,11 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 
 **基本步驟:**
 
-1. 所有參數按照字母順序排序，然後按照 [query string](https://en.wikipedia.org/wiki/Query_string) 格式拼接。
+1. 時間戳 + API key + [recv_window]+ [queryString(無需排序) | jsonBodyString]
 
-   - 拼接參數示例
+2. 使用HMAC_SHA256或者RSA_SHA256算法對第1步中拼接的string簽名，並轉換為16進製字符串(HMAC_SHA256) / Base64編碼 (RSA_SHA256)，得出sign參數
 
-     ``` shell
-     param_str= time_stamp+ api_key + recv_window + payload
-     示例：
-     param_str="timestamp=1542434791747&api_key=XXXXXXXXXXX&recv_window=10000&category=linear&symbol=BTCUSDT"
-     ```
-
-2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
-
-   - 計算簽名（python示例）
-
-     ``` python
-     def genSignature(payload):
-        param_str= str(time_stamp) + api_key + recv_window + payload
-        hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
-        signature = hash.hexdigest()
-        return signature
-     ```
-
-3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
+3. 添加生成的簽名到HTTP頭當中 注意: GET和POST請求的加密明文是不相同，請參考以下示例
 
 4. 示例
     ```python
@@ -125,8 +107,6 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
     ```
 
 ## Response通用數據結構
-
-### 帶單交易
 
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
