@@ -102,7 +102,7 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
     import hmac
     import uuid
 
-    api_key='XXXXXXX'
+    api_key='XXXXXXXX'
     secret_key='XXXXXXXX'
     httpClient=requests.Session()
     recv_window=str(5000)
@@ -127,18 +127,25 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
     print(response.text)
     print(Info + " Elapsed Time : " + str(response.elapsed))
 
+
     def genSignature(payload):
     param_str= str(time_stamp) + api_key + recv_window + payload
     hash = hmac.new(bytes(secret_key, "utf-8"), param_str.encode("utf-8"),hashlib.sha256)
     signature = hash.hexdigest()
     return signature
 
-    #Create Order
+    #POST Create Order
     endpoint="/cloud/trade/v3/order/create"
     method="POST"
     orderLinkId=uuid.uuid4().hex
     params='{"category":"linear","symbol": "BTCUSDT","side": "Buy","positionIdx": 0,"orderType": "Market","qty": "0.001","price": "","timeInForce": "GTC","orderLinkId": "' + orderLinkId + '"}'
     HTTP_Request(endpoint,method,params,"Create")
+
+    #GET history Orders
+    endpoint="/cloud/trade/v3/order/history"
+    method="GET"
+    params='category=linear&symbol=BTCUSDT'
+    HTTP_Request(endpoint,method,params,"history")
     ```
 
 ## Common response parameters
