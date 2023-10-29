@@ -31,47 +31,50 @@ GET `/cloud/trade/v3/order/realtime`
 |cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
 
 ### Response Parameters
+:::tip
+- Due to historical reasons, the attributes returned in the list object in the response body of this interface start with uppercase letters. Please pay attention when docking!
+:::
 | Parameter | Type | Comments|
 |:----- |:-----|------ |
 |category |string |Product type |
 |nextPageCursor |string |Refer to the `cursor` request parameter |
 |list |array |Object |
-|> orderId  |string |Order ID |
-|> orderLinkId |string |User customised order ID |
-|> symbol |string |Symbol name |
-|> price |string |Order price |
-|> qty |string |Order qty |
-|> side |string |Side. `Buy`,`Sell`|
-|> [positionIdx](../enum#positionidx) |integer |Position index. Used to identify positions in different position modes.|
-|> [orderStatus](../enum#orderstatus) |string |Order status |
-|> [cancelType](../enum#canceltype) |string |Cancel type |
-|> [rejectReason](../enum#rejectreason) |string |Reject reason. |
-|> avgPrice |string |Average filled price. If unfilled, it is `"0"` |
-|> leavesQty |string |The remaining qty not executed. |
-|> leavesValue |string |The estimated value not executed. |
-|> cumExecQty |string |Cumulative executed order qty |
-|> cumExecValue |string |Cumulative executed order value. |
-|> cumExecFee |string |Cumulative executed trading fee. |
-|> [timeInForce](../enum#timeinforce) |string |Time in force |
-|> orderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
-|> [stopOrderType](../enum#stopordertype) |string |Stop order type |
-|> orderIv |string |Implied volatility |
-|> triggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price|
-|> takeProfit |string |Take profit price |
-|> stopLoss |string |Stop loss price |
-|> tpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. |
-|> tpLimitPrice |string |The limit order price when take profit price is triggered|
-|> slLimitPrice |string |The limit order price when stop loss price is triggered|
-|> [tpTriggerBy](../enum#triggerby) |string |The price type to trigger take profit |
-|> [slTriggerBy](../enum#triggerby) |string |The price type to trigger stop loss |
-|> triggerDirection |integer |Trigger direction. `1`: rise, `2`: fall |
-|> [triggerBy](../enum#triggerby) |string |The price type of trigger price |
-|> lastPriceOnCreated |string |Last price when place the order |
-|> reduceOnly |boolean |Reduce only. `true` means reduce position size |
-|> closeOnTrigger |boolean |Close on trigger.|
-|> placeType |string |Place type|
-|> createdTime |string |Order created timestamp (ms) |
-|> updatedTime |string |Order updated timestamp (ms) |
+|> OrderId  |string |Order ID |
+|> OrderLinkId |string |User customised order ID |
+|> Symbol |string |Symbol name |
+|> Price |string |Order price |
+|> Qty |string |Order qty |
+|> Side |string |Side. `Buy`,`Sell`|
+|> [PositionIdx](../enum#positionidx) |integer |Position index. Used to identify positions in different position modes.|
+|> [OrderStatus](../enum#orderstatus) |string |Order status |
+|> [CancelType](../enum#canceltype) |string |Cancel type |
+|> [RejectReason](../enum#rejectreason) |string |Reject reason. |
+|> AvgPrice |string |Average filled price. If unfilled, it is `"0"` |
+|> LeavesQty |string |The remaining qty not executed. |
+|> LeavesValue |string |The estimated value not executed. |
+|> CumExecQty |string |Cumulative executed order qty |
+|> CumExecValue |string |Cumulative executed order value. |
+|> CumExecFee |string |Cumulative executed trading fee. |
+|> [TimeInForce](../enum#timeinforce) |string |Time in force |
+|> OrderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
+|> [StopOrderType](../enum#stopordertype) |string |Stop order type |
+|> OrderIv |string |Implied volatility |
+|> TriggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price|
+|> TakeProfit |string |Take profit price |
+|> StopLoss |string |Stop loss price |
+|> TpslMode |string |TP/SL mode, `Full`: entire position for TP/SL. `Partial`: partial position tp/sl. |
+|> TpLimitPrice |string |The limit order price when take profit price is triggered|
+|> SlLimitPrice |string |The limit order price when stop loss price is triggered|
+|> [TpTriggerBy](../enum#triggerby) |string |The price type to trigger take profit |
+|> [SlTriggerBy](../enum#triggerby) |string |The price type to trigger stop loss |
+|> TriggerDirection |integer |Trigger direction. `1`: rise, `2`: fall |
+|> [TriggerBy](../enum#triggerby) |string |The price type of trigger price |
+|> LastPriceOnCreated |string |Last price when place the order |
+|> ReduceOnly |boolean |Reduce only. `true` means reduce position size |
+|> CloseOnTrigger |boolean |Close on trigger.|
+|> PlaceType |string |Place type|
+|> CreatedTime |string |Order created timestamp (ms) |
+|> UpdatedTime |string |Order updated timestamp (ms) |
 
 ---
 

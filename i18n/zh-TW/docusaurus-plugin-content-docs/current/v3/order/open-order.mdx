@@ -31,47 +31,50 @@ GET `/cloud/trade/v3/order/realtime`
 |cursor |false |string |游標，用於翻頁|
 
 ### 響應參數
+:::tip
+- 由于历史原因，本接口的响应体中list对象里返回的属性是大写字母开头，对接时请注意！
+:::
 | 參數 | 類型 | 說明|
 |:----- |:-----|------ |
 |category |string |產品類型 |
 |nextPageCursor |string |游標，用於翻頁 |
 |list |array |Object |
-|> orderId  |string |訂單Id |
-|> orderLinkId |string |用戶自定義Id |
-|> symbol |string |合約名稱 |
-|> price |string |訂單價格 |
-|> qty |string |訂單數量 |
-|> side |string |方向. `Buy`,`Sell`|
-|> [positionIdx](../enum#positionidx) |integer |倉位標識。用戶不同倉位模式 |
-|> [orderStatus](../enum#orderstatus) |string |訂單狀態 |
-|> [cancelType](../enum#canceltype) |string |訂單被取消類型 |
-|> [rejectReason](../enum#rejectreason) |string |拒絕原因. |
-|> avgPrice |string |訂單平均成交價格. 若沒有成交，則返回`"0"` |
-|> leavesQty |string |訂單剩餘未成交的數量.  |
-|> leavesValue |string |訂單剩餘未成交的價值.  |
-|> cumExecQty |string |訂單累計成交數量 |
-|> cumExecValue |string |訂單累計成交價值.  |
-|> cumExecFee |string |訂單累計成交的手續費.  |
-|> [timeInForce](../enum#timeinforce) |string |執行策略 |
-|> orderType |string |訂單類型. `Market`,`Limit`. 對於止盈止損單, 則表示為觸發後的訂單類型 |
-|> [stopOrderType](../enum#stopordertype) |string |條件單類型 |
-|> orderIv |string |隱含波動率 |
-|> triggerPrice |string |觸發價格. 若`stopOrderType`=_TrailingStop_, 則這是激活價格. 否則, 它是觸發價格|
-|> takeProfit |string |止盈價格 |
-|> stopLoss |string |止損價格 |
-|> tpslMode |string |止盈止損模式 `Full`: 全部倉位止盈止損, `Partial`: 部分倉位止盈止損. |
-|> tpLimitPrice |string |觸發止盈後轉換為限價單的價格 |
-|> slLimitPrice |string |觸發止損後轉換為限價單的價格 |
-|> [tpTriggerBy](../enum#triggerby) |string |觸發止盈的價格類型 |
-|> [slTriggerBy](../enum#triggerby) |string |觸發止損的價格類型 |
-|> triggerDirection |integer |觸發方向. `1`: 上漲, `2`: 下跌 |
-|> [triggerBy](../enum#triggerby) |string |觸發價格的觸發類型 |
-|> lastPriceOnCreated |string |下單時的市場價格 |
-|> reduceOnly |boolean |只減倉. `true`表明這是只減倉單 |
-|> closeOnTrigger |boolean |觸發後平倉委託.|
-|> placeType |string |下單類型. `iv`, `price`|
-|> createdTime |string |創建訂單的時間戳 (毫秒) |
-|> updatedTime |string |訂單更新的時間戳 (毫秒) |
+|> OrderId  |string |訂單Id |
+|> OrderLinkId |string |用戶自定義Id |
+|> Symbol |string |合約名稱 |
+|> Price |string |訂單價格 |
+|> Qty |string |訂單數量 |
+|> Side |string |方向. `Buy`,`Sell`|
+|> [PositionIdx](../enum#positionidx) |integer |倉位標識。用戶不同倉位模式 |
+|> [OrderStatus](../enum#orderstatus) |string |訂單狀態 |
+|> [CancelType](../enum#canceltype) |string |訂單被取消類型 |
+|> [RejectReason](../enum#rejectreason) |string |拒絕原因. |
+|> AvgPrice |string |訂單平均成交價格. 若沒有成交，則返回`"0"` |
+|> LeavesQty |string |訂單剩餘未成交的數量.  |
+|> LeavesValue |string |訂單剩餘未成交的價值.  |
+|> CumExecQty |string |訂單累計成交數量 |
+|> CumExecValue |string |訂單累計成交價值.  |
+|> CumExecFee |string |訂單累計成交的手續費.  |
+|> [TimeInForce](../enum#timeinforce) |string |執行策略 |
+|> OrderType |string |訂單類型. `Market`,`Limit`. 對於止盈止損單, 則表示為觸發後的訂單類型 |
+|> [StopOrderType](../enum#stopordertype) |string |條件單類型 |
+|> OrderIv |string |隱含波動率 |
+|> TriggerPrice |string |觸發價格. 若`stopOrderType`=_TrailingStop_, 則這是激活價格. 否則, 它是觸發價格|
+|> TakeProfit |string |止盈價格 |
+|> StopLoss |string |止損價格 |
+|> TpslMode |string |止盈止損模式 `Full`: 全部倉位止盈止損, `Partial`: 部分倉位止盈止損. |
+|> TpLimitPrice |string |觸發止盈後轉換為限價單的價格 |
+|> SlLimitPrice |string |觸發止損後轉換為限價單的價格 |
+|> [TpTriggerBy](../enum#triggerby) |string |觸發止盈的價格類型 |
+|> [SlTriggerBy](../enum#triggerby) |string |觸發止損的價格類型 |
+|> TriggerDirection |integer |觸發方向. `1`: 上漲, `2`: 下跌 |
+|> [TriggerBy](../enum#triggerby) |string |觸發價格的觸發類型 |
+|> LastPriceOnCreated |string |下單時的市場價格 |
+|> ReduceOnly |boolean |只減倉. `true`表明這是只減倉單 |
+|> CloseOnTrigger |boolean |觸發後平倉委託.|
+|> PlaceType |string |下單類型. `iv`, `price`|
+|> CreatedTime |string |創建訂單的時間戳 (毫秒) |
+|> UpdatedTime |string |訂單更新的時間戳 (毫秒) |
 
 
 ---
