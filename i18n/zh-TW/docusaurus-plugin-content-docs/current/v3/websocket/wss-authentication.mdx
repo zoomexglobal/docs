@@ -52,8 +52,31 @@ USDT永續: `wss://stream-testnet.zoomex.com/v3/public/linear`<br/>
 ```
 
 :::note
-簽名生成的示例可以參考[這裡](../../v3/intro)。
+簽名生成的示例如下：
 :::
+```python
+import hmac
+import json
+import logging
+import time
+
+
+def send_auth():
+    key = 'XXXXXXXX'
+    secret = 'XXXXXXXX'
+    expires = int((time.time() + 1000) * 1000)
+    _val = f'GET/realtime{expires}'
+    print(_val)
+    signature = str(hmac.new(
+        bytes(secret, 'utf-8'),
+        bytes(_val, 'utf-8'), digestmod='sha256'
+    ).hexdigest())
+    print(json.dumps({"op": "auth", "args": [key, expires, signature]}))
+
+
+if __name__ == "__main__":
+    send_auth()
+```
 
 :::caution
 由於網絡的複雜性，您可能隨時遇到斷連。請參考以下建議確保您能即時接收到推送：

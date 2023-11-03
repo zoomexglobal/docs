@@ -52,8 +52,31 @@ Inverse contract: `wss://stream-testnet.zoomex.com/v3/public/inverse`<br/>
 ```
 
 :::note
-Example signature algorithms can be found [here](../../v3/intro).
+Example signature algorithms as following
 :::
+```python
+import hmac
+import json
+import logging
+import time
+
+
+def send_auth():
+    key = 'XXXXXXXX'
+    secret = 'XXXXXXXX'
+    expires = int((time.time() + 1000) * 1000)
+    _val = f'GET/realtime{expires}'
+    print(_val)
+    signature = str(hmac.new(
+        bytes(secret, 'utf-8'),
+        bytes(_val, 'utf-8'), digestmod='sha256'
+    ).hexdigest())
+    print(json.dumps({"op": "auth", "args": [key, expires, signature]}))
+
+
+if __name__ == "__main__":
+    send_auth()
+```
 
 :::caution
 Due to network complexity, your may get disconnected at any time. Please follow the instructions below to ensure that you receive WebSocket messages on time:
