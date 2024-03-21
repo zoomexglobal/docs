@@ -7,7 +7,7 @@ sidebar_position: 5
 獲取深度數據
 > **覆蓋範圍: USDT永續 / 反向合約**
 
-* 期貨: 最多返回200檔的數據.
+* 期貨: 最多返回500檔的數據.
 
 :::tip
 響應是當前時間的切片數據
@@ -21,7 +21,7 @@ GET `/cloud/trade/v3/market/orderbook`
 |:----- |:-------|:-----|------ |
 |[category](../enum#category) |**true** |string |產品類型. `linear`, `inverse` |
 |[symbol](../enum#symbol) |**true** |string |合約名稱|
-|limit |false |integer |深度限制.<ul><li>`linear`&`inverse`: [`1`, `200`],默認: `25`.</li></ul>|
+|limit |false |integer |深度限制.<ul><li>`linear`&`inverse`: [`1`, `500`],默認: `25`.</li></ul>|
 
 ### 響應參數
 | 參數 | 類型 | 說明|

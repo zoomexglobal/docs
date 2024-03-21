@@ -7,7 +7,7 @@ sidebar_position: 5
 Query for orderbook depth data.
 > **Covers: USDT perpetual / Inverse contract**
 
-* future: 200-level of orderbook data
+* future: 500-level of orderbook data
 
 :::tip
 The response is in the snapshot format.
@@ -21,7 +21,7 @@ GET `/cloud/trade/v3/market/orderbook`
 |:----- |:-------|:-----|------ |
 |[category](../enum#category) |**true** |string |Product type. `linear`, `inverse` |
 |symbol |**true** |string |Symbol name|
-|limit |false |integer |Limit size for each bid and ask<ul><li>`linear`&`inverse`: [`1`, `200`]. Default: `25`.</li></ul>|
+|limit |false |integer |Limit size for each bid and ask<ul><li>`linear`&`inverse`: [`1`, `500`]. Default: `25`.</li></ul>|
 
 ### Response Parameters
 | Parameter | Type | Comments|
