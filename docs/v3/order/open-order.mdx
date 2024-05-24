@@ -4,7 +4,7 @@ sidebar_label: Get Open Orders (real-time)
 sidebar_position: 4
 ---
 Query unfilled or partially filled orders in **real-time**. To query older order records, please use the [order history](order-list#) interface.
-> **Normal account covers:  USDT perpetual / Inverse contract**
+> **Normal account covers:  Spot / USDT perpetual / Inverse contract**
 
 :::tip
 - It also supports querying filled, cancelled, and rejected orders which occurred in last 10 minutes (check the `openOnly` param). At most, 500 orders will be returned.
@@ -19,14 +19,14 @@ GET `/cloud/trade/v3/order/realtime`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`</li></ul>|
+|category |**true** |string |Product type <ul><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
 |symbol |false |string |Symbol name. For **linear & inverse**, either `symbol`, `baseCoin`, `settleCoin` is **required** |
 |baseCoin |false |string |Base coin. Supports `linear`, `inverse`|
-|settleCoin |false |string |Settle coin <ul><li><b>linear & inverse</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li></ul> |
+|settleCoin |false |string |Settle coin <ul><li><b>linear & inverse</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li><li>`spot`: not supported</li></ul> |
 |orderId |false |string |Order ID |
 |orderLinkId |false |string |User customised order ID |
 |openOnly |false |integer |<ul><li>Normal account: `0`(default) - query open orders **only**</li></ul>|
-|orderFilter |false |string|`Order`: active order<ul><li>all kinds of orders by default</li></ul>|
+|orderFilter |false |string|`Order`: activity order, `StoppOrder`: condition order, only supports futures, `tpslOrder`: stop loss order, only valid for spot|
 |limit |false |integer |Limit for data size per page. [`1`, `50`]. Default: `20`|
 |cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
 

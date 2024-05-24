@@ -5,7 +5,7 @@ sidebar_position: 8
 ---
 
 Query recent public trading data in Zoomex.
-> **Covers: USDT perpetual/ Inverse contract**
+> **Covers: Spot / USDT perpetual/ Inverse contract**
 
 You can download archived historical trades here:
 * <a href="https://www.zoomex.com/trade/usdt/">USDT Perpetual</a>
@@ -17,8 +17,8 @@ GET `/cloud/trade/v3/market/recent-trade`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type. `linear`,`inverse` |
-|[symbol](../enum#symbol) |false |string |Symbol name|
+|[category](../enum#category) |**true** |string |Product type. `spot`,`linear`,`inverse` |
+|[symbol](../enum#symbol) |false |string |Symbol name<ul><li>**required** for spot/linear/inverse</li></ul>|
 |limit |false |integer |Limit for data size per page.<ul><li>[1,1000], default: `500`</li></ul>|
 
 ### Response Parameters

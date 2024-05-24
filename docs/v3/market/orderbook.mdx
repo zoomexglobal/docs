@@ -5,9 +5,10 @@ sidebar_position: 5
 ---
 
 Query for orderbook depth data.
-> **Covers: USDT perpetual / Inverse contract**
+> **Covers: Spot / USDT perpetual / Inverse contract**
 
 * future: 500-level of orderbook data
+* Spot: 200-level of orderbook data
 
 :::tip
 The response is in the snapshot format.
@@ -19,9 +20,9 @@ GET `/cloud/trade/v3/market/orderbook`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type. `linear`, `inverse` |
+|[category](../enum#category) |**true** |string |Product type. `spot`, `linear`, `inverse` |
 |symbol |**true** |string |Symbol name|
-|limit |false |integer |Limit size for each bid and ask<ul><li>`linear`&`inverse`: [`1`, `500`]. Default: `25`.</li></ul>|
+|limit |false |integer |Limit size for each bid and ask<ul><li>`spot`: [`1`, `200`]. Default: `1`.</li><li>`linear`&`inverse`: [`1`, `500`]. Default: `25`.</li></ul>|
 
 ### Response Parameters
 | Parameter | Type | Comments|
@@ -34,7 +35,7 @@ GET `/cloud/trade/v3/market/orderbook`
 |> a[0] |string |Ask price |
 |> a[1] |string |Ask size |
 |ts |integer |The timestamp (ms) that the system generates the data |
-|u |integer |Update ID, is always in sequence<ul><li>For future, it is corresponding to `u` in the wss 200-level orderbook</li></ul> |
+|u |integer |Update ID, is always in sequence<ul><li>For future, it is corresponding to `u` in the wss 500-level orderbook</li><li>For spot, it is corresponding to `u` in the wss 200-level orderbook</li></ul> |
 
 ---
 

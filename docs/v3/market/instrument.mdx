@@ -5,7 +5,7 @@ sidebar_position: 4.5
 ---
 
 Query for the instrument specification of online trading pairs.
-> **Covers: USDT perpetual / Inverse contract**
+> **Covers: Spot / USDT perpetual / Inverse contract**
 
 :::caution
 * When query by `baseCoin`, regardless of category=`linear` or `inverse`, the result will have USDT perpetual and Inverse contract symbols.
@@ -20,10 +20,10 @@ GET `/cloud/trade/v3/market/instruments-info`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |<b>true</b> |string |Product type. `linear`,`inverse`|
+|[category](../enum#category) |<b>true</b> |string |Product type. `spot`,`linear`,`inverse`|
 |[symbol](../enum#symbol) |false |string |Symbol name|
 |[status](../enum#status) |false |string |Symbol status filter <ul><li>linear/inverse has `Trading` only</li></ul>|
-|baseCoin |false |string |Base coin. _`linear`,`inverse`_  |
+|baseCoin |false |string |Base coin. <br/>Only valid for linear and inverse |
 |limit |false |integer |Limit for data size per page. [`1`, `1000`]. Default: `500`|
 |cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
 
@@ -112,6 +112,68 @@ GET `/cloud/trade/v3/market/instruments-info`
     </table>
 </TabItem>
 
+<TabItem value="spot" label="Spot">
+    <table border="0.8">
+        <tr>
+            <th>Parameter</th><th>Type</th><th>Comments</th>
+        </tr>
+        <tr>
+            <td>category</td><td>string</td><td>Product type</td>
+        </tr>
+        <tr>
+            <td>list</td><td>array</td><td>Object</td>
+        </tr>
+        <tr>
+            <td>> symbol</td><td>string</td><td>Symbol name </td>
+        </tr>
+        <tr>
+            <td>> baseCoin</td><td>string</td><td>Base coin </td>
+        </tr>
+        <tr>
+            <td>> quoteCoin</td><td>string</td><td>Quote coin </td>
+        </tr>
+        <tr>
+            <td>> <a href="../enum#status">status</a></td><td>string</td><td>Instrument status </td>
+        </tr>
+        <tr>
+            <td>> lotSizeFilter</td><td>Object</td><td>Size attributes </td>
+        </tr>
+        <tr>
+            <td>>> basePrecision</td><td>string</td><td>The precision of base coin </td>
+        </tr>
+        <tr>
+            <td>>> quotePrecision</td><td>string</td><td>The precision of quote coin </td>
+        </tr>
+        <tr>
+            <td>>> minOrderQty</td><td>string</td><td>Minimum order quantity </td>
+        </tr>
+        <tr>
+            <td>>> maxOrderQty</td><td>string</td><td>Maximum order quantity </td>
+        </tr>
+        <tr>
+            <td>>> minOrderAmt</td><td>string</td><td>Minimum order amount </td>
+        </tr>
+        <tr>
+            <td>>> maxOrderAmt</td><td>string</td><td>Maximum order amount </td>
+        </tr>
+        <tr>
+            <td>> priceFilter</td><td>Object</td><td>Price attributes </td>
+        </tr>
+        <tr>
+            <td>>> tickSize</td><td>string</td><td>The step to increase/reduce order price </td>
+        </tr>
+        <tr>
+            <td>> riskParameters</td><td>Object</td><td>Price limit parameters</td>
+        </tr>
+        <tr>
+            <td>>> limitParameter</td><td>string</td><td>Price limit on Limit order. <i>For example, "0.05" means 5%, so the order price of your buy order cannot exceed 105% of the Last Traded Price, while the order price of your sell order cannot be lower than 95% of the Last Traded Price</i></td>
+        </tr>
+        <tr>
+            <td>>> marketParameter</td><td>string</td><td>Price limit on Market order. <i>For example, assuming the market order limit for MNT/USDT is 5%. When the last traded price is at 2 USDT, a trader places a market order for 100,000 USDT. Any portion that could have been filled at above 2.1 USDT will be canceled. Assuming only 80,000 USDT order value can be filled at a price of 2.1 USDT or below, the remaining 20,000 USDT order value will be canceled since the deviation exceeds the 5% threshold.</i></td>
+        </tr>
+    </table>
+</TabItem>
+
 </Tabs>
 
 
@@ -124,7 +186,43 @@ GET /cloud/trade/v3/market/instruments-info?category=linear&symbol=BTCUSDT HTTP/
 Host: openapi-testnet.zoomex.com
 ```
 
+
+<Tabs groupId="market-category">
+<TabItem value="linear" label="Linear">
+
+<Tabs groupId="programming-languages">
+<TabItem value="http" label="HTTP">
+
+```http
+GET /cloud/trade/v3/market/instruments-info?category=linear&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="spot" label="Spot">
+
+<Tabs groupId="programming-languages">
+<TabItem value="http" label="HTTP">
+
+```http
+GET /cloud/trade/v3/market/instruments-info?category=spot&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+```
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
+
+
 ### Response Example
+
+<Tabs groupId="market-category">
+<TabItem value="linear" label="Linear">
 
 ```json
 {
@@ -170,3 +268,45 @@ Host: openapi-testnet.zoomex.com
     "time": 1672712495660
 }
 ```
+
+</TabItem>
+
+<TabItem value="spot" label="Spot">
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "category": "spot",
+        "list": [
+            {
+                "symbol": "BTCUSDT",
+                "baseCoin": "BTC",
+                "quoteCoin": "USDT",
+                "status": "Trading",
+                "lotSizeFilter": {
+                    "basePrecision": "0.000001",
+                    "quotePrecision": "0.00000001",
+                    "minOrderQty": "0.000048",
+                    "maxOrderQty": "71.73956243",
+                    "minOrderAmt": "1",
+                    "maxOrderAmt": "2000000"
+                },
+                "priceFilter": {
+                    "tickSize": "0.01"
+                }
+                "riskParameters": {
+                    "limitParameter": "0.05",
+                    "marketParameter": "0.05"
+                }
+            }
+        ]
+    },
+    "retExtInfo": {},
+    "time": 1672712468011
+}
+```
+
+</TabItem>
+</Tabs>
