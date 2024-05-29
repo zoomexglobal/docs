@@ -1,0 +1,103 @@
+---
+title: Get Internal Transfer Records
+sidebar_label: Get Internal Transfer Records
+sidebar_position: 3
+---
+
+Query the internal transfer records between different [account types](../enum#accounttype) under the same UID.
+
+### HTTP Request
+GET `/private/v1/asset/transfer/list`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|transferId |false |string |UUID. Use the UUID used to create the transition|
+|coin |false |string |Coin |
+|[status](../enum#transferstatus) |false |string |Transfer status |
+|startTime |false |integer |The start timestamp (s) |
+|endTime |false |integer |The end timestamp (s) |
+|limit |false |integer |Limit for data size per page. [`1`, `50`]. Default: `10`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|list |array|Object |
+|> transferId |string |Transfer ID |
+|> coin |string |Transferred coin |
+|> amount |string |Transferred amount |
+|> [fromAccountType](../enum#accounttype) |string |From account type |
+|> [toAccountType](../enum#accounttype) |string |To account type |
+|> timestamp |string |Transfer created timestamp (s) |
+|> [status](../enum#transferstatus) |string |Transfer status |
+|cursor |string|Refer to the `cursor` request parameter |
+
+
+---
+
+### Request Example
+
+``` python
+        def your_method(apiKey, secretKey):
+            timestamp = int(time.time() * 10 ** 3)
+            url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/list'
+            method = "GET"
+            params = {
+                "api_key": apiKey,
+                "timestamp": str(timestamp),
+                "recv_window": "5000",
+            }
+            param_str = ''
+            for key in sorted(params.keys()):
+                v = params[key]
+                if isinstance(params[key], bool):
+                    if params[key]:
+                        v = 'true'
+                    else:
+                        v = 'false'
+                param_str += key + '=' + v + '&'
+            param_str = param_str[:-1]
+            hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+            signature = hash.hexdigest()
+            sign_real = {
+                "sign": signature
+            }
+            param_str = quote_plus(param_str, safe="=&")
+            full_param_str = f"{param_str}&sign={sign_real['sign']}"
+            urllib3.disable_warnings()
+            s = requests.session()
+            s.keep_alive = False
+            response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+        def main():
+            apiKey = "Your key"
+            secret = "Your secret"
+            your_method(apiKey, secret)
+
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+    "list": [
+        {
+            "transferId": "selfTransfer_a1091cc7-9364-4b74-8de1-18f02c6f2d5c",
+            "coin": "USDT",
+            "amount": "5000",
+            "fromAccountType": "SPOT",
+            "toAccountType": "UNIFIED",
+            "timestamp": "1667283263000",
+            "status": "SUCCESS"
+        }
+    ],
+    "cursor": "eyJtaW5JRCI6MTM1ODQ2OCwibWF4SUQiOjEzNTg0Njh9"
+},
+    "retExtInfo": {},
+    "time": 1670988271677
+}
+```
