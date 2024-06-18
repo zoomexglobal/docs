@@ -99,6 +99,10 @@
         "message": "資產",
         "description": "資產目錄"
     },
+    "sidebar.v3SideBar.category.Affiliate": {
+        "message": "代理商",
+        "description": "代理商目錄"
+    },
     "sidebar.accountAssetV1SideBar.category.Transfer Endpoints": {
         "message": "劃轉相關接口",
         "description": "劃轉相關接口目錄"

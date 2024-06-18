@@ -1,0 +1,134 @@
+---
+title: 查詢幣種信息
+sidebar_label: 查詢幣種信息
+sidebar_position: 4
+---
+
+獲取幣種信息，包括鏈信息，是否可充可提
+
+> API頻率: 5次/秒
+
+### HTTP 請求
+GET `/private/v1/asset/coin/query-info`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|coin |false |string |幣種 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|rows |array|Object |
+|> coin |string |幣種 |
+|> coin_name |string |幣種名稱 |
+|> accuracy |integer |幣支持的最大精度|
+|> deposit_chains |array |Object, 入金支持的链|
+|>> chain |string |鏈名 |
+|>> chain_name |string |鏈展示名稱 |
+|>> can_deposit |integer |幣鏈是否可充值：0-暫停1-正常 |
+|>> deposit_min |string |最小充值數量 |
+|>> deposit_confirmation |string |充值上賬確認數 |
+|> withdraw_chains |array |Object, 出金支持的链 |
+|>> chain |string |鏈名 |
+|>> chain_name |string |鏈展示名稱 |
+|>> can_withdraw |integer |币链是否可提幣: 0-暫停 1-正常 |
+|>> withdraw_min |string |最小提現數量 |
+|>> withdraw_fee |string |提現手續費 |
+
+---
+
+### 請求示例
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/asset/coin/query-info'
+           method = "GET"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+               "coin": "USDT",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "rows": [
+            {
+                "coin": "USDT",
+                "coin_name": "Tether USDT",
+                "accuracy": 4,
+                "deposit_chains": [
+                    {
+                        "chain": "ETH",
+                        "chain_name": "ERC20",
+                        "can_deposit": 1,
+                        "deposit_min": "0.000011",
+                        "deposit_confirmation": 1
+                    },
+                    {
+                        "chain": "TRX",
+                        "chain_name": "TRC20",
+                        "can_deposit": 1,
+                        "deposit_min": "0.00001122",
+                        "deposit_confirmation": 1
+                    }
+                ],
+                "withdraw_chains": [
+                    {
+                        "chain": "ETH",
+                        "chain_name": "ERC20",
+                        "can_withdraw": 1,
+                        "withdraw_min": "20",
+                        "withdraw_fee": "11"
+                    },
+                    {
+                        "chain": "TRX",
+                        "chain_name": "TRC20",
+                        "can_withdraw": 1,
+                        "withdraw_min": "10",
+                        "withdraw_fee": "1"
+                    }
+                ]
+            }
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1718353508140
+}
+```

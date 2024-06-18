@@ -1,0 +1,119 @@
+---
+title: Get Exchange Broker Earning
+sidebar_label: Get Exchange Broker Earning
+sidebar_position: 2
+---
+:::info
+* Use exchange broker master account to query
+* The data can support up to past 6 months until T-1
+* `begin` & `end` are either entered at the same time or not entered, and latest 7 days data are returned by default
+:::
+
+> API rate limit: 10 req / sec
+
+### HTTP Request
+GET `/private/v1/broker/earnings-info`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|productType|false |string |Business type. `SPOT`, `DERIVATIVES` |
+|begin|false |string |Start time, format: YYYYMMDD, for example, 20231201, indicating that the search time is from December 1, 2023 00:00:00 UTC (inclusive) |
+|end |false |string |End time, format: YYYYMMDD, for example, 20231201, indicating that the search time ended on December 2, 2023 at 00:00:00 UTC (not included) |
+|uid |false |string |<ul><li>Enter sub UIDs to query specific data for the specified UID</li><li>To obtain data for all sub UIDs, do not pass</li></ul>  |
+|limit|false |integer |Page quantity limit [` 1 `, ` 1000 `] Default: ` 1000` |
+|cursor|false |integer |Cursor, used for flipping pages, does not need to be passed on the first call|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|coin_detail |array |Object. Rebate data for various businesses |
+|> product_type |string |Business type. SPOT, DERIVATIVES|
+|> coin |string |Rebate coin|
+|> rebate_fee |string |Rebate amount|
+| user_detail |array |Object. Transaction details for each sub UID and each business type|
+|> user_id |string |UID|
+|> product_type |string |Business type. SPOT, DERIVATIVES|
+|> coin |string |Rebate coin|
+|> rebate_fee |string |Rebate amount|
+|> dt  |string |date|
+|next_cursor |integer |Cursor, used for flipping pages|
+
+### Request Example
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/broker/earnings-info'
+           method = "GET"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "coin_detail": [
+            {
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.845657"
+            }
+        ],
+        "user_detail": [
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.22783662",
+                "dt": "2024-06-12"
+            },
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.61782038",
+                "dt": "2024-06-11"
+            }
+        ],
+        "next_cursor": 688
+    },
+    "ext_info": null,
+    "time_now": 1718353045150
+}
+```

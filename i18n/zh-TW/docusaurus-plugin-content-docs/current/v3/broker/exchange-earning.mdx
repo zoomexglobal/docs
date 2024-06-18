@@ -1,0 +1,119 @@
+---
+title: 查詢代理商返佣信息
+sidebar_label: 查詢代理商返佣信息
+sidebar_position: 1
+---
+
+:::info
+* 使用代理商的母帳戶進行查詢
+* 支持查詢過去6個月的數據至T-1
+* `begin` & `end`兩個入参, 要麼同時輸入, 要麼都不輸入. 当不输入时, 默认返回最近7天的数据
+:::
+> API頻率: 10次/秒
+
+### HTTP 請求
+GET `/private/v1/broker/earnings-info`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|productType|false |string |業務類型. `SPOT`, `DERIVATIVES` |
+|begin|false |string |開始時間, 格式: YYYYMMDD, 比如, 20231201, 表示搜尋時間是從2023年12月1日 00:00:00 UTC (包含) |
+|end |false |string |結束時間, 格式: YYYYMMDD, 比如, 20231201, 表示搜尋時間是結束於2023年12月2日 00:00:00 UTC (不包含) |
+|uid |false |string |<ul><li>輸入子UID來查詢指定UID的具體數據</li><li>要向獲得所有子UID的數據, 則不傳</li></ul>  |
+|limit|false |integer |每頁數量限制. [`1`, `1000`]. 默認: `1000` |
+|cursor|false |integer |游標，用於翻頁，首次調用時不用傳|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|coin_detail |array |Object. 各業務的返傭數據 |
+|> product_type |string |業務類型. SPOT, DERIVATIVES|
+|> coin |string |返佣幣種|
+|> rebate_fee |string |返佣金額|
+| user_detail |array |Object. 每個子UID以及每個業務類型的交易細節|
+|> user_id |string |UID|
+|> product_type |string |業務類型. SPOT, DERIVATIVES|
+|> coin |string |返佣幣種|
+|> rebate_fee |string |返佣金額|
+|> dt  |string |日期|
+|next_cursor |integer |游標，用於翻頁|
+
+### 請求示例
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/broker/earnings-info'
+           method = "GET"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "coin_detail": [
+            {
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.845657"
+            }
+        ],
+        "user_detail": [
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.22783662",
+                "dt": "2024-06-12"
+            },
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.61782038",
+                "dt": "2024-06-11"
+            }
+        ],
+        "next_cursor": 688
+    },
+    "ext_info": null,
+    "time_now": 1718353045150
+}
+```

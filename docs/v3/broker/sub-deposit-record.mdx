@@ -1,0 +1,122 @@
+---
+title: Get direct customers Deposit Records
+sidebar_label: Get direct customers Deposit Records
+sidebar_position: 3
+---
+
+> API rate limit: 300 req / min
+
+### HTTP Request
+GET `/private/v1/broker/asset/query-member-deposit-record`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|memberId |**true** |string |Direct customer UID |
+|coin |false |string |coin |
+|startTime |false |integer |Start timestamp (second) |
+|endTime |false |integer |End timestamp (second) |
+|limit |false |integer |Page quantity limit [` 1 `, ` 50 `] Default: ` 20`|
+|cursor |false |string |Cursor, used for flipping pages|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|rows |array|Object |
+|> coin |string |coin |
+|> chain |string|chain name |
+|> amount |string|deposit amout |
+|> tx_id |string|Transaction Id Empty when recharge failed or canceled |
+|> status |integer|Recharge status: 0- Recharge in progress 1- Recharge successful 2- Recharge failed |
+|> to_address |string|Target address for recharge |
+|> tag |string|tag of recharge target address |
+|> success_at |string|Last update time |
+|> confirmations |string|Confirm the number of blocks |
+|> tx_index |string|Transaction serial number |
+|> block_hash |string|The number of hashes on the chain |
+|cursor |string |Cursor, used for flipping pages|
+
+### Request Example
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/broker/asset/query-member-deposit-record'
+           method = "GET"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+               "memberId": 101479471,
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "rows": [
+            {
+                "coin": "USDT",
+                "chain": "ETH",
+                "amount": "10000",
+                "tx_id": "USDT-101479471-ETH-10000000000000-1",
+                "status": 1,
+                "to_address": "fake-address",
+                "tag": "101479471",
+                "success_at": "1718110423",
+                "confirmations": "10000",
+                "tx_index": "",
+                "block_hash": ""
+            },
+            {
+                "coin": "USDT",
+                "chain": "TRX",
+                "amount": "6666",
+                "tx_id": "faker-deposit-101479471-USDT-666600000000-9",
+                "status": 1,
+                "to_address": "fake-address",
+                "tag": "101479471",
+                "success_at": "1718088599",
+                "confirmations": "10000",
+                "tx_index": "",
+                "block_hash": ""
+            }
+        ],
+        "cursor": "eyJtaW5JZCI6MjM1NDcsIm1heElkIjoyMzU0OX0="
+    },
+    "ext_info": null,
+    "time_now": 1718159775406
+}
+```

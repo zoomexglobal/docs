@@ -1,0 +1,87 @@
+---
+title: 提現
+sidebar_label: 提現
+sidebar_position: 5
+---
+
+:::caution
+* 確保您已經將提現地址加入到地址簿
+* 僅支持**母帳號**的API key
+:::
+
+> API頻率: 1次/秒
+
+
+### HTTP 請求
+POST `/private/v1/asset/withdraw/create`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|coin |**true** |string |幣種 |
+|chain |true |string |鏈名 |
+|address |**true** |string |錢包地址 |
+|tag |false |string |標籤 <ul><li>若添加地址時有填寫tag，則該字段**必傳**.</li> <li>**注意**: 如果鏈不支持tag/memo，請移除地址簿中的tag/memo，然後調用接口時，也不要傳tag字段</li></ul> |
+|amount |**true** |string |提現金額 |
+|requestId |**true** |string |自定義ID, 全局唯一, 用於冪等校驗<li>字母(區分大小寫)數字組合, 可以是純字母或者純數字, 長度在1-64字符之間</li> |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|withdraw_id |string|提現Id |
+
+### 請求示例
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/asset/withdraw/create'
+           method = "POST"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+               "coin": "USDT",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "withdraw_id": "10195"
+    },
+    "retExtInfo": {},
+    "time": 1672196571239
+}
+```

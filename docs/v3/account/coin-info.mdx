@@ -1,0 +1,134 @@
+---
+title: Get Coin Info
+sidebar_label: Get Coin Info
+sidebar_position: 4
+---
+
+Query coin information, including chain information, withdraw and deposit status.
+
+> API rate limit: 5 req / sec
+
+### HTTP Request
+GET `/private/v1/asset/coin/query-info`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|coin |false |string |Coin |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|rows |array|Object |
+|> coin |string |coin |
+|> coin_name |string |coin name |
+|> accuracy |integer |Maximum Precision Supported by Coins|
+|> deposit_chains |array |Object, Chain supported by deposit|
+|>> chain |string |chain |
+|>> chain_name |string |chain name |
+|>> can_deposit |integer |Can the coin chain be recharged: 0- paused 1- normal |
+|>> deposit_min |string |Minimum recharge quantity |
+|>> deposit_confirmation |string |Recharge and account confirmation number |
+|> withdraw_chains |array |Object, Chain supported by withdrawal |
+|>> chain |string |chain |
+|>> chain_name |string |chain name |
+|>> can_withdraw |integer |Can the coin chain withdraw coins: 0- paused 1- normal |
+|>> withdraw_min |string |Minimum withdrawal quantity |
+|>> withdraw_fee |string |Withdrawal fees |
+
+---
+
+### Request Example
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/asset/coin/query-info'
+           method = "GET"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+               "coin": "USDT",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "rows": [
+            {
+                "coin": "USDT",
+                "coin_name": "Tether USDT",
+                "accuracy": 4,
+                "deposit_chains": [
+                    {
+                        "chain": "ETH",
+                        "chain_name": "ERC20",
+                        "can_deposit": 1,
+                        "deposit_min": "0.000011",
+                        "deposit_confirmation": 1
+                    },
+                    {
+                        "chain": "TRX",
+                        "chain_name": "TRC20",
+                        "can_deposit": 1,
+                        "deposit_min": "0.00001122",
+                        "deposit_confirmation": 1
+                    }
+                ],
+                "withdraw_chains": [
+                    {
+                        "chain": "ETH",
+                        "chain_name": "ERC20",
+                        "can_withdraw": 1,
+                        "withdraw_min": "20",
+                        "withdraw_fee": "11"
+                    },
+                    {
+                        "chain": "TRX",
+                        "chain_name": "TRC20",
+                        "can_withdraw": 1,
+                        "withdraw_min": "10",
+                        "withdraw_fee": "1"
+                    }
+                ]
+            }
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1718353508140
+}
+```
