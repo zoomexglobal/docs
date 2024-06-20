@@ -21,6 +21,7 @@ GET `/private/v1/asset/withdraw/query-record`
 |withdrawId |false |string |Withdraw ID |
 |txid |false |string |Transaction hash ID |
 |coin |false |string |Coin |
+|withdrawType |false |integer |Withdraw type. `0`(default): on chain. `1`: off chain. `2`: all|
 |startTime |false |integer |The start timestamp (s) |
 |endTime |false |integer |The end timestamp (s) |
 |pageSize |false |integer |Limit for data size per page. [`1`, `50`]. Default: `20`|
@@ -32,12 +33,13 @@ GET `/private/v1/asset/withdraw/query-record`
 |rows |array|Object |
 |> withdraw_id |string |Withdraw ID |
 |> tx_id |string |Transaction ID. It returns `""` when withdrawal failed, withdrawal cancelled|
+|> withdraw_type |integer |Withdraw type. `0`: on chain. `1`: off chain|
 |> coin |string |Coin |
 |> chain |string |Chain |
 |> amount |string |Amount |
 |> withdraw_fee |string |Withdraw fee |
 |> status |string |Withdraw status |
-|> to_address |string |To withdrawal address. |
+|> to_address |string |To withdrawal address. Internal transfer: Display Zoomex UID, email or phone number |
 |> user_id |string |UID |
 |> tag |string |Tag |
 |> create_time |string |Withdraw created timestamp (s) |
