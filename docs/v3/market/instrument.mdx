@@ -92,7 +92,10 @@ GET `/cloud/trade/v3/market/instruments-info`
             <td>> lotSizeFilter</td><td>Object</td><td>Size attributes </td>
         </tr>
         <tr>
-            <td>>> maxOrderQty</td><td>string</td><td>Maximum order quantity </td>
+            <td>>> maxOrderQty</td><td>string</td><td>Maximum order quantity for a single price limit order </td>
+        </tr>
+        <tr>
+            <td>>> maxMktOrderQty</td><td>string</td><td>Maximum quantity for Market order </td>
         </tr>
         <tr>
             <td>>> minOrderQty</td><td>string</td><td>Minimum order quantity </td>
@@ -101,7 +104,7 @@ GET `/cloud/trade/v3/market/instruments-info`
             <td>>> qtyStep</td><td>string</td><td>The step to increase/reduce order quantity </td>
         </tr>
         <tr>
-            <td>>> postOnlyMaxOrderQty</td><td>string</td><td>Maximum order qty for PostOnly order </td>
+            <td>>> postOnlyMaxOrderQty</td><td>string</td><td>Depreciated, please use <code>maxOrderQty</code> </td>
         </tr>
         <tr>
             <td>> fundingInterval</td><td>integer</td><td>Funding interval (minute) </td>
@@ -181,12 +184,6 @@ GET `/cloud/trade/v3/market/instruments-info`
 
 ### Request Example
 
-```shell
-GET /cloud/trade/v3/market/instruments-info?category=linear&symbol=BTCUSDT HTTP/1.1
-Host: openapi-testnet.zoomex.com
-```
-
-
 <Tabs groupId="market-category">
 <TabItem value="linear" label="Linear">
 
@@ -256,6 +253,7 @@ Host: openapi-testnet.zoomex.com
                     "minOrderQty": "0.001",
                     "qtyStep": "0.001",
                     "postOnlyMaxOrderQty": "1000.000"
+                    "maxMktOrderQty": "1000.000"
                 },
                 "unifiedMarginTrade": true,
                 "fundingInterval": 480,

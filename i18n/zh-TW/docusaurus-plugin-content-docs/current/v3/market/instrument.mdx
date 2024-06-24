@@ -92,7 +92,10 @@ GET `/cloud/trade/v3/market/instruments-info`
             <td>> lotSizeFilter</td><td>Object</td><td>訂單數量屬性 </td>
         </tr>
         <tr>
-            <td>>> maxOrderQty</td><td>string</td><td>單筆訂單最大下單量 </td>
+            <td>>> maxOrderQty</td><td>string</td><td>單筆限價單最大下單量 </td>
+        </tr>
+        <tr>
+            <td>>> maxMktOrderQty</td><td>string</td><td>單筆市價單最大下單量 </td>
         </tr>
         <tr>
             <td>>> minOrderQty</td><td>string</td><td>單筆訂單最小下單量 </td>
@@ -101,7 +104,7 @@ GET `/cloud/trade/v3/market/instruments-info`
             <td>>> qtyStep</td><td>string</td><td>修改下單量的步長 </td>
         </tr>
         <tr>
-            <td>>> postOnlyMaxOrderQty</td><td>string</td><td>PostOnly單允許的最大下單量 </td>
+            <td>>> postOnlyMaxOrderQty</td><td>string</td><td>廢棄, 請參照maxOrderQty </td>
         </tr>
         <tr>
             <td>> fundingInterval</td><td>integer</td><td>資金費率結算週期 (分鐘) </td>
@@ -179,12 +182,6 @@ GET `/cloud/trade/v3/market/instruments-info`
 
 ### 請求示例
 
-```shell
-GET /cloud/trade/v3/market/instruments-info?category=linear&symbol=BTCUSDT HTTP/1.1
-Host: openapi-testnet.zoomex.com
-```
-
-
 <Tabs groupId="market-category">
 <TabItem value="linear" label="Linear">
 
@@ -254,6 +251,7 @@ Host: openapi-testnet.zoomex.com
                     "minOrderQty": "0.001",
                     "qtyStep": "0.001",
                     "postOnlyMaxOrderQty": "1000.000"
+                    "maxMktOrderQty": "1000.000"
                 },
                 "unifiedMarginTrade": true,
                 "fundingInterval": 480,
