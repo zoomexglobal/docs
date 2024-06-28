@@ -1,0 +1,88 @@
+---
+title: 內部轉帳
+sidebar_label: 內部轉帳
+sidebar_position: 6
+---
+
+:::caution
+* 確保您已經將提現地址加入到地址簿
+* 僅支持**母帳號**的API key
+:::
+
+> API頻率: 1次/秒
+
+
+### HTTP 請求
+POST `/private/v1/asset/withdraw/inner-create`
+
+### 請求參數
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|requestId |**true** |string |自定義id，全域唯一，用於幂等校驗（最大長度64） |
+|coin |**true** |string |coin |
+|addressType |**true** |integer |提現地址類型：1-EMAIL 2-PHONE 3-UID |
+|areaCode |false |integer |區號，當提幣地址為移动电话時，該參數必須填寫。當提幣地址不為移动电话時，不用填入該參數，如果填了後臺也不會使用 |
+|address |**true** |string |收款人資訊，email：郵箱，mobile：行动电话或者手機號，uid：用戶ID，清確認收款人資訊已添加在<a href="https://www.zoomex.com/en/assets/withdraw-address">地址簿</a> |
+|amount |**true** |string |轉帳金額 |
+|remark |false |string |備註資訊，不能超過50個字符 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|withdraw_id |string|提現Id |
+
+### 請求示例
+
+```python
+       def your_method(apiKey, secretKey):
+           timestamp = int(time.time() * 10 ** 3)
+           url = 'https://openapi-testnet.zoomex.com/private/v1/asset/withdraw/create'
+           method = "POST"
+           params = {
+               "api_key": apiKey,
+               "timestamp": str(timestamp),
+               "recv_window": "5000",
+               "coin": "USDT",
+           }
+           param_str = ''
+           for key in sorted(params.keys()):
+               v = params[key]
+               if isinstance(params[key], bool):
+                   if params[key]:
+                       v = 'true'
+                   else:
+                       v = 'false'
+               param_str += key + '=' + v + '&'
+           param_str = param_str[:-1]
+           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
+           signature = hash.hexdigest()
+           sign_real = {
+               "sign": signature
+           }
+           param_str = quote_plus(param_str, safe="=&")
+           full_param_str = f"{param_str}&sign={sign_real['sign']}"
+           urllib3.disable_warnings()
+           s = requests.session()
+           s.keep_alive = False
+           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+
+       def main():
+           apiKey = "Your key"
+           secret = "Your secret"
+           your_method(apiKey, secret)
+
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "withdraw_id": "10195"
+    },
+    "retExtInfo": {},
+    "time": 1672196571239
+}
+```
