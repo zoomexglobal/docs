@@ -1,36 +1,40 @@
 ---
-title: Get direct customers information
-sidebar_label: Get direct customers information
-sidebar_position: 4
+title: 帳戶類型間可劃轉的幣種
+sidebar_label: 帳戶類型間可劃轉的幣種
+sidebar_position: 15
 ---
 
-> API rate limit: 300 req / min
+> API頻率: 60次/分
 
-### HTTP Request
-GET `/private/v1/broker/member-info`
+### HTTP 請求
+GET `/private/v1/asset/transfer/query-coins`
 
-### Request Parameters
-| Parameter | Required | Type | Comments|
+### HTTP 請求
+| 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|uid |**true** |string |Direct customer UID |
+|[fromAccountType](../enum#accounttype) |**true** |string |劃出帳戶類型 |
+|[toAccountType](../enum#accounttype) |**true** |string |劃入帳戶類型 |
 
-### Response Parameters
-| Parameter | Type | Comments|
+### 響應參數
+| 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|is_valid |integer| Whether it is a direct customer, 0: No; 1: Yes|
-|signup_time |string| Time to become a direct customer|
+|coins |array|幣種數組 |
 
-### Request Example
+
+---
+
+### 請求示例
 
 ```python
 import time
 import hmac
 import hashlib
+import uuid
 import requests
 import urllib.parse
 
 def create_request(apiKey, secret, params):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/member-info'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/query-coins'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -56,20 +60,23 @@ def create_request(apiKey, secret, params):
 
     response = requests.get(full_url, headers=headers)
 
-    print("response status:", response.status_code)
-    print("response info:", response.json())
-    print("response time:", response.elapsed.total_seconds())
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
 
 apiKey = 'your key'
 secret = 'your secret'
+transferId = uuid.uuid4().hex
 params = {
-    "uid": 101479471,
+    "fromAccountType": "CONTRACT",
+    "toAccountType": "SPOT",
 }
 
 create_request(apiKey, secret, params)
+
 ```
 
-### Response Example
+### 響應示例
 
 ```json
 {
@@ -77,10 +84,15 @@ create_request(apiKey, secret, params)
     "ret_msg": "OK",
     "ext_code": "",
     "result": {
-        "is_valid": 1,
-        "signup_time": "2024-06-11 04:16:58 +0000 UTC"
+    "coins": [
+        "BTC",
+        "XRP",
+        "EOS",
+        "ETH",
+        "USDT"
+    ]
     },
     "ext_info": null,
-    "time_now": 1719238958533
+    "time_now": 1721036713326
 }
 ```

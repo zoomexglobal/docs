@@ -1,24 +1,29 @@
 ---
-title: Get direct customers information
-sidebar_label: Get direct customers information
-sidebar_position: 4
+title: Get Transferable Coin
+sidebar_label: Get Transferable Coin
+sidebar_position: 15
 ---
 
-> API rate limit: 300 req / min
+Query the transferable coin list between each [account type](../enum#accounttype)
+
+> API rate limit: 60 req / min
 
 ### HTTP Request
-GET `/private/v1/broker/member-info`
+GET `/private/v1/asset/transfer/query-coins`
 
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|uid |**true** |string |Direct customer UID |
+|[fromAccountType](../enum#accounttype) |**true** |string |From account type |
+|[toAccountType](../enum#accounttype) |**true** |string |To account type |
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|is_valid |integer| Whether it is a direct customer, 0: No; 1: Yes|
-|signup_time |string| Time to become a direct customer|
+|coins |array|A list of coins (as strings) |
+
+
+---
 
 ### Request Example
 
@@ -26,11 +31,12 @@ GET `/private/v1/broker/member-info`
 import time
 import hmac
 import hashlib
+import uuid
 import requests
 import urllib.parse
 
 def create_request(apiKey, secret, params):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/member-info'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/query-coins'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -62,11 +68,14 @@ def create_request(apiKey, secret, params):
 
 apiKey = 'your key'
 secret = 'your secret'
+transferId = uuid.uuid4().hex
 params = {
-    "uid": 101479471,
+    "fromAccountType": "CONTRACT",
+    "toAccountType": "SPOT",
 }
 
 create_request(apiKey, secret, params)
+
 ```
 
 ### Response Example
@@ -77,10 +86,15 @@ create_request(apiKey, secret, params)
     "ret_msg": "OK",
     "ext_code": "",
     "result": {
-        "is_valid": 1,
-        "signup_time": "2024-06-11 04:16:58 +0000 UTC"
+    "coins": [
+        "BTC",
+        "XRP",
+        "EOS",
+        "ETH",
+        "USDT"
+    ]
     },
     "ext_info": null,
-    "time_now": 1719238958533
+    "time_now": 1721036713326
 }
 ```

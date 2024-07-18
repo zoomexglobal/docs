@@ -69,8 +69,8 @@ def create_transfer_request(apiKey, secret, body):
     print("响应信息:", response.json())
     print("响应时间:", response.elapsed.total_seconds())
 
-apiKey = 'k3R8l1ZQJ8muc5acw9'
-secret = 'TnN4GA35qmm9NgFogbyFAXGij48zpzlPSpXw'
+apiKey = 'your key'
+secret = 'your secret'
 transferId = uuid.uuid4().hex
 body = {
     "coin":"USDT",
@@ -94,7 +94,7 @@ create_transfer_request(apiKey, secret, body)
     "result": {
         "withdraw_id": "10195"
     },
-    "retExtInfo": {},
+    "retExtInfo": null,
     "time": 1672196571239
 }
 ```

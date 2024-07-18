@@ -41,43 +41,50 @@ GET `/private/v1/asset/coin/query-info`
 ### 請求示例
 
 ```python
-       def your_method(apiKey, secretKey):
-           timestamp = int(time.time() * 10 ** 3)
-           url = 'https://openapi-testnet.zoomex.com/private/v1/asset/coin/query-info'
-           method = "GET"
-           params = {
-               "api_key": apiKey,
-               "timestamp": str(timestamp),
-               "recv_window": "5000",
-               "coin": "USDT",
-           }
-           param_str = ''
-           for key in sorted(params.keys()):
-               v = params[key]
-               if isinstance(params[key], bool):
-                   if params[key]:
-                       v = 'true'
-                   else:
-                       v = 'false'
-               param_str += key + '=' + v + '&'
-           param_str = param_str[:-1]
-           hash = hmac.new(secretKey, param_str.encode("utf-8"), hashlib.sha256)
-           signature = hash.hexdigest()
-           sign_real = {
-               "sign": signature
-           }
-           param_str = quote_plus(param_str, safe="=&")
-           full_param_str = f"{param_str}&sign={sign_real['sign']}"
-           urllib3.disable_warnings()
-           s = requests.session()
-           s.keep_alive = False
-           response = requests.request(method, f"{url}?{full_param_str}", verify=False)
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
 
-       def main():
-           apiKey = "Your key"
-           secret = b"Your secret"
-           your_method(apiKey, secret)
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/coin/query-info'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
 
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
 ```
 
 ### 響應示例

@@ -1,39 +1,40 @@
 ---
-title: 子母划转
-sidebar_label: 子母划转
-sidebar_position: 2
+title: 劃轉 (單帳號內)
+sidebar_label: 劃轉 (單帳號內)
+sidebar_position: 16
 ---
 
-觸發子母劃轉動作
+創建單帳號下[帳戶類型](../enum#accounttype)間的劃轉操作
 
 :::tip
-請註意該接口入參請求數據中的transfer_id字段為UUID全局唯一。
-該接口只能用於母子賬號之間的劃轉。
-一個子賬號只會歸屬給一個母賬號。
+* 每個帳戶類型有其可接受的幣種限制, 比如, 你無法將USDC從`SPOT`劃轉至`CONTRACT`。詳情請參考[可劃轉幣種](transferable-coin#)接口.
+* 資金賬戶轉出目前僅支持加密貨幣，不支持法定貨幣.
 :::
 
+> API頻率: 1次/秒
+
 ### HTTP 請求
-POST `/private/v1/asset/sub-member/transfer`
+POST `/private/v1/asset/transfer/single-account-transfer`
 
 ### 請求參數
-| 參數 | 是否必須 | 類型 | 說明|
+| 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|transfer_id |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). 全局唯一 |
-|coin |**true** |string |币种 |
-|amount |**true** |string |划转金额 |
-|sub_user_id |**true** |int32 |子账户uid |
-|[type](../asset/enum#transfertype-type) |**true** |string |资金划转方向 |
+|transferId |**true** |string |UUID. 請自行手動生成UUID |
+|coin |**true** |string |幣種 |
+|amount |**true** |string |劃入數量 |
+|[fromAccountType](../enum#accounttype) |**true** |string |轉出賬戶類型 |
+|[toAccountType](../enum#accounttype) |**true** |string |轉入賬戶類型 |
 
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|transfer_id |string|划转请求的UUID |
+|transferId |string|UUID |
 
 ---
 
 ### 請求示例
 
-``` python
+```python
 import time
 import hmac
 import hashlib
@@ -42,7 +43,7 @@ import requests
 import json
 
 def create_transfer_request(apiKey, secret, body):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/sub-member/transfer'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/single-account-transfer'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -74,11 +75,11 @@ apiKey = 'your key'
 secret = 'your secret'
 transferId = uuid.uuid4().hex
 body = {
-    "transfer_id":transferId,
+    "requestId":transferId,
     "coin":"USDT",
     "amount":"1",
-    "sub_user_id":"162119745",
-    "type":"OUT"
+    "fromAccountType":"CONTRACT",
+    "toAccountType":"SPOT",
 }
 
 create_transfer_request(apiKey, secret, body)
@@ -89,16 +90,13 @@ create_transfer_request(apiKey, secret, body)
 
 ```json
 {
-  "ret_code": 0,
-  "ret_msg": "OK",
-  "ext_code": "",
-  "result": {
-    "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a"
-  },
-  "ext_info": null,
-  "time_now": 1690945245984,
-  "rate_limit_status": 19,
-  "rate_limit_reset_ms": 1690945245984,
-  "rate_limit": 1
+"ret_code": 0,
+"ret_msg": "OK",
+"ext_code": "",
+"result": {
+"transfer_id": "87c18caa-539a-449e-99cc-c39e4329bcc5"
+},
+"ext_info": null,
+"time_now": 1721037889588
 }
 ```

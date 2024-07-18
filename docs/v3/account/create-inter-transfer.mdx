@@ -1,33 +1,39 @@
 ---
-title: Withdraw
-sidebar_label: Withdraw
-sidebar_position: 5
+title: Create Internal Transfer
+sidebar_label: Create Internal Transfer
+sidebar_position: 16
 ---
 
-:::caution
-* Make sure you have whitelisted your wallet address in address book
-* Can query by the master UID's api key **only**
+Create the internal transfer between different [account types](../enum#accounttype) under the same UID.
+
+:::tip
+* Each account type has its own acceptable coins, e.g, you cannot transfer USDC from `SPOT` to `CONTRACT`.
+* Please refer to [transferable coin list API](transferable-coin#) to find out more.
+* Currently, the funding wallet only supports outgoing transfers in cryptocurrency, not in fiat currency.
 :::
+
 
 > API rate limit: 1 req / sec
 
 ### HTTP Request
-POST `/private/v1/asset/withdraw/create`
+POST `/private/v1/asset/transfer/single-account-transfer`
 
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|coin |**true** |string |coin |
-|chain |true |string |chain name |
-|address |**true** |string |Wallet address |
-|tag |false |string |tag <ul><li>If a tag is filled in when adding an address, then this field must be passed</li><li>**Note**: If the chain does not support tag/memo, please remove the tag/memo from the address book and do not pass the tag field when calling the interface</li></ul> |
-|amount |**true** |string |Withdrawal amount |
-|requestId |**true** |string |Custom ID, globally unique, used for idempotent verification. <li>The combination of letters (case sensitive) and numbers can be pure letters or pure numbers, with a length between 1-64 characters</li> |
+|transferId |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). Please manually generate a UUID |
+|coin |**true** |string |Coin |
+|amount |**true** |string |Amount |
+|[fromAccountType](../enum#accounttype) |**true** |string |From account type |
+|[toAccountType](../enum#accounttype) |**true** |string |To account type |
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|withdraw_id |string|Withdrawal ID |
+|transferId |string|UUID |
+
+
+---
 
 ### Request Example
 
@@ -40,7 +46,7 @@ import requests
 import json
 
 def create_transfer_request(apiKey, secret, body):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/withdraw/create'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/single-account-transfer'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -72,27 +78,28 @@ apiKey = 'your key'
 secret = 'your secret'
 transferId = uuid.uuid4().hex
 body = {
-    "coin":"USDT",
-    "chain": "your chain",
-    "address": "your address",
-    "amount":"1",
-    "sub_user_id":"162119745",
     "requestId":transferId,
+    "coin":"USDT",
+    "amount":"1",
+    "fromAccountType":"CONTRACT",
+    "toAccountType":"SPOT",
 }
 
 create_transfer_request(apiKey, secret, body)
+
 ```
 
 ### Response Example
 
 ```json
 {
-    "retCode": 0,
-    "retMsg": "success",
-    "result": {
-        "withdraw_id": "10195"
-    },
-    "retExtInfo": null,
-    "time": 1672196571239
+"ret_code": 0,
+"ret_msg": "OK",
+"ext_code": "",
+"result": {
+"transfer_id": "87c18caa-539a-449e-99cc-c39e4329bcc5"
+},
+"ext_info": null,
+"time_now": 1721037889588
 }
 ```
