@@ -7,50 +7,50 @@ sidebar_position: 2
 觸發子母劃轉動作
 
 :::tip
-請註意該接口入參請求數據中的transfer_id字段為UUID全局唯一。
-該接口只能用於母子賬號之間的劃轉。
-一個子賬號只會歸屬給一個母賬號。
+- 劃轉是異步處理的, 最終的劃轉結果可通過接口返回的 transfer_id 請求 [劃轉結果查詢接口](../asset/transfer-list) 得到。
+- 該接口只能用於母子賬號之間的劃轉。
+- 一個子賬號只會歸屬給一個母賬號。
 :::
 
 ### HTTP 請求
-POST `/private/v1/asset/sub-member/transfer`
+POST `/private/v3/asset/sub-member/transfer`
 
 ### 請求參數
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|transfer_id |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). 全局唯一 |
-|coin |**true** |string |币种 |
-|amount |**true** |string |划转金额 |
-|sub_user_id |**true** |int32 |子账户uid |
-|[type](../asset/enum#transfertype-type) |**true** |string |资金划转方向 |
+|request_id |**true** |string |劃轉請求ID，全局唯一，用於冪等校驗，長度[10,64]|
+|coin |**true** |string |幣種 |
+|amount |**true** |string |劃轉金額 |
+|sub_user_id |**true** |int32 |子賬戶uid |
+|[type](../asset/enum#transfertype-type) |**true** |string |資金劃轉方向 |
+|[account_type](../asset/enum#accounttype-account_type) |**true** |string |劃轉帳戶類型 |
 
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|transfer_id |string|划转请求的UUID |
+|transfer_id |string|劃轉結果ID |
+|request_id  |string|劃轉請求ID |
 
 ---
 
 ### 請求示例
 
 ``` shell
-POST /private/v1/asset/sub-member/transfer HTTP/1.1
+POST /private/v3/asset/sub-member/transfer HTTP/1.1
 Host: openapi-testnet.zoomex.com
-X-BAPI-SIGN: XXXXX
-X-BAPI-API-KEY: XXXXX
-X-BAPI-TIMESTAMP: 1670988271299
-X-BAPI-RECV-WINDOW: 50000
 Content-Type: application/json
 
 {
-  "amount": "20",
-  "api_key": "dVuOdOe0YxIzByQ8tV",
-  "sign": "6840b7a5b90fd7f3b4d13aa8033991d516e7d5ddc5f7fb94bbb4ac6eb29ae7f7",
-  "sub_user_id": "1524613",
-  "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a",
-  "type": "IN",
-  "timestamp": "1690945245201",
-  "coin": "USDT"
+    "request_id": "T202408230124999163699100",
+    "sub_user_id": 103741450,
+    "coin": "USDT",
+    "amount": "10",
+    "type": "IN",
+    "account_type": "CONTRACT",
+    "api_key": "0b2XYJpi8bi9tZPhft",
+    "timestamp": 1724383333525,
+    "recv_window": 5000,
+    "sign": "0d2523b83be366da51131a47ca4a5c72291050290c4349e053302e8e82231c7f"
 }
 ```
 
@@ -58,16 +58,11 @@ Content-Type: application/json
 
 ```json
 {
-  "ret_code": 0,
-  "ret_msg": "OK",
-  "ext_code": "",
-  "result": {
-    "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a"
-  },
-  "ext_info": null,
-  "time_now": 1690945245984,
-  "rate_limit_status": 19,
-  "rate_limit_reset_ms": 1690945245984,
-  "rate_limit": 1
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "result": {
+        "transfer_id": "fbd2f54b-fdfd-4c6a-a011-f78145ce3863",
+        "request_id": "T202408230124999163699100"
+    }
 }
 ```

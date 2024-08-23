@@ -23,7 +23,7 @@ https://openapi-testnet.zoomex.com
 - **主網**:<br/>
 https://openapi.zoomex.com
 
-### 公共參數
+## 公共參數
 
 需要簽名的接口必須包含以下參數:
 
@@ -39,12 +39,15 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 其中server_time是Zoomex服務器時間，您可以通過 [Zoomex服務器時間](../v3/market/time#)接口獲取.
 :::
 
-### 構建請求
+## 構建請求
 
 :::tip
-為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
+- 由於曆史原因，存在兩種籤名方式：一種[籤名在請求頭](./intro#籤名方式一籤名在請求頭)中，另一種[籤名在請求體](./intro#籤名方式二籤名在請求體)中；使用哪種籤名方式請參考具體接口請求示列。
+- 為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
 :::
 
+
+### 籤名方式一：籤名在請求頭
 
 **基本步驟:**
 
@@ -106,26 +109,68 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
     HTTP_Request(endpoint,method,params,"history")
     ```
 
-## Response通用數據結構
+### 籤名方式二：籤名在請求體
+
+**基本步驟:**
+
+1. 所有參數按照字母順序排序，然後按照 [query string](https://en.wikipedia.org/wiki/Query_string) 格式拼接。
+
+   - 拼接參數示例
+
+     ``` shell
+     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     ```
+
+2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
+
+   - 計算簽名（以`nodejs`為例）
+
+     ``` node
+     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ```
+
+3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
+
+   - GET請求格式：
+
+     ``` shell
+     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
+     Host: openapi-testnet.zoomex.com
+     ```
+
+   - POST請求格式：
+
+     ``` shell
+     POST /user/leverage/save HTTP/1.1
+     Host: openapi-testnet.zoomex.com
+     Content-Type: application/json
+     
+     {
+         "api_key": "XXXXXXXXXXX",
+         "leverage": 100,
+         "symbol": "BTCUSD",
+         "timestamp": 1542434791000,
+         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
+     }
+     ```
+
+
+## 通用返回數據結構
 
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|retCode |number |成功/錯誤碼 |
-|retMsg |string |成功/錯誤消息. 成功消息可以是`OK`,`success`,`SUCCESS`|
+|ret_code / retCode |number |成功/錯誤碼 |
+|ret_msg / retMsg |string |成功/錯誤消息. 成功消息可以是`OK`,`success`,`SUCCESS`|
 |result |Object |業務數據體|
-|retExtInfo |Object |額外信息. 大部分場景下都是`{}`|
-|time |number |當前時間戳 (毫秒)|
 
 ``` json
 {
     "retCode": 0,
     "retMsg": "success",
-    "result": {},
-    "retExtInfo": {},
-    "time": 1690180896378
+    "result": {}
 }
 ```
 
 :::tip
-- 由于历史原因，[查询实时委托单接口](./order/open-order/#)的响应体中result对象中的list对象里返回的属性是大写字母开头，对接时请注意！
+- 由於曆史原因，[查詢實時委托單接口](./order/open-order/#)的響應體中result對象中的list對象裡返回的屬性是大冩字母開頭，對接時請注意！
 :::

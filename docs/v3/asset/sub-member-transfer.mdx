@@ -7,48 +7,50 @@ sidebar_position: 2
 Transfers funds between the parent and child (sub) accounts.
 
 :::tip
-A subaccount can only be attributed to a parent account.
+- The transfer is processed asynchronously, and the transfer result is obtained through the request [Transfer Records](../asset/transfer-list) interface.
+- This interface can only be used for transfer between parent and child accounts.
+- A subaccount can only be attributed to a parent account.
 :::
 
 ### HTTP Request
-POST `/private/v1/asset/sub-member/transfer`
+POST `/private/v3/asset/sub-member/transfer`
 
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|transfer_id |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). which is unique across the platform |
+|request_id |**true** |string |Transfer request ID, globally unique, used for idempotent verification, length [10,64] |
 |coin |**true** |string |Currency type |
 |amount |**true** |string |Exchange to amount |
 |sub_user_id |**true** |int32 |Subaccount |
 |[type](../asset/enum#transfertype-type) |**true** |string |Determines the direction of transfer |
+|[account_type](../asset/enum#accounttype-account_type) |**true** |string |Transfer account type |
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|transfer_id |string|UUID, which is unique across the platform |
+|transfer_id |string|Transfer result ID |
+|request_id  |string|Transfer request ID |
 
 ---
 
 ### Request Example
 
 ``` shell
-POST /private/v1/asset/sub-member/transfer HTTP/1.1
+POST /private/v3/asset/sub-member/transfer HTTP/1.1
 Host: openapi-testnet.zoomex.com
-X-BAPI-SIGN: XXXXX
-X-BAPI-API-KEY: XXXXX
-X-BAPI-TIMESTAMP: 1670988271299
-X-BAPI-RECV-WINDOW: 50000
 Content-Type: application/json
 
 {
-  "amount": "20",
-  "api_key": "dVuOdOe0YxIzByQ8tV",
-  "sign": "6840b7a5b90fd7f3b4d13aa8033991d516e7d5ddc5f7fb94bbb4ac6eb29ae7f7",
-  "sub_user_id": "1524613",
-  "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a",
-  "type": "IN",
-  "timestamp": "1690945245201",
-  "coin": "USDT"
+    "request_id": "T202408230124999163699100",
+    "sub_user_id": 103741450,
+    "coin": "USDT",
+    "amount": "10",
+    "type": "IN",
+    "account_type": "CONTRACT",
+    "api_key": "0b2XYJpi8bi9tZPhft",
+    "timestamp": 1724383333525,
+    "recv_window": 5000,
+    "sign": "0d2523b83be366da51131a47ca4a5c72291050290c4349e053302e8e82231c7f"
 }
 ```
 
@@ -56,16 +58,11 @@ Content-Type: application/json
 
 ```json
 {
-  "ret_code": 0,
-  "ret_msg": "OK",
-  "ext_code": "",
-  "result": {
-    "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a"
-  },
-  "ext_info": null,
-  "time_now": 1690945245984,
-  "rate_limit_status": 19,
-  "rate_limit_reset_ms": 1690945245984,
-  "rate_limit": 1
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "result": {
+        "transfer_id": "fbd2f54b-fdfd-4c6a-a011-f78145ce3863",
+        "request_id": "T202408230124999163699100"
+    }
 }
 ```

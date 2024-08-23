@@ -28,7 +28,7 @@ https://openapi.zoomex.com
 * Requests made to **public** endpoints DO NOT require additional authentication.
 :::
 
-### Parameters for Authenticated Endpoints
+## Parameters for Authenticated Endpoints
 
 The following parameters must be used for authentication:
 
@@ -46,11 +46,14 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](../v3/market/time#).
 :::
 
-### Create A Request
+## Create A Request
 
 :::tip
-To assist in diagnosing advanced network problems, you may consider adding `cdn-request-id` to your request headers. Its value should be unique for each request.
+- Due to historical reasons, there are two signature methods: [Signature in the request header](./intro#signature-method-1-signature-in-the-request-header) and [Signature in the request body](./intro#signature-method-2-signature-in-the-request-body). For which signature method to use, please refer to the specific interface request demo.
+- To assist in diagnosing advanced network problems, you may consider adding `cdn-request-id` to your request headers. Its value should be unique for each request.
 :::
+
+### Signature method 1: Signature in the request header
 
 **Basic steps:**
 
@@ -112,23 +115,64 @@ To assist in diagnosing advanced network problems, you may consider adding `cdn-
     HTTP_Request(endpoint,method,params,"history")
     ```
 
+### Signature method 2: Signature in the request body
+
+**Basic steps:**
+
+1. Concatenate all the public parameters in the [query string](https://en.wikipedia.org/wiki/Query_string) format. The parameters must be ordered in **alphabetical** order. This will be used to generate the `sign`.
+
+   - For example
+
+     ``` shell
+     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
+     ```
+
+2. Use the HMAC_SHA256 algorithm to sign the query string in step 1, and convert it to a hex string to obtain the sign parameter.
+
+   - Calculate the signature (take `nodejs` as an example)
+
+     ``` node
+     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
+     ```
+
+3. Append the sign parameter to the end of the parameters string, and send the HTTP request. Note that the message format for GET and POST requests is different. Please refer to the examples.
+
+   - GET request example
+
+     ``` shell
+     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
+     Host: openapi-testnet.zoomex.com
+     ```
+
+   - POST request example
+
+     ``` shell
+     POST /user/leverage/save HTTP/1.1
+     Host: openapi-testnet.zoomex.com
+     Content-Type: application/json
+     
+     {
+         "api_key": "XXXXXXXXXXX",
+         "leverage": 100,
+         "symbol": "BTCUSD",
+         "timestamp": 1542434791000,
+         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
+     }
+     ```
+
 ## Common response parameters
 
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|retCode |number |Success/Error code |
-|retMsg |string |Success/Error msg. Can be `OK`,`success`,`Success` for Success message|
+|ret_code / retCode |number |Success/Error code |
+|ret_msg / retMsg |string |Success/Error msg. Can be `OK`,`success`,`Success` for Success message|
 |result |Object |Business data result|
-|retExtInfo |Object |Extend info. Most of time, it is `{}`|
-|time |number |Current timestamp (ms)|
 
 ``` json
 {
     "retCode": 0,
     "retMsg": "success",
-    "result": {},
-    "retExtInfo": {},
-    "time": 1690180896378
+    "result": {}
 }
 ```
 

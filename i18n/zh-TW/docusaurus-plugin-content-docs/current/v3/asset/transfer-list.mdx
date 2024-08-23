@@ -10,7 +10,7 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### 請求參數
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|transfer_id |false |string |UUID,全局唯一 |
+|transfer_id |false |string |劃轉結果ID |
 |coin |false |string |幣種類型 |
 |[status](../asset/enum#transferstatus-status) |false |string |劃轉狀態 |
 |start_time |false |integer |開始時間戳（秒） |
@@ -23,7 +23,7 @@ GET `/private/v1/asset/sub-member/transfer/list`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |list |array|Object |
-|> transfer_id |string |UUID,全局唯一 |
+|> transfer_id |string |劃轉結果ID |
 |> coin |string |幣種類型 |
 |> amount |string |劃轉金額 |
 |> user_id |int32 |帳號 |
@@ -38,12 +38,8 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### 請求示例
 
 ```shell
-GET /private/v1/asset/sub-member/transfer/list HTTP/1.1
+GET /private/v1/asset/sub-member/transfer/list?transfer_id=fbd2f54b-fdfd-4c6a-a011-f78145ce3863&timestamp=1724397358387&api_key=0b2XYJpi8bi9tZPhft&recv_window=5000&sign=8241ff9c0aecf62bd8bbe5deffee8aa6fbaec6ac9abc61b336a0a0baf3d922e7 HTTP/1.1
 Host: openapi-testnet.zoomex.com
-X-BAPI-SIGN: XXXXX
-X-BAPI-API-KEY: XXXXX
-X-BAPI-TIMESTAMP: 1670988271299
-X-BAPI-RECV-WINDOW: 50000
 ```
 
 ### 響應示例
@@ -52,56 +48,20 @@ X-BAPI-RECV-WINDOW: 50000
 {
     "ret_code": 0,
     "ret_msg": "OK",
-    "ext_code": "",
     "result": {
         "list": [
             {
-                "transfer_id": "5f95de18-b10f-43ba-9756-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629968375",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9756-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629968351",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9746-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629967817",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9746-7b95c4a37d97",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629966772",
+                "transfer_id": "fbd2f54b-fdfd-4c6a-a011-f78145ce3863",
+                "coin": "USDT",
+                "amount": "10",
+                "user_id": 100500689,
+                "sub_user_id": 103741450,
+                "timestamp": "1724383335",
                 "status": "SUCCESS",
                 "type": "IN"
             }
         ],
-        "cursor": "eyJtaW5JRCI6NzkzNzgsIm1heElEIjo3OTQwMH0="
-    },
-    "ext_info": null,
-    "time_now": 1629978073116,
-    "rate_limit_status": 59,
-    "rate_limit_reset_ms": 1629978073116,
-    "rate_limit": 1
+        "cursor": "eyJtaW5JRCI6NjEwMDI2LCJtYXhJRCI6NjEwMDI2fQ=="
+    }
 }
 ```
