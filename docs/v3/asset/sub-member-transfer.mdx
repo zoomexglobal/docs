@@ -18,7 +18,7 @@ POST `/private/v3/asset/sub-member/transfer`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|request_id |**true** |string |Transfer request ID, globally unique, used for idempotent verification, length [10,64] |
+|request_id |**true** |string |Transfer request UUID, globally unique, used for idempotent verification |
 |coin |**true** |string |Currency type |
 |amount |**true** |string |Exchange to amount |
 |sub_user_id |**true** |int32 |Subaccount |

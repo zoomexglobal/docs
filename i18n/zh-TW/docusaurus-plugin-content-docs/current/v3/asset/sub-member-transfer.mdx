@@ -18,7 +18,7 @@ POST `/private/v3/asset/sub-member/transfer`
 ### 請求參數
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|request_id |**true** |string |劃轉請求ID，全局唯一，用於冪等校驗，長度[10,64]|
+|request_id |**true** |string |劃轉請求UUID，全局唯一，用於冪等校驗|
 |coin |**true** |string |幣種 |
 |amount |**true** |string |劃轉金額 |
 |sub_user_id |**true** |int32 |子賬戶uid |
