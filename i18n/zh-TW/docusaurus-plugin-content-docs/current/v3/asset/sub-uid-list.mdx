@@ -26,7 +26,11 @@ GET `/private/v1/asset/sub-member/member-ids`
 ### 請求示例
 
 ``` shell
-GET /private/v1/asset/sub-member/member-ids?timestamp=1724491676233&api_key=0b2XYJpi8bi9tZPhft&recv_window=5000&sign=f70c48d470754baf537044038fa53543e71cd5292b5d68ff87be35fbaac8e669 HTTP/1.1
+GET /private/v1/asset/sub-member/member-ids HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: 520539314e551bb3b1cf6606b19e999906904fab9f766a0f709addadee558823
+X-BAPI-TIMESTAMP: 1724600928448
+X-BAPI-RECV-WINDOW: 1000000
 Host: openapi-testnet.zoomex.com
 ```
 

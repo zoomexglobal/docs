@@ -37,20 +37,20 @@ POST `/private/v3/asset/sub-member/transfer`
 
 ``` shell
 POST /private/v3/asset/sub-member/transfer HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: ac6aae0cab89873a3635874af169a9224674a5e06f7e411cbbbb9d2f6905eae3
+X-BAPI-TIMESTAMP: 1724600349557
+X-BAPI-RECV-WINDOW: 1000000
 Host: openapi-testnet.zoomex.com
 Content-Type: application/json
 
 {
-    "request_id": "T202408230124999163699100",
+    "request_id": "6481da3c-5eff-45d9-90e8-72b3da105533",
     "sub_user_id": 103741450,
     "coin": "USDT",
     "amount": "10",
     "type": "IN",
-    "account_type": "CONTRACT",
-    "api_key": "0b2XYJpi8bi9tZPhft",
-    "timestamp": 1724383333525,
-    "recv_window": 5000,
-    "sign": "0d2523b83be366da51131a47ca4a5c72291050290c4349e053302e8e82231c7f"
+    "account_type": "SPOT"
 }
 ```
 
@@ -61,8 +61,8 @@ Content-Type: application/json
     "ret_code": 0,
     "ret_msg": "OK",
     "result": {
-        "transfer_id": "fbd2f54b-fdfd-4c6a-a011-f78145ce3863",
-        "request_id": "T202408230124999163699100"
+        "transfer_id": "d5c3f1e3-097c-4532-9f4d-3b2990bdcd85",
+        "request_id": "6481da3c-5eff-45d9-90e8-72b3da105533"
     }
 }
 ```

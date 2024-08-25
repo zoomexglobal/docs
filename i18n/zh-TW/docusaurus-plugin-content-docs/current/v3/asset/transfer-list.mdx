@@ -38,7 +38,11 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### 請求示例
 
 ```shell
-GET /private/v1/asset/sub-member/transfer/list?transfer_id=fbd2f54b-fdfd-4c6a-a011-f78145ce3863&timestamp=1724397358387&api_key=0b2XYJpi8bi9tZPhft&recv_window=5000&sign=8241ff9c0aecf62bd8bbe5deffee8aa6fbaec6ac9abc61b336a0a0baf3d922e7 HTTP/1.1
+GET /private/v1/asset/sub-member/transfer/list?transfer_id=d5c3f1e3-097c-4532-9f4d-3b2990bdcd85 HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: 221ba23854643b451d49d0e56d4bdf7a3192c2e9b9dea8fbddb07e538b0fbf72
+X-BAPI-TIMESTAMP: 1724600673292
+X-BAPI-RECV-WINDOW: 1000000
 Host: openapi-testnet.zoomex.com
 ```
 
@@ -51,17 +55,17 @@ Host: openapi-testnet.zoomex.com
     "result": {
         "list": [
             {
-                "transfer_id": "fbd2f54b-fdfd-4c6a-a011-f78145ce3863",
+                "transfer_id": "d5c3f1e3-097c-4532-9f4d-3b2990bdcd85",
                 "coin": "USDT",
                 "amount": "10",
                 "user_id": 100500689,
                 "sub_user_id": 103741450,
-                "timestamp": "1724383335",
+                "timestamp": "1724600351",
                 "status": "SUCCESS",
                 "type": "IN"
             }
         ],
-        "cursor": "eyJtaW5JRCI6NjEwMDI2LCJtYXhJRCI6NjEwMDI2fQ=="
+        "cursor": "eyJtaW5JRCI6NjEwMzExLCJtYXhJRCI6NjEwMzExfQ=="
     }
 }
 ```

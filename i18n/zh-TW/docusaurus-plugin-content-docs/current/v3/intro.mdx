@@ -42,12 +42,8 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 ## 構建請求
 
 :::tip
-- 由於曆史原因，存在兩種籤名方式：一種[籤名在請求頭](./intro#籤名方式一籤名在請求頭)中，另一種[籤名在請求體](./intro#籤名方式二籤名在請求體)中；使用哪種籤名方式請參考具體接口請求示列。
 - 為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
 :::
-
-
-### 籤名方式一：籤名在請求頭
 
 **基本步驟:**
 
@@ -108,52 +104,6 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
     params='category=linear&symbol=BTCUSDT'
     HTTP_Request(endpoint,method,params,"history")
     ```
-
-### 籤名方式二：籤名在請求體
-
-**基本步驟:**
-
-1. 所有參數按照字母順序排序，然後按照 [query string](https://en.wikipedia.org/wiki/Query_string) 格式拼接。
-
-   - 拼接參數示例
-
-     ``` shell
-     orderedParams = "api_key=XXXXXXXXXXX&buy_leverage=100&sell_leverage=110&symbol=BTCUSDT&timestamp=1542434791747"
-     ```
-
-2. 使用 `HMAC_SHA256` 算法對第1步中拼接的query string簽名，並轉換為16進製字符串，得出 `sign` 參數。
-
-   - 計算簽名（以`nodejs`為例）
-
-     ``` node
-     sign = cryptoJS.HmacSHA256(orderedParams, secret).toString(cryptoJS.enc.Hex)
-     ```
-
-3. 將sign參數加到請求參數中即可；註意GET和POST請求參數格式不同，詳見以下示例。
-
-   - GET請求格式：
-
-     ``` shell
-     GET /user/leverage?api_key=XXXXXXXXXXX&timestamp=1542434791000&sign=670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908 HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     ```
-
-   - POST請求格式：
-
-     ``` shell
-     POST /user/leverage/save HTTP/1.1
-     Host: openapi-testnet.zoomex.com
-     Content-Type: application/json
-     
-     {
-         "api_key": "XXXXXXXXXXX",
-         "leverage": 100,
-         "symbol": "BTCUSD",
-         "timestamp": 1542434791000,
-         "sign": "670e3e4aa32b243f2dedf1dafcec2fd17a440e71b05681550416507de591d908"
-     }
-     ```
-
 
 ## 通用返回數據結構
 
