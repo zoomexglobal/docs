@@ -10,7 +10,7 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|transfer_id |false |string |UUID, which is unique across the platform|
+|transfer_id |false |string |Transfer result ID|
 |coin |false |string |Coin |
 |[status](../asset/enum#transferstatus-status) |false |string |Transfer status |
 |start_time |false |integer |The start timestamp (ms) |
@@ -38,40 +38,34 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### Request Example
 
 ```shell
-GET /private/v1/asset/sub-member/transfer/list?cursor=eyJtaW5JRCI6NDk5OTgyLCJtYXhJRCI6NDk5OTgyfQ%3D%3D&start_time=1682924702&api_key=dVuOdOe0YxIzByQ8tV&sign=4b160d2aaa1453ecebccaf48c605cc9528262bc00a76c5ab4c600acb54a26bc0&end_time=1690947997&limit=5&transfer_id=d1fc12d2-c0c1-4954-8ca0-09d3343a246a&timestamp=1690947997216&coin=USDT&status=SUCCESS&direction=first HTTP/1.1
+GET /private/v1/asset/sub-member/transfer/list?transfer_id=d5c3f1e3-097c-4532-9f4d-3b2990bdcd85 HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: 221ba23854643b451d49d0e56d4bdf7a3192c2e9b9dea8fbddb07e538b0fbf72
+X-BAPI-TIMESTAMP: 1724600673292
+X-BAPI-RECV-WINDOW: 1000000
 Host: openapi-testnet.zoomex.com
-X-BAPI-SIGN: XXXXX
-X-BAPI-API-KEY: XXXXX
-X-BAPI-TIMESTAMP: 1670988271299
-X-BAPI-RECV-WINDOW: 50000
 ```
 
 ### Response Example
 
 ```json
 {
-  "result": {
-    "cursor": "eyJtaW5JRCI6NTAwMjAwLCJtYXhJRCI6NTAwMjAwfQ==",
-    "list": [
-      {
-        "amount": "20",
-        "user_id": 606170,
-        "sub_user_id": 1524613,
-        "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a",
-        "type": "IN",
-        "coin": "USDT",
-        "timestamp": "1690945247",
-        "status": "SUCCESS"
-      }
-    ]
-  },
-  "rate_limit": 1,
-  "rate_limit_status": 59,
-  "ext_code": "",
-  "time_now": 1690947997909,
-  "rate_limit_reset_ms": 1690947997909,
-  "ret_msg": "OK",
-  "ext_info": null,
-  "ret_code": 0
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "result": {
+        "list": [
+            {
+                "transfer_id": "d5c3f1e3-097c-4532-9f4d-3b2990bdcd85",
+                "coin": "USDT",
+                "amount": "10",
+                "user_id": 100500689,
+                "sub_user_id": 103741450,
+                "timestamp": "1724600351",
+                "status": "SUCCESS",
+                "type": "IN"
+            }
+        ],
+        "cursor": "eyJtaW5JRCI6NjEwMzExLCJtYXhJRCI6NjEwMzExfQ=="
+    }
 }
 ```

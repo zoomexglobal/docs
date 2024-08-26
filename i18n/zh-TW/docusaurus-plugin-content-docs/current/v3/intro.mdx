@@ -23,7 +23,7 @@ https://openapi-testnet.zoomex.com
 - **主網**:<br/>
 https://openapi.zoomex.com
 
-### 公共參數
+## 公共參數
 
 需要簽名的接口必須包含以下參數:
 
@@ -39,12 +39,11 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 其中server_time是Zoomex服務器時間，您可以通過 [Zoomex服務器時間](../v3/market/time#)接口獲取.
 :::
 
-### 構建請求
+## 構建請求
 
 :::tip
-為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
+- 為了幫助診斷高級網絡問題，您可以考慮將`cdn-request-id`添加到您的請求頭中。對於每個請求，它的值應該是唯一的。
 :::
-
 
 **基本步驟:**
 
@@ -106,26 +105,22 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
     HTTP_Request(endpoint,method,params,"history")
     ```
 
-## Response通用數據結構
+## 通用返回數據結構
 
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
-|retCode |number |成功/錯誤碼 |
-|retMsg |string |成功/錯誤消息. 成功消息可以是`OK`,`success`,`SUCCESS`|
+|ret_code / retCode |number |成功/錯誤碼 |
+|ret_msg / retMsg |string |成功/錯誤消息. 成功消息可以是`OK`,`success`,`SUCCESS`|
 |result |Object |業務數據體|
-|retExtInfo |Object |額外信息. 大部分場景下都是`{}`|
-|time |number |當前時間戳 (毫秒)|
 
 ``` json
 {
     "retCode": 0,
     "retMsg": "success",
-    "result": {},
-    "retExtInfo": {},
-    "time": 1690180896378
+    "result": {}
 }
 ```
 
 :::tip
-- 由于历史原因，[查询实时委托单接口](./order/open-order/#)的响应体中result对象中的list对象里返回的属性是大写字母开头，对接时请注意！
+- 由於曆史原因，[查詢實時委托單接口](./order/open-order/#)的響應體中result對象中的list對象裡返回的屬性是大冩字母開頭，對接時請注意！
 :::
