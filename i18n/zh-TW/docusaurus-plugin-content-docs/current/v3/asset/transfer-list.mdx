@@ -1,6 +1,6 @@
 ---
-title: 查詢子帳號劃轉紀錄
-sidebar_label: 查詢子帳號劃轉紀錄
+title: 查詢劃轉紀錄
+sidebar_label: 查詢劃轉紀錄
 sidebar_position: 3
 ---
 
@@ -10,7 +10,7 @@ GET `/private/v1/asset/sub-member/transfer/list`
 ### 請求參數
 | 參數 | 是否必須 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|transfer_id |false |string |UUID,全局唯一 |
+|transfer_id |false |string |劃轉結果ID |
 |coin |false |string |幣種類型 |
 |[status](../asset/enum#transferstatus-status) |false |string |劃轉狀態 |
 |start_time |false |integer |開始時間戳（秒） |
@@ -23,7 +23,7 @@ GET `/private/v1/asset/sub-member/transfer/list`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |list |array|Object |
-|> transfer_id |string |UUID,全局唯一 |
+|> transfer_id |string |劃轉結果ID |
 |> coin |string |幣種類型 |
 |> amount |string |劃轉金額 |
 |> user_id |int32 |帳號 |
@@ -37,51 +37,13 @@ GET `/private/v1/asset/sub-member/transfer/list`
 
 ### 請求示例
 
-```python
-import time
-import hmac
-import hashlib
-import requests
-import urllib.parse
-
-def create_request(apiKey, secret, params):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/sub-member/transfer/list'
-    timestamp = int(time.time() * 1000)
-    recv_window = 1000000
-
-    params['api_key'] = apiKey
-    params['timestamp'] = timestamp
-    params['recv_window'] = recv_window
-
-    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
-
-    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
-
-    params['sign'] = signature
-
-    headers = {
-        'X-BAPI-API-KEY': apiKey,
-        'X-BAPI-SIGN': signature,
-        'X-BAPI-TIMESTAMP': str(timestamp),
-        'X-BAPI-RECV-WINDOW': str(recv_window)
-    }
-
-    query_string = urllib.parse.urlencode(params)
-    full_url = f"{url}?{query_string}"
-
-    response = requests.get(full_url, headers=headers)
-
-    print("响应状态:", response.status_code)
-    print("响应信息:", response.json())
-    print("响应时间:", response.elapsed.total_seconds())
-
-apiKey = 'your key'
-secret = 'your secret'
-params = {
-    "coin": "BTC",
-}
-
-create_request(apiKey, secret, params)
+```shell
+GET /private/v1/asset/sub-member/transfer/list?transfer_id=d5c3f1e3-097c-4532-9f4d-3b2990bdcd85 HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: 221ba23854643b451d49d0e56d4bdf7a3192c2e9b9dea8fbddb07e538b0fbf72
+X-BAPI-TIMESTAMP: 1724600673292
+X-BAPI-RECV-WINDOW: 1000000
+Host: openapi-testnet.zoomex.com
 ```
 
 ### 響應示例
@@ -90,56 +52,20 @@ create_request(apiKey, secret, params)
 {
     "ret_code": 0,
     "ret_msg": "OK",
-    "ext_code": "",
     "result": {
         "list": [
             {
-                "transfer_id": "5f95de18-b10f-43ba-9756-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629968375",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9756-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629968351",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9746-0b95c4a37d07",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629967817",
-                "status": "SUCCESS",
-                "type": "IN"
-            },
-            {
-                "transfer_id": "5f95de18-b10f-43be-9746-7b95c4a37d97",
-                "coin": "BTC",
-                "amount": "0.1",
-                "user_id": 229988,
-                "sub_user_id": 251711,
-                "timestamp": "1629966772",
+                "transfer_id": "d5c3f1e3-097c-4532-9f4d-3b2990bdcd85",
+                "coin": "USDT",
+                "amount": "10",
+                "user_id": 100500689,
+                "sub_user_id": 103741450,
+                "timestamp": "1724600351",
                 "status": "SUCCESS",
                 "type": "IN"
             }
         ],
-        "cursor": "eyJtaW5JRCI6NzkzNzgsIm1heElEIjo3OTQwMH0="
-    },
-    "ext_info": null,
-    "time_now": 1629978073116,
-    "rate_limit_status": 59,
-    "rate_limit_reset_ms": 1629978073116,
-    "rate_limit": 1
+        "cursor": "eyJtaW5JRCI6NjEwMzExLCJtYXhJRCI6NjEwMzExfQ=="
+    }
 }
 ```

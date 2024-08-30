@@ -7,96 +7,62 @@ sidebar_position: 2
 Transfers funds between the parent and child (sub) accounts.
 
 :::tip
-A subaccount can only be attributed to a parent account.
+- The transfer is processed asynchronously, and the transfer result is obtained through the request [Transfer Records](../asset/transfer-list) interface.
+- This interface can only be used for transfer between parent and child accounts.
+- A subaccount can only be attributed to a parent account.
 :::
 
 ### HTTP Request
-POST `/private/v1/asset/sub-member/transfer`
+POST `/private/v3/asset/sub-member/transfer`
 
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|transfer_id |**true** |string |[UUID](https://www.uuidgenerator.net/dev-corner). which is unique across the platform |
+|request_id |**true** |string |Transfer request UUID, globally unique, used for idempotent verification |
 |coin |**true** |string |Currency type |
 |amount |**true** |string |Exchange to amount |
 |sub_user_id |**true** |int32 |Subaccount |
 |[type](../asset/enum#transfertype-type) |**true** |string |Determines the direction of transfer |
+|[account_type](../asset/enum#accounttype-account_type) |**true** |string |Transfer account type |
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|transfer_id |string|UUID, which is unique across the platform |
+|transfer_id |string|Transfer result ID |
+|request_id  |string|Transfer request ID |
 
 ---
 
 ### Request Example
 
-``` python
-import time
-import hmac
-import hashlib
-import uuid
-import requests
-import json
+``` shell
+POST /private/v3/asset/sub-member/transfer HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: ac6aae0cab89873a3635874af169a9224674a5e06f7e411cbbbb9d2f6905eae3
+X-BAPI-TIMESTAMP: 1724600349557
+X-BAPI-RECV-WINDOW: 1000000
+Host: openapi-testnet.zoomex.com
+Content-Type: application/json
 
-def create_transfer_request(apiKey, secret, body):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/sub-member/transfer'
-    timestamp = int(time.time() * 1000)
-    recv_window = 1000000
-
-    body['api_key'] = apiKey
-    body['timestamp'] = timestamp
-    body['recv_window'] = recv_window
-
-    ordered_params = '&'.join([f"{key}={body[key]}" for key in sorted(body.keys())])
-
-    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
-
-    body['sign'] = signature
-
-    headers = {
-        'X-BAPI-API-KEY': apiKey,
-        'X-BAPI-SIGN': signature,
-        'X-BAPI-TIMESTAMP': str(timestamp),
-        'X-BAPI-RECV-WINDOW': str(recv_window),
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.post(url, headers=headers, data=json.dumps(body))
-
-    print("response status:", response.status_code)
-    print("response info:", response.json())
-    print("response time:", response.elapsed.total_seconds())
-
-apiKey = 'your api key'
-secret = 'your secret'
-transferId = uuid.uuid4().hex
-body = {
-    "transfer_id":transferId,
-    "coin":"USDT",
-    "amount":"1",
-    "sub_user_id":"162119745",
-    "type":"OUT"
+{
+    "request_id": "6481da3c-5eff-45d9-90e8-72b3da105533",
+    "sub_user_id": 103741450,
+    "coin": "USDT",
+    "amount": "10",
+    "type": "IN",
+    "account_type": "SPOT"
 }
-
-create_transfer_request(apiKey, secret, body)
-
 ```
 
 ### Response Example
 
 ```json
 {
-  "ret_code": 0,
-  "ret_msg": "OK",
-  "ext_code": "",
-  "result": {
-    "transfer_id": "d1fc12d2-c0c1-4954-8ca0-09d3343a246a"
-  },
-  "ext_info": null,
-  "time_now": 1690945245984,
-  "rate_limit_status": 19,
-  "rate_limit_reset_ms": 1690945245984,
-  "rate_limit": 1
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "result": {
+        "transfer_id": "d5c3f1e3-097c-4532-9f4d-3b2990bdcd85",
+        "request_id": "6481da3c-5eff-45d9-90e8-72b3da105533"
+    }
 }
 ```
