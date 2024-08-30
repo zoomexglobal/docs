@@ -1,0 +1,100 @@
+---
+title: Get Transferable Coin
+sidebar_label: Get Transferable Coin
+sidebar_position: 15
+---
+
+Query the transferable coin list between each [account type](../enum#accounttype)
+
+> API rate limit: 60 req / min
+
+### HTTP Request
+GET `/private/v1/asset/transfer/query-coins`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[fromAccountType](../enum#accounttype) |**true** |string |From account type |
+|[toAccountType](../enum#accounttype) |**true** |string |To account type |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|coins |array|A list of coins (as strings) |
+
+
+---
+
+### Request Example
+
+```python
+import time
+import hmac
+import hashlib
+import uuid
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/query-coins'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+transferId = uuid.uuid4().hex
+params = {
+    "fromAccountType": "CONTRACT",
+    "toAccountType": "SPOT",
+}
+
+create_request(apiKey, secret, params)
+
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+    "coins": [
+        "BTC",
+        "XRP",
+        "EOS",
+        "ETH",
+        "USDT"
+    ]
+    },
+    "ext_info": null,
+    "time_now": 1721036713326
+}
+```

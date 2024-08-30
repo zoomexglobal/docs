@@ -1,0 +1,101 @@
+---
+title: 內部轉帳
+sidebar_label: 內部轉帳
+sidebar_position: 6
+---
+
+:::caution
+* 確保您已經將提現地址加入到地址簿
+* 僅支持**母帳號**的API key
+:::
+
+> API頻率: 1次/秒
+
+
+### HTTP 請求
+POST `/private/v1/asset/withdraw/inner-create`
+
+### 請求參數
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|requestId |**true** |string |自定義id，全域唯一，用於幂等校驗（最大長度64） |
+|coin |**true** |string |coin |
+|addressType |**true** |integer |提現地址類型：1-EMAIL 2-PHONE 3-UID |
+|areaCode |false |integer |區號，當提幣地址為移动电话時，該參數必須填寫。當提幣地址不為移动电话時，不用填入該參數，如果填了後臺也不會使用 |
+|address |**true** |string |收款人資訊，email：郵箱，mobile：行动电话或者手機號，uid：用戶ID，清確認收款人資訊已添加在<a href="https://www.zoomex.com/en/assets/withdraw-address">地址簿</a> |
+|amount |**true** |string |轉帳金額 |
+|remark |false |string |備註資訊，不能超過50個字符 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|withdraw_id |string|提現Id |
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import uuid
+import requests
+import json
+
+def create_request(apiKey, secret, body):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/withdraw/inner-create'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    body['api_key'] = apiKey
+    body['timestamp'] = timestamp
+    body['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={body[key]}" for key in sorted(body.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    body['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window),
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+transferId = uuid.uuid4().hex
+body = {
+    "requestId":transferId,
+    "coin":"USDT",
+    "addressType":3,
+    "address": "your address",
+    "amount":"1",
+    "remark":"your remark",
+}
+
+create_request(apiKey, secret, body)
+
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "withdraw_id": "10195"
+    },
+    "retExtInfo": null,
+    "time": 1672196571239
+}
+```

@@ -1,0 +1,127 @@
+---
+title: 查詢代理商返佣信息
+sidebar_label: 查詢代理商返佣信息
+sidebar_position: 1
+---
+
+:::info
+* 使用代理商的母帳戶進行查詢
+* 支持查詢過去12個月的數據至T-1
+* `begin` & `end`兩個入参, 要麼同時輸入, 要麼都不輸入. 当不输入时, 默认返回最近7天的数据
+:::
+> API頻率: 10次/秒
+
+### HTTP 請求
+GET `/private/v1/broker/earnings-info`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|productType|false |string |業務類型. `SPOT`, `DERIVATIVES` |
+|begin|false |string |開始時間, 格式: YYYYMMDD, 比如, 20231201, 表示搜尋時間是從2023年12月1日 00:00:00 UTC (包含) |
+|end |false |string |結束時間, 格式: YYYYMMDD, 比如, 20231201, 表示搜尋時間是結束於2023年12月2日 00:00:00 UTC (不包含) |
+|uid |false |string |<ul><li>輸入子UID來查詢指定UID的具體數據</li><li>要向獲得所有子UID的數據, 則不傳</li></ul>  |
+|limit|false |integer |每頁數量限制. [`1`, `1000`]. 默認: `1000` |
+|cursor|false |integer |游標，用於翻頁，首次調用時不用傳|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|coin_detail |array |Object. 各業務的返傭數據 |
+|> product_type |string |業務類型. SPOT, DERIVATIVES|
+|> coin |string |返佣幣種|
+|> rebate_fee |string |返佣金額|
+| user_detail |array |Object. 每個子UID以及每個業務類型的交易細節|
+|> user_id |string |UID|
+|> product_type |string |業務類型. SPOT, DERIVATIVES|
+|> coin |string |返佣幣種|
+|> rebate_fee |string |返佣金額|
+|> dt  |string |日期|
+|next_cursor |integer |游標，用於翻頁|
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/earnings-info'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "productType": "DERIVATIVES",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "coin_detail": [
+            {
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.845657"
+            }
+        ],
+        "user_detail": [
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.22783662",
+                "dt": "2024-06-12"
+            },
+            {
+                "user_id": "101479471",
+                "product_type": "DERIVATIVES",
+                "coin": "USDT",
+                "rebate_fee": "0.61782038",
+                "dt": "2024-06-11"
+            }
+        ],
+        "next_cursor": 688
+    },
+    "ext_info": null,
+    "time_now": 1718353045150
+}
+```

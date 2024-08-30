@@ -1,0 +1,88 @@
+---
+title: 查詢代理商全部直客訊息
+sidebar_label: 查詢代理商全部直客訊息
+sidebar_position: 5
+---
+
+> API頻率: 5次/秒
+
+### HTTP 請求
+GET `/private/v1/broker/query-direct-user-list`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|begin |false |string |查询成为直客的开始时间（UTC）秒|
+|end |false |string |查询成为直客的结束时间（UTC）秒|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|user_list |Array| 用户ID列表|
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/query-direct-user-list'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "begin": 1706802672,
+    "end": 1722950422,
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "user_list": [
+            "101479471"
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1722950430767
+}
+```

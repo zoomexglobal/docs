@@ -6,7 +6,8 @@ sidebar_position: 3
 
 Subscribe to the order stream to see changes to your orders in **real-time**.
 
-**Topic:** `order`
+**All-In-One Topic:** `order`<br/>
+**Categorised Topic:** `order.spot`, `order.linear`, `order.inverse`
 
 ### Response Parameters
 | Parameter | Type | Comments|
@@ -15,7 +16,7 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |topic |string |Topic name |
 |creationTime |number |Data created timestamp (ms) |
 |data |array |Object |
-|> category |string |Product type <ul><li>Normal account: `linear`, `inverse`.</li></ul>|
+|> category |string |Product type <ul><li>Normal account: `spot`, `linear`, `inverse`.</li></ul>|
 |> orderId  |string |Order ID |
 |> orderLinkId |string |User customised order ID |
 |> symbol |string |Symbol name |

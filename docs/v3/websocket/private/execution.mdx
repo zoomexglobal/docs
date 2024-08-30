@@ -12,6 +12,15 @@ You may have multiple executions for one order in a single message.
 
 **Topic:** `execution`
 
+**All-In-One Topic:** `execution`<br/>
+**Categorised Topic:** `execution.spot`, `execution.linear`, `execution.inverse`
+
+:::info
+* All-In-One topic and Categorised topic **cannot** be in the same subscription request
+* All-In-One topic: Allow you to listen to all categories (spot, linear, inverse) websocket updates
+* Categorised Topic: Allow you to listen only to specific category websocket updates
+:::
+
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |

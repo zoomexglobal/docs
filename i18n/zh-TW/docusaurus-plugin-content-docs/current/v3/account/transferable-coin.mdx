@@ -1,0 +1,98 @@
+---
+title: 帳戶類型間可劃轉的幣種
+sidebar_label: 帳戶類型間可劃轉的幣種
+sidebar_position: 15
+---
+
+> API頻率: 60次/分
+
+### HTTP 請求
+GET `/private/v1/asset/transfer/query-coins`
+
+### HTTP 請求
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[fromAccountType](../enum#accounttype) |**true** |string |劃出帳戶類型 |
+|[toAccountType](../enum#accounttype) |**true** |string |劃入帳戶類型 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|coins |array|幣種數組 |
+
+
+---
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import uuid
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/query-coins'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+transferId = uuid.uuid4().hex
+params = {
+    "fromAccountType": "CONTRACT",
+    "toAccountType": "SPOT",
+}
+
+create_request(apiKey, secret, params)
+
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+    "coins": [
+        "BTC",
+        "XRP",
+        "EOS",
+        "ETH",
+        "USDT"
+    ]
+    },
+    "ext_info": null,
+    "time_now": 1721036713326
+}
+```

@@ -1,0 +1,111 @@
+---
+title: Get Internal Transfer Records
+sidebar_label: Get Internal Transfer Records
+sidebar_position: 3
+---
+
+Query the internal transfer records between different [account types](../enum#accounttype) under the same UID.
+
+### HTTP Request
+GET `/private/v1/asset/transfer/list`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|transferId |false |string |UUID. Use the UUID used to create the transition|
+|coin |false |string |Coin |
+|[status](../enum#transferstatus) |false |string |Transfer status |
+|startTime |false |integer |The start timestamp (s) |
+|endTime |false |integer |The end timestamp (s) |
+|limit |false |integer |Limit for data size per page. [`1`, `50`]. Default: `10`|
+|cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|list |array|Object |
+|> transferId |string |Transfer ID |
+|> coin |string |Transferred coin |
+|> amount |string |Transferred amount |
+|> [fromAccountType](../enum#accounttype) |string |From account type |
+|> [toAccountType](../enum#accounttype) |string |To account type |
+|> timestamp |string |Transfer created timestamp (s) |
+|> [status](../enum#transferstatus) |string |Transfer status |
+|cursor |string|Refer to the `cursor` request parameter |
+
+
+---
+
+### Request Example
+
+``` python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/list'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+    "list": [
+        {
+            "transferId": "selfTransfer_a1091cc7-9364-4b74-8de1-18f02c6f2d5c",
+            "coin": "USDT",
+            "amount": "5000",
+            "fromAccountType": "SPOT",
+            "toAccountType": "UNIFIED",
+            "timestamp": "1667283263000",
+            "status": "SUCCESS"
+        }
+    ],
+    "cursor": "eyJtaW5JRCI6MTM1ODQ2OCwibWF4SUQiOjEzNTg0Njh9"
+},
+    "retExtInfo": {},
+    "time": 1670988271677
+}
+```

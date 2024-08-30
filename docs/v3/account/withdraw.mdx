@@ -1,0 +1,98 @@
+---
+title: Withdraw
+sidebar_label: Withdraw
+sidebar_position: 5
+---
+
+:::caution
+* Make sure you have whitelisted your wallet address in address book
+* Can query by the master UID's api key **only**
+:::
+
+> API rate limit: 1 req / sec
+
+### HTTP Request
+POST `/private/v1/asset/withdraw/create`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|coin |**true** |string |coin |
+|chain |true |string |chain name |
+|address |**true** |string |Wallet address |
+|tag |false |string |tag <ul><li>If a tag is filled in when adding an address, then this field must be passed</li><li>**Note**: If the chain does not support tag/memo, please remove the tag/memo from the address book and do not pass the tag field when calling the interface</li></ul> |
+|amount |**true** |string |Withdrawal amount |
+|requestId |**true** |string |Custom ID, globally unique, used for idempotent verification. <li>The combination of letters (case sensitive) and numbers can be pure letters or pure numbers, with a length between 1-64 characters</li> |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|withdraw_id |string|Withdrawal ID |
+
+### Request Example
+
+```python
+import time
+import hmac
+import hashlib
+import uuid
+import requests
+import json
+
+def create_transfer_request(apiKey, secret, body):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/withdraw/create'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    body['api_key'] = apiKey
+    body['timestamp'] = timestamp
+    body['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={body[key]}" for key in sorted(body.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    body['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window),
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+transferId = uuid.uuid4().hex
+body = {
+    "coin":"USDT",
+    "chain": "your chain",
+    "address": "your address",
+    "amount":"1",
+    "sub_user_id":"162119745",
+    "requestId":transferId,
+}
+
+create_transfer_request(apiKey, secret, body)
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "withdraw_id": "10195"
+    },
+    "retExtInfo": null,
+    "time": 1672196571239
+}
+```

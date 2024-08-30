@@ -1,0 +1,110 @@
+---
+title: 查詢劃轉紀錄 (單帳號內)
+sidebar_label: 查詢劃轉紀錄 (單帳號內)
+sidebar_position: 3
+---
+
+獲取單帳號內的劃轉紀錄
+
+### HTTP 請求
+GET `/private/v1/asset/transfer/list`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|transferId |false |string |UUID. 使用創建劃轉時用的UUID |
+|coin |false |string |幣種 |
+|[status](../enum#transferstatus) |false |string |劃轉狀態 |
+|startTime |false |integer |開始時間戳 (秒) |
+|endTime |false |integer |結束時間戳 (秒) |
+|limit |false |integer |每頁數量限制. [`1`, `50`]. 默認: `10`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|list |array|Object |
+|> transferId |string |劃轉Id |
+|> coin |string |劃轉幣種 |
+|> amount |string |劃轉金額 |
+|> [fromAccountType](../enum#accountyype) |string |劃出賬戶類型 |
+|> [toAccountType](../enum#accountyype) |string |劃入賬戶類型 |
+|> timestamp |string |劃轉創建時間戳 (秒) |
+|> [status](../enum#transferstatus) |string |劃轉狀態 |
+|cursor |string|游標，用於翻頁 |
+
+---
+
+### 請求示例
+
+``` python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/transfer/list'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+    "list": [
+        {
+            "transferId": "selfTransfer_a1091cc7-9364-4b74-8de1-18f02c6f2d5c",
+            "coin": "USDT",
+            "amount": "5000",
+            "fromAccountType": "SPOT",
+            "toAccountType": "UNIFIED",
+            "timestamp": "1667283263000",
+            "status": "SUCCESS"
+        }
+    ],
+    "cursor": "eyJtaW5JRCI6MTM1ODQ2OCwibWF4SUQiOjEzNTg0Njh9"
+},
+    "retExtInfo": {},
+    "time": 1670988271677
+}
+```

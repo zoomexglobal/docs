@@ -12,6 +12,14 @@ sidebar_position: 2
 
 **Topic:** `execution`
 
+**Categorised Topic:** `execution.spot`, `execution.linear`, `execution.inverse`
+
+:::info
+* All-In-One topic 和 Categorised topic **不能**放在同一個訂閱請求裡
+* All-In-One topic: 允許您監聽所有業務線的websocket更新(現貨, 正向合約, 反向合約)
+* Categorised Topic: 您只能監聽您指定的那個業務的websocket更新
+:::
+
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
@@ -19,7 +27,7 @@ sidebar_position: 2
 |topic |string |Topic名 |
 |creationTime |number |消息數據創建時間 |
 |data |array |Object |
-|> [category](../../enum#category) | string | 產品類型 <ul><li>普通帳戶: `linear`, `inverse`.</li></ul>|
+|> [category](../../enum#category) | string | 產品類型 <ul><li>普通帳戶: `spot`, `linear`, `inverse`.</li></ul>|
 |> symbol |string |合約名稱|
 |> orderId |string |訂單ID |
 |> orderLinkId |string |用戶自定義訂單ID|

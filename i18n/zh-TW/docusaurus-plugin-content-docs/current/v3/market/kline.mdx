@@ -5,7 +5,7 @@ sidebar_position: 1
 ---
 
 查詢市場價格K線數據
-> **覆蓋範圍: USDT永續 / 反向合約**
+> **覆蓋範圍: 現貨 / USDT永續 / 反向合約**
 
 ### HTTP請求
 GET `/cloud/trade/v3/market/kline`
@@ -13,7 +13,7 @@ GET `/cloud/trade/v3/market/kline`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------|
-|[category](../enum#category) |<b>true</b> |string |產品類型. `linear`,`inverse`|
+|[category](../enum#category) |<b>true</b> |string |產品類型. `spot`,`linear`,`inverse`|
 |[symbol](../enum#symbol) |<b>true</b> |string |合約名稱|
 |[interval](../enum#interval) |<b>true</b> |string |時間粒度. `1`,`3`,`5`,`15`,`30`,`60`,`120`,`240`,`360`,`720`,`D`,`M`,`W`|
 |start |false |integer |開始時間戳 (毫秒)|

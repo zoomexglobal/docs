@@ -5,6 +5,7 @@ sidebar_name: Introduction
 
 Zoomex V3 Open API allow users to select different collections to build their API model.
 
+
 <!--
 - **Derivatives - contract:** You could trade _USDT Perpetual_, _Inverse Perpetual_ with `contract/v3` endpoints.
 -->
@@ -15,6 +16,10 @@ Zoomex V3 Open API allow users to select different collections to build their AP
 
 :::info
 Please visit Zoomex's <a href="https://testnet.zoomex.com/en-US/user-center/api-manage"> <b>testnet</b></a> or <a href="https://www.zoomex.com/en-US/user-center/api-manage"> <b>mainnet</b></a> to generate an API key
+:::
+
+:::info
+The <b>authentication</b> of the v1 interface is different from v3. Please pay attention to using the corresponding <b>signature</b> method when calling, and refer to the call demo of each API for the corresponding method.
 :::
 
 REST API Base Endpoint:
@@ -28,7 +33,7 @@ https://openapi.zoomex.com
 * Requests made to **public** endpoints DO NOT require additional authentication.
 :::
 
-## Parameters for Authenticated Endpoints
+### Parameters for Authenticated Endpoints
 
 The following parameters must be used for authentication:
 
@@ -46,10 +51,10 @@ _server_time - recv_window <= timestamp < server_time + 1000_<br/>
 server_time stands for Zoomex server time, which can be queried via the [Server Time endpoint](../v3/market/time#).
 :::
 
-## Create A Request
+### Create A Request
 
 :::tip
-- To assist in diagnosing advanced network problems, you may consider adding `cdn-request-id` to your request headers. Its value should be unique for each request.
+To assist in diagnosing advanced network problems, you may consider adding `cdn-request-id` to your request headers. Its value should be unique for each request.
 :::
 
 **Basic steps:**
@@ -116,15 +121,19 @@ server_time stands for Zoomex server time, which can be queried via the [Server 
 
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
-|ret_code / retCode |number |Success/Error code |
-|ret_msg / retMsg |string |Success/Error msg. Can be `OK`,`success`,`Success` for Success message|
+|retCode |number |Success/Error code |
+|retMsg |string |Success/Error msg. Can be `OK`,`success`,`Success` for Success message|
 |result |Object |Business data result|
+|retExtInfo |Object |Extend info. Most of time, it is `{}`|
+|time |number |Current timestamp (ms)|
 
 ``` json
 {
     "retCode": 0,
     "retMsg": "success",
-    "result": {}
+    "result": {},
+    "retExtInfo": {},
+    "time": 1690180896378
 }
 ```
 

@@ -8,8 +8,8 @@
         "description": "v3接口的navbar"
     },
     "item.label.Account Asset": {
-        "message": "帳戶資產",
-        "description": "帳戶資產的navbar"
+        "message": "帳戶",
+        "description": "帳戶的navbar"
     },
     "item.label.Previous Version": {
         "message": "早期版本",
@@ -28,8 +28,8 @@
         "description": "USDC期權v1的navbar"
     },
     "item.label.Account Asset v1": {
-        "message": "帳戶資產v1",
-        "description": "帳戶資產v1的navbar"
+        "message": "帳戶v1",
+        "description": "帳戶v1的navbar"
     },
     "item.label.USDT Perpetual v2": {
         "message": "USDT永續v2",
