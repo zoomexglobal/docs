@@ -20,72 +20,31 @@ GET `/private/v1/asset/sub-member/member-ids`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |sub_user_id |array&lt;string&gt; |所有子帳號 |
-|transferable_sub_ids |array&lt;string&gt; |已經開啟了萬能劃轉的子帳號 |
 
 ---
 
 ### 請求示例
 
-``` python
-import time
-import hmac
-import hashlib
-import uuid
-import requests
-import urllib.parse
-
-def create_request(apiKey, secret):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/sub-member/member-ids'
-    timestamp = int(time.time() * 1000)
-    recv_window = 1000000
-
-    params['api_key'] = apiKey
-    params['timestamp'] = timestamp
-    params['recv_window'] = recv_window
-
-    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
-
-    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
-
-    params['sign'] = signature
-
-    headers = {
-        'X-BAPI-API-KEY': apiKey,
-        'X-BAPI-SIGN': signature,
-        'X-BAPI-TIMESTAMP': str(timestamp),
-        'X-BAPI-RECV-WINDOW': str(recv_window)
-    }
-
-    response = requests.get(url, headers=headers)
-
-    print("响应状态:", response.status_code)
-    print("响应信息:", response.json())
-    print("响应时间:", response.elapsed.total_seconds())
-
-apiKey = 'your key'
-secret = 'your secret'
-
-create_request(apiKey, secret)
+``` shell
+GET /private/v1/asset/sub-member/member-ids HTTP/1.1
+X-BAPI-API-KEY: 0b2XYJpi8bi9tZPhft
+X-BAPI-SIGN: 520539314e551bb3b1cf6606b19e999906904fab9f766a0f709addadee558823
+X-BAPI-TIMESTAMP: 1724600928448
+X-BAPI-RECV-WINDOW: 1000000
+Host: openapi-testnet.zoomex.com
 ```
 
 ### 響應示例
 
 ```json
 {
-  "result": {
-    "sub_user_id": [
-      1524601,
-      1524613
-    ],
-    "transferable_sub_ids": []
-  },
-  "rate_limit": 1,
-  "rate_limit_status": 59,
-  "ext_code": "",
-  "time_now": 1690947047366,
-  "rate_limit_reset_ms": 1690947047366,
-  "ret_msg": "OK",
-  "ext_info": null,
-  "ret_code": 0
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "result": {
+        "sub_user_id": [
+            "103741450",
+            "103747845"
+        ]
+    }
 }
 ```
