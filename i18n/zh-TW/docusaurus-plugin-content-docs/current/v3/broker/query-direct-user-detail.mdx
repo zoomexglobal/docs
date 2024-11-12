@@ -1,0 +1,110 @@
+---
+title: 查询代理商直客明细信息
+sidebar_label: 查询代理商直客明细信息
+sidebar_position: 6
+---
+
+> API頻率: 5次/秒
+
+### HTTP 請求
+GET `/private/v1/broker/query-direct-user-detail`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|uid |false |string |直客UID，不輸入時返回該代理商下所有直客 |
+|begin |false |string |開始時間，格式：YYYY-MM-DD HH:MI:SS 注意：開始時間和結束時間要麼都為空，要麼都不為空.|
+|end |false |string |結束時間，格式：YYYY-MM-DD HH:MI:SS 注意：開始時間和結束時間要麼都為空，要麼都不為空. |
+|coin |false|string |査詢的Coin|
+|limit |false|integer |每頁數量限制. [1, 1000]. 默認: 200 |
+|cursor |false|integer |游標，用於翻頁，首次調用時不用傳 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|user_id |integer| 直客UID|
+|created_at |string| 註冊時間|
+|rebate_rate |string| 返傭比例|
+|coin |string| 存款Coin|
+|deposits |string| 總入金（USDT）|
+|trading_amount |string| 總交易量|
+|net_exec_fee |string| 淨手續費（USDT）|
+|invited_code |string| 邀請碼|
+|vip_level |string| VIP等級，如果沒有vip則返回0等級|
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/query-direct-user-detail'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "uid": 103920528,
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "user_detail": [
+            {
+                "user_id": "103920528",
+                "created_at": "2024-11-08 12:39:44",
+                "deposits": "0",
+                "net_exec_fee": "0",
+                "rebate_rate": "25",
+                "vip_level": "VIP0",
+                "invited_code": "ZX900303",
+                "trading_amount": "0",
+                "coin": "USDT"
+            }
+        ],
+        "next_cursor": 1588
+    },
+    "ext_info": null,
+    "time_now": 1731113120877
+}
+```

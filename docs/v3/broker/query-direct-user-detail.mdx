@@ -1,0 +1,110 @@
+---
+title: Get direct user detail
+sidebar_label: Get direct user detail
+sidebar_position: 6
+---
+
+> API rate limit: 5 req / sec
+
+### HTTP Request
+GET `/private/v1/broker/query-direct-user-detail`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|uid |false |string |UID of the invitee, Return all when not inputting UID, return specified UID data when inputting. |
+|begin |false |string |Start time of invitation，format as：YYYY-MM-DD HH:MI:SS Note: The start and end times are either empty or not empty.|
+|end |false |string |End time of invitation，format as：YYYY-MM-DD HH:MI:SS The start and end times are either empty or not empty. |
+|coin |false |string |Coin to be queried. Default: USDT |
+|limit |false|integer |Page quantity limit [1, 1000] Default: 200 |
+|cursor |false|integer |Cursor, used for flipping pages, does not need to be passed on the first call |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|user_id |integer| UID of the invitee|
+|created_at |string| Join time|
+|rebate_rate |string| Rebate ratio|
+|coin |string| Deposit coin|
+|deposits |string| Accumulated amount of deposit in USDT|
+|trading_amount |string| Total trading Volume|
+|net_exec_fee |string| Accumulated Amount of trading fee in USDT, If there is no any fee, 0 will be returned|
+|invited_code |string| Affiliate invite code that the invitee registered/recalled via|
+|vip_level |string| Invitee VIP level, e.g. Vip1. If there is no any VIP level, VIP0 will be returned|
+
+### Request Example
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/query-direct-user-detail'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "uid": 103920528,
+}
+
+create_request(apiKey, secret, params)
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "user_detail": [
+            {
+                "user_id": "103920528",
+                "created_at": "2024-11-08 12:39:44",
+                "deposits": "0",
+                "net_exec_fee": "0",
+                "rebate_rate": "25",
+                "vip_level": "VIP0",
+                "invited_code": "ZX900303",
+                "trading_amount": "0",
+                "coin": "USDT"
+            }
+        ],
+        "next_cursor": 1588
+    },
+    "ext_info": null,
+    "time_now": 1731113120877
+}
+```
