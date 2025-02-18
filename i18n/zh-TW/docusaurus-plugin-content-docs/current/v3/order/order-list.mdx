@@ -24,7 +24,7 @@ GET `/cloud/trade/v3/order/history`
 |orderId |false |string |訂單ID |
 |orderLinkId |false |string |用戶自定義訂單ID |
 |orderFilter |false |string |`Order`: 普通單, `StopOrder`: 條件單 <ul><li>其他: 默認是全部類型訂單</li></ul>|
-|[orderStatus](../enum#orderstatus) |false |string |訂單狀態 <ul><li>其他: 不傳則默認查詢所有狀態</li></ul>不傳則默認查詢所有狀態 |
+|[orderStatus](../enum#orderstatus) |false |string |訂單狀態 <ul><li>經典帳戶`spot`: 該字段無效</li><li>其他: 不傳則默認查詢所有狀態</li></ul>不傳則默認查詢所有狀態 |
 |startTime |false |integer |開始時間戳 (毫秒) <ul><li>startTime 和 endTime要麼同時傳入，要麼同時不傳</li><li>若不傳，默認查詢過去7天的數據</li><li>startTime 和 endTime每次傳遞的間隔必須在7天內</li></ul>|
 |endTime |false |integer |結束時間戳 (毫秒) <ul><li>startTime 和 endTime每次傳遞的間隔必須在7天內</li></ul>|
 |limit |false |integer |每頁數量限制. [`1`, `50`]. 默認: `20`|
