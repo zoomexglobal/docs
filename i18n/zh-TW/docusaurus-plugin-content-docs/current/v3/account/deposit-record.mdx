@@ -1,0 +1,117 @@
+---
+title: 查詢充值紀錄
+sidebar_label: 查詢充值紀錄
+sidebar_position: 16
+---
+
+查詢充值紀錄.
+
+> API頻率: 300次/分
+
+### HTTP 請求
+GET `/private/v1/asset/deposit/query-record`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|type |false |integer |類型. `0`(默認): 鏈上. `1`: 平台內部. `2`: 所有方式|
+|chain |false |string |鏈名 |
+|coin |false |string |幣種 |
+|txid |false |string |交易Id |
+|startTime |false |integer |開始時間戳 (秒) |
+|endTime |false |integer |結束時間戳 (秒) |
+|pageSize |false |integer |每頁數量限制. [`1`, `50`]. 默認: `20`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|rows |array|Object |
+|> type |string |類型. `0`(默認): 鏈上. `1`: 平台內部. |
+|> tx_id |string |交易Id|
+|> chain |string |鏈名 |
+|> coin |string |幣種 |
+|> amount |string |金額 |
+|> address |string |目標地址. 內部轉帳：顯示 UID |
+|> status |string |狀態: 0-充值中1-充值成功2-充值失敗 |
+|> time |string |时间 (秒) |
+|cursor |string|游標，用於翻頁 |
+
+
+---
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/deposit/query-record'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "rows": [
+          {
+            "type": 1,
+            "tx_id": "123",
+            "coin": "USDT",
+            "chain": "your chain",
+            "amount": "your amount",
+            "address": "to address",
+            "status": "withdraw status",
+            "time": "update time"
+          }
+        ],
+        "cursor": ""
+    },
+    "ext_info": null,
+    "time_now": 1718476267321
+}
+```
