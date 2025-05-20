@@ -4,9 +4,6 @@ sidebar_label: 查詢資產信息 (現貨)
 sidebar_position: 2
 ---
 
-:::info
-當前只能查詢現貨帳戶中的資產
-:::
 
 ### HTTP 請求
 GET `/cloud/trade/v3/asset/transfer/query-asset-info`
@@ -14,7 +11,7 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |false |string |賬戶類型. 僅`SPOT` |
+|[accountType](../enum#accounttype) |false |string |賬戶類型. `SPOT` 或者 `FUND` |
 |coin |false |string |幣種 |
 
 ### 響應參數
@@ -58,10 +55,9 @@ X-BAPI-RECV-WINDOW: 5000
             "status": "ACCOUNT_STATUS_NORMAL",
             "assets": [
                 {
-                    "coin": "ETH",
-                    "frozen": "0",
-                    "free": "11.53485",
-                    "withdraw": ""
+                    "coin": "BTC",
+                    "free": "0.004560435",
+                    "total_balance": "0.004560435"
                 }
             ]
         }

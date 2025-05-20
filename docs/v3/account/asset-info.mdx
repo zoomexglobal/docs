@@ -1,14 +1,10 @@
 ---
 title: Get Asset Info
-sidebar_label: Get Asset Info (Spot)
+sidebar_label: Get Asset Info
 sidebar_position: 2
 ---
 
 Query asset information
-
-:::info
-For now, it can query `SPOT` **only**.
-:::
 
 ### HTTP Request
 GET `/cloud/trade/v3/asset/transfer/query-asset-info`
@@ -16,7 +12,7 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |false |string |Account type. `SPOT`|
+|[accountType](../enum#accounttype) |false |string |Account type：`SPOT` or `FUND`|
 |coin |false |string |Coin name |
 
 ### Response Parameters
@@ -59,10 +55,9 @@ X-BAPI-RECV-WINDOW: 5000
             "status": "ACCOUNT_STATUS_NORMAL",
             "assets": [
                 {
-                    "coin": "ETH",
-                    "frozen": "0",
-                    "free": "11.53485",
-                    "withdraw": ""
+                    "coin": "BTC",
+                    "free": "0.004560435",
+                    "total_balance": "0.004560435"
                 }
             ]
         }
