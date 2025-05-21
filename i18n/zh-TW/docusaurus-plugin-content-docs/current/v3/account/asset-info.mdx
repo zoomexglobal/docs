@@ -11,13 +11,14 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |false |string |賬戶類型. `SPOT` 或者 `FUND` |
+|[accountType](../enum#accounttype) |true |string |賬戶類型. `SPOT` 或者 `FUND` |
 |coin |false |string |幣種 |
 
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |spot |Object| |
+|fund |Object| |
 |> status |string |賬戶狀態. `ACCOUNT_STATUS_NORMAL`: 正常, `ACCOUNT_STATUS_UNSPECIFIED`: 禁用 |
 |> assets |array|Object |
 |>> coin |string|幣種 |

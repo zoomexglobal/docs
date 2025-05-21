@@ -12,13 +12,14 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |false |string |Account type：`SPOT` or `FUND`|
+|[accountType](../enum#accounttype) |true |string |Account type：`SPOT` or `FUND`|
 |coin |false |string |Coin name |
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
 |spot |Object| |
+|fund |Object| |
 |> status |string |account status. `ACCOUNT_STATUS_NORMAL`: normal, `ACCOUNT_STATUS_UNSPECIFIED`: banned |
 |> assets |array|Object |
 |>> coin |string|Coin |
