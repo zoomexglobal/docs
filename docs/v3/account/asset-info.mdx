@@ -19,6 +19,11 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
 |spot |Object| |
+|> status |string |account status. `ACCOUNT_STATUS_NORMAL`: normal, `ACCOUNT_STATUS_UNSPECIFIED`: banned |
+|> assets |array|Object |
+|>> coin |string|Coin |
+|>> free |string|Free balance |
+|>> total_balance |string|Total balance |
 |fund |Object| |
 |> status |string |account status. `ACCOUNT_STATUS_NORMAL`: normal, `ACCOUNT_STATUS_UNSPECIFIED`: banned |
 |> assets |array|Object |

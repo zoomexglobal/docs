@@ -18,6 +18,11 @@ GET `/cloud/trade/v3/asset/transfer/query-asset-info`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |spot |Object| |
+|> status |string |賬戶狀態. `ACCOUNT_STATUS_NORMAL`: 正常, `ACCOUNT_STATUS_UNSPECIFIED`: 禁用 |
+|> assets |array|Object |
+|>> coin |string|幣種 |
+|>> free |string|可用余額 |
+|>> total_balance |string|总余額 |
 |fund |Object| |
 |> status |string |賬戶狀態. `ACCOUNT_STATUS_NORMAL`: 正常, `ACCOUNT_STATUS_UNSPECIFIED`: 禁用 |
 |> assets |array|Object |
