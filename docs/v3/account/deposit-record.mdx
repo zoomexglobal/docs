@@ -28,7 +28,6 @@ GET `/private/v1/asset/deposit/query-record`
 |:----- |:-----|----- |
 |rows |array|Object |
 |> type |string |`0`: on chain. `1`: internal transfer. |
-|> tx_id |string |Transaction ID. It returns `""` when deposit failed, deposit cancelled|
 |> chain |string |Chain |
 |> coin |string |Coin |
 |> amount |string |Amount |
@@ -100,7 +99,6 @@ create_request(apiKey, secret, params)
         "rows": [
           {
             "type": 1,
-            "tx_id": "123",
             "coin": "USDT",
             "chain": "your chain",
             "amount": "your amount",

@@ -28,7 +28,6 @@ GET `/private/v1/asset/deposit/query-record`
 |:----- |:-----|----- |
 |rows |array|Object |
 |> type |string |類型. `0`(默認): 鏈上. `1`: 平台內部. |
-|> tx_id |string |交易Id|
 |> chain |string |鏈名 |
 |> coin |string |幣種 |
 |> amount |string |金額 |
@@ -100,7 +99,6 @@ create_request(apiKey, secret, params)
         "rows": [
           {
             "type": 1,
-            "tx_id": "123",
             "coin": "USDT",
             "chain": "your chain",
             "amount": "your amount",
