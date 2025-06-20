@@ -19,6 +19,7 @@ POST `/cloud/contract/v3/private/copytrading/order/close`
 |orderLinkId |false |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復  |
 |parentOrderId |false |string |訂單ID。如果未填parentOrderLinkId, 則該字段為**必填** |
 |parentOrderLinkId |false |string |機構ID。如果未填parentOrderId, 則該字段為**必填**|
+|qty |false|string |平仓数量 |
 
 ### 返回參數
 

@@ -17,6 +17,8 @@ GET `/cloud/contract/v3/private/copytrading/position/close`
 |:----- |:-------|:-----|------ |
 |[symbol](../enum#symbol) |**true** |string |Symbol |
 |[positionIdx](../enum#positionidx) |**true** |string |Position idx, used to identify positions in different position modes: 0-Single side; 1-Buy side of both side mode; 2-Sell side of both side mode|
+|close_type |false |string |1. Close all positions; 2-Part Closing (default 1) |
+|qty |false |string |Partial Closing Quantity (No need to fill in for all closing positions, required for partial closing positions)|
 
 ### Response Parameters
 
