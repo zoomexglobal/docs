@@ -1,42 +1,39 @@
 ---
-title: Get Deposit Records
-sidebar_label: Get Deposit Records
-sidebar_position: 3
+title: Query Buy Crypto
+sidebar_label: Query Buy Crypto
+sidebar_position: 4
 ---
 
-Query deposit records.
+Query Buy Crypto.
 
 > API rate limit: 300 req / min
 
 ### HTTP Request
-GET `/private/v1/asset/deposit/query-record`
+GET `/private/v1/asset/fiat/query-record`
 
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|type |false |integer |Deposit type. `0`(default): on chain. `1`: internal transfer. `2`: all|
-|chain |false |string |Default return of all data |
-|coin |false |string |Coin |
-|txId |false |string |Transaction hash ID |
-|startTime |false |integer |The start timestamp (s) |
-|endTime |false |integer |The end timestamp (s) |
-|pageSize |false |integer |Limit for data size per page. [`1`, `50`]. Default: `20`|
+|orderId |false |string |Order Id |
+|startTime |false |integer |Start timestamp (seconds) |
+|endTime |false |integer |End timestamp (seconds) |
+|pageSize |false |integer |Quantity limit per page. [`1`, `50`]. Default: `20`|
 |cursor |false |string |Cursor. Used for pagination|
 
 ### Response Parameters
 | Parameter | Type | Comments|
 |:----- |:-----|----- |
 |rows |array|Object |
-|> type |string |`0`: on chain. `1`: internal transfer. |
-|> chain |string |Chain |
-|> coin |string |Coin |
-|> amount |string |Amount |
-|> address |string |To deposit address. Internal transfer: Display Zoomex UID |
-|> status |string |Deposit status: 0- in progress 1- successful 2- failed |
-|> time |string |Update timestamp (s) |
-|> transaction_id |string |Unique transaction ID |
-|> tx_id |string |Transaction hash, only on chain transactions will generate |
-|> create_time |int |Creation time (second level timestamp) |
+|> orderId |string |Order Id. |
+|> crypto |string |Crypto |
+|> crypto_amount |string |Crypto amount |
+|> fiat |string |Fiat |
+|> fiat_amount |string |Fiat amount |
+|> trans_status |int |Status 0- Paid 1- In Progress 2- Pending Payment 3- Completed 4- Under Appeal 5- Cancelled 6- Failed |
+|> platform |string |Platform |
+|> unitPrice |string |Price(fiat/crypto) |
+|> time |string |Time |
+|> side |string |Trading direction |
 |cursor |string|Cursor. Used for pagination |
 
 
@@ -52,7 +49,7 @@ import requests
 import urllib.parse
 
 def create_request(apiKey, secret, params):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/deposit/query-record'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/fiat/query-record'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -84,9 +81,7 @@ def create_request(apiKey, secret, params):
 
 apiKey = 'your key'
 secret = 'your secret'
-params = {
-    "coin": "USDT",
-}
+params = {}
 
 create_request(apiKey, secret, params)
 ```
@@ -101,13 +96,17 @@ create_request(apiKey, secret, params)
     "result": {
         "rows": [
           {
-            "type": 1,
-            "coin": "USDT",
-            "chain": "your chain",
-            "amount": "your amount",
-            "address": "to address",
-            "status": "withdraw status",
-            "time": "update time"
+            "order_id": "1392502109169127424",
+            "crypto": "USDT",
+            "crypto_amount": "0",
+            "fiat": "USD",
+            "fiat_amount": "10",
+            "trans_status": 5,
+            "platform": "AIchemypay",
+            "unitPrice": "0",
+            "time": "1752068774",
+            "side": "buy",
+            "user_id": "101421193"
           }
         ],
         "cursor": ""

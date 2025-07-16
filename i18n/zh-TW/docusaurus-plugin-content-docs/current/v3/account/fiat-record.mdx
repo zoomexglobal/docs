@@ -1,23 +1,20 @@
 ---
-title: 查詢充值紀錄
-sidebar_label: 查詢充值紀錄
-sidebar_position: 3
+title: 査詢快捷買幣記錄
+sidebar_label: 査詢快捷買幣記錄
+sidebar_position: 4
 ---
 
-查詢充值紀錄.
+査詢快捷買幣記錄.
 
 > API頻率: 300次/分
 
 ### HTTP 請求
-GET `/private/v1/asset/deposit/query-record`
+GET `/private/v1/asset/fiat/query-record`
 
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|type |false |integer |類型. `0`(默認): 鏈上. `1`: 平台內部. `2`: 所有方式|
-|chain |false |string |鏈名 |
-|coin |false |string |幣種 |
-|txId |false |string |交易Id |
+|orderId |false |string |訂單Id |
 |startTime |false |integer |開始時間戳 (秒) |
 |endTime |false |integer |結束時間戳 (秒) |
 |pageSize |false |integer |每頁數量限制. [`1`, `50`]. 默認: `20`|
@@ -27,16 +24,16 @@ GET `/private/v1/asset/deposit/query-record`
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |rows |array|Object |
-|> type |string |類型. `0`(默認): 鏈上. `1`: 平台內部. |
-|> chain |string |鏈名 |
-|> coin |string |幣種 |
-|> amount |string |金額 |
-|> address |string |目標地址. 內部轉帳：顯示 UID |
-|> status |string |狀態: 0-充值中1-充值成功2-充值失敗 |
-|> time |string |时间 (秒) |
-|> transaction_id |string |交易唯一ID |
-|> tx_id |string |交易哈希，只有鏈上交易會產生 |
-|> create_time |int |創建時間（秒級時間戳） |
+|> orderId |string |訂單id. |
+|> crypto |string |數字貨幣 |
+|> crypto_amount |string |數字貨幣數量 |
+|> fiat |string |法幣 |
+|> fiat_amount |string |法幣數量 |
+|> trans_status |int |狀態0-已付款1-進行中2-待支付3-已完成4-申訴中5-已取消6-失敗 |
+|> platform |string |渠道商 |
+|> unitPrice |string |單價(fiat/crypto) |
+|> time |string |時間 |
+|> side |string |交易方向 |
 |cursor |string|游標，用於翻頁 |
 
 
@@ -52,7 +49,7 @@ import requests
 import urllib.parse
 
 def create_request(apiKey, secret, params):
-    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/deposit/query-record'
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/fiat/query-record'
     timestamp = int(time.time() * 1000)
     recv_window = 1000000
 
@@ -84,9 +81,7 @@ def create_request(apiKey, secret, params):
 
 apiKey = 'your key'
 secret = 'your secret'
-params = {
-    "coin": "USDT",
-}
+params = {}
 
 create_request(apiKey, secret, params)
 ```
@@ -101,13 +96,17 @@ create_request(apiKey, secret, params)
     "result": {
         "rows": [
           {
-            "type": 1,
-            "coin": "USDT",
-            "chain": "your chain",
-            "amount": "your amount",
-            "address": "to address",
-            "status": "withdraw status",
-            "time": "update time"
+            "order_id": "1392502109169127424",
+            "crypto": "USDT",
+            "crypto_amount": "0",
+            "fiat": "USD",
+            "fiat_amount": "10",
+            "trans_status": 5,
+            "platform": "AIchemypay",
+            "unitPrice": "0",
+            "time": "1752068774",
+            "side": "buy",
+            "user_id": "101421193"
           }
         ],
         "cursor": ""
