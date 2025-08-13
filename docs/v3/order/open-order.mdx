@@ -19,9 +19,9 @@ GET `/cloud/trade/v3/order/realtime`
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
 |category |**true** |string |Product type <ul><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
-|symbol |false |string |Symbol name. For **linear & inverse**, either `symbol`, `baseCoin`, `settleCoin` is **required** |
+|symbol |false |string |Symbol name. For **linear**, either `symbol`, `baseCoin`, `settleCoin` is **required** |
 |baseCoin |false |string |Base coin. Supports `linear`, `inverse`|
-|settleCoin |false |string |Settle coin <ul><li><b>linear & inverse</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li><li>`spot`: not supported</li></ul> |
+|settleCoin |false |string |Settle coin <ul><li><b>linear</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li><li>`spot`: not supported</li></ul> |
 |orderId |false |string |Order ID |
 |orderLinkId |false |string |User customised order ID |
 |openOnly |false |integer |<ul><li>Normal account: `0`(default) - query open orders **only**</li></ul>|
