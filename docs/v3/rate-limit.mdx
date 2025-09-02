@@ -4,24 +4,15 @@ sidebar_label: Rate Limit
 ---
 
 ## IP Rate Limit
-:::caution
-If you receive an **HTTP 403** (Access Denied) response, your IP has been either temporarily or permanently banned.
-**You should immediately review the below guidelines to ensure your application does not continue to violate the limit.**
-If you are still banned after 30 minutes, you likely have a permanent ban.
-:::
+### HTTP IP limit
+You are allowed to send 600 requests within a 5-second window per IP by default. This limit applies to all traffic directed to `api.zoomex.com`. If you encounter the error "403, access too frequent", it indicates that your IP has exceeded the allowed request frequency. In this case, you should terminate all HTTP sessions and wait for at least 10 minutes. The ban will be lifted automatically.
 
-We do not recommend running your application at the very edge of these limits in case abnormal network activity results
-in an unexpected violation.
+We do not recommend running your application at the very edge of these limits in case abnormal network activity results in an unexpected violation.
 
-* `GET`/`POST` method (shared):
-    * 120 requests per second for 5 consecutive seconds
-
-:::note
-All traffic to `openapi.zoomex.com` share this limit.
-:::
-
-After violating the limit your IP will be banned for a set period of time (usually 30 minutes). Continually violating
-the limit will result in a permanent ban. We cannot undo permanent bans or shorten temporary bans.
+### Websocket IP limit
+Do not establish more than 500 connections within a 5-minute window. This limit applies to all connections directed to `stream.zoomex.com` as well as local site hostnames such as `stream.zoomex.kz`.
+Do not frequently connect and disconnect the connection
+Do not establish more than 1,000 connections per IP for market data. The connection limits are counted separately for Spot, Linear, and Inverse markets
 
 ## API Rate Limit
 :::caution
@@ -146,39 +137,236 @@ containing 15 orders is placed at this time, then the first 10 orders will be su
 will report an error exceeding the limit, and these orders will fail.
 :::
 
+
 <span class="blocky_table">
 
 <table class="custom_table">
     <tr>
-        <th></th><th colSpan="1" align="center">Normal account & UTA</th><th colSpan="1">UTA Pro</th>
+        <th></th><th colSpan="1" align="center">Normal account</th>
     </tr>
     <tr>
-        <td>Level\Product</td><td><b>Futures</b></td><td><b>Futures</b></td>
+        <td>Level\Product</td><td><b>Futures</b></td>
     </tr>
     <tr>
-        <td>Default</td><td>10/s</td><td>10/s</td>
+        <td>Default</td><td>10/s</td>
     </tr>
     <tr>
-        <td>VIP 1</td><td>20/s</td><td>20/s</td>
+        <td>VIP 1</td><td>20/s</td>
     </tr>
     <tr>
-        <td>VIP 2</td><td>40/s</td><td>40/s</td>
+        <td>VIP 2</td><td>40/s</td>
     </tr>
     <tr>
-        <td>VIP 3 - Supreme VIP</td><td>60/s</td><td>60/s</td>
+        <td>VIP 3 - Supreme VIP</td><td>60/s</td>
     </tr>
     <tr>
-        <td>PRO1</td><td>100/s</td><td>150/s</td>
+        <td>PRO1</td><td>100/s</td>
     </tr>
     <tr>
-        <td>PRO2</td><td>150/s</td><td>200/s</td>
+        <td>PRO2</td><td>150/s</td>
     </tr>
     <tr>
-        <td>PRO3</td><td>200/s</td><td>250/s</td>
+        <td>PRO3</td><td>200/s</td>
     </tr>
 </table>
 
 </span>
+
+### UID level
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <td>Level\Product</td><td><b>Futures</b></td><td><b>Spot</b></td>
+    </tr>
+    <tr>
+        <td>PRO1</td><td>200/s</td><td>200/s</td>
+    </tr>
+    <tr>
+        <td>PRO2</td><td>400/s</td><td>400/s</td>
+    </tr>
+    <tr>
+        <td>PRO3</td><td>600/s</td><td>600/s</td>
+    </tr>
+    <tr>
+        <td>PRO4</td><td>800/s</td><td>800/s</td>
+    </tr>
+    <tr>
+        <td>PRO5</td><td>1000/s</td><td>1000/s</td>
+    </tr>
+    <tr>
+        <td>PRO6</td><td>1200/s</td><td>1200/s</td>
+    </tr>
+</table>
+</span>
+
+### Master and subaccounts level
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <td>Level\Product</td><td><b>Futures</b></td><td><b>Spot</b></td>
+    </tr>
+    <tr>
+        <td>PRO1</td><td>10000/s</td><td>10000/s</td>
+    </tr>
+    <tr>
+        <td>PRO2</td><td>20000/s</td><td>20000/s</td>
+    </tr>
+    <tr>
+        <td>PRO3</td><td>30000/s</td><td>30000/s</td>
+    </tr>
+    <tr>
+        <td>PRO4</td><td>40000/s</td><td>40000/s</td>
+    </tr>
+    <tr>
+        <td>PRO5</td><td>50000/s</td><td>50000/s</td>
+    </tr>
+    <tr>
+        <td>PRO6</td><td>60000/s</td><td>60000/s</td>
+    </tr>
+</table>
+</span>
+
+### Set api rate limit
+> API rate limit: 50 req per second
+
+::::info
+- If UID requesting this endpoint is a master account, uids in the input parameter must be subaccounts of the master account.
+- If UID requesting this endpoint is not a master account, uids in the input parameter must be the UID requesting this endpoint.
+- UID requesting this endpoint must be an institutional user.
+::::
+
+#### HTTP Request
+
+POST `/cloud/trade/v3/apilimit/set`
+
+#### Request Parameters
+
+| Parameter | Required | Type | Comments |
+|:----|:----:|:----|:----|
+| list | true | array | Object |
+| > uids | true | string | Multiple UIDs, separated by commas |
+| > [bizType](./enum#biztype) | true | string | Business type |
+| > limit | true | integer | api rate limit per second |
+
+#### Response Parameters
+
+| Parameter | Type | Comments |
+|:----|:----|:----|
+| list | array | Object |
+| > uids | string | Multiple UIDs, separated by commas |
+| > [bizType](./enum#biztype) | string | Business type |
+| > limit | integer | api rate limit per second |
+| > success | boolean | success or not |
+| > [msg](./enum#msg) | string | result message |
+
+#### Request Example
+
+```http
+POST /cloud/trade/v3/apilimit/set HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXXXX
+X-BAPI-API-KEY: xxxxxxxxxxxxxxxxxx
+X-BAPI-TIMESTAMP: 1711420489915
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "list": [
+        {
+            "uids": "106293838",
+            "bizType": "DERIVATIVES",
+            "limit": 50
+        }
+    ]
+}
+```
+
+#### Response Example
+
+```json
+{
+  "retCode": 0,
+  "retMsg": "success",
+  "result": {
+    "result": [
+      {
+        "uids": "290118",
+        "bizType": "SPOT",
+        "limit": 600,
+        "success": true,
+        "msg": "API limit updated successfully"
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1754894296913
+}
+```
+
+### Query api rate limit
+> API rate limit: 50 req per second
+
+::::info
+- A master account can query api rate limit of its own and subaccounts.
+- A subaccount can only query its own api rate limit.
+::::
+
+#### HTTP Request
+
+GET `/cloud/trade/v3/apilimit/query`
+
+#### Request Parameters
+
+| Parameter | Required | Type | Comments |
+|:----|:----:|:----|:----|
+| uids | true | string | Multiple UIDs, separated by commas |
+
+#### Response Parameters
+
+| Parameter | Type | Comments |
+|:----|:----|:----|
+| list | array | Object |
+| > uids | string | Multiple UIDs, separated by commas |
+| > [bizType](./enum#biztype) | string | Business type |
+| > limit | integer | api rate limit per second |
+
+#### Request Example
+
+```http
+GET /cloud/trade/v3/apilimit/query?uids=290118 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXXXX
+X-BAPI-API-KEY: xxxxxxxxxxxxxxxxxx
+X-BAPI-TIMESTAMP: 1728460942776
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+Content-Length: 2
+```
+
+#### Response Example
+
+```json
+{
+  "retCode": 0,
+  "retMsg": "success",
+  "result": {
+    "list": [
+      {
+        "uids": "290118",
+        "bizType": "SPOT",
+        "limit": 600
+      },
+      {
+        "uids": "290118",
+        "bizType": "DERIVATIVES",
+        "limit": 400
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1754894341984
+}
+```
 
 ## How to increase API Limit
 Please contact your client manager or email to support@zoomex.com with the following information. We will reply within 1-4 working days:
