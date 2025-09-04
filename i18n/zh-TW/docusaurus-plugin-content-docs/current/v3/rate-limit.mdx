@@ -4,21 +4,15 @@ sidebar_label: 頻率限制
 ---
 
 ## IP限頻
-:::caution
-如果您收到**HTTP 403**（拒絕訪問）響應, 您的 IP 已被暫時或永久禁止。 **您應立即查看以下指南，以確保您的應用程序不會繼續違反限制**。如果您在 30 分鐘後
-仍被禁止，則您可能會被永久禁止。
-:::
+### HTTP IP限頻
+默認情況下, 每個IP允許在每5秒的時間窗口內發送最多600次請求。這個速率限制將統計所有打到`api.zoomex.com`域名的請求數量。 如果您遇到了“403, access too frequent”這樣的報錯, 它表示您的IP已經超過了限定的頻率, 這種情況下, 您應當斷開所有來自這個IP的活著的HTTP會話, 然後休息至少10分鐘。IP將會自動解除限制。
 
 我們不建議您在這些限制的邊緣運行您的應用程序，以防異常的網絡活動導致意外違規。
 
-* `GET`/`POST` 請求 (共享):
-    * 連續 5 秒內每秒不超過 120 個請求
-
-:::note
-所有到`openapi.zoomex.com`的流量共享此限制。
-:::
-
-違反限制後，您的 IP 將被禁止一段時間（通常為 30 分鐘）。 持續違反限制將導致永久禁止。 我們不能撤銷永久禁令或縮短臨時禁令。
+### Websocket IP 限頻
+不要在5分鐘內構建超過500個連接, 這個限頻適用於所有發往`stream.zoomex.com` 以及本地站域名, 比如 `stream.zoomex.kz`的連接請求;
+不要嘗試頻繁地構建連接與斷開連接;
+訂閱行情數據時, 每個IP不要構建超過1,000個連接, 現貨、U本位期貨、幣本位期貨分開計算。
 
 ## 賬戶頻率限製
 :::caution
@@ -140,35 +134,228 @@ X-Bapi-Limit-Reset-Timestamp: 1672738134824
 
 <table class="custom_table">
     <tr>
-        <th></th><th colSpan="1" align="center">普通帳戶 & UTA</th><th colSpan="1">UTA Pro</th>
+        <th></th><th colSpan="1" align="center">普通帳戶</th>
     </tr>
     <tr>
-        <td>等級\產品</td><td><b>期貨</b></td><td><b>期貨</b></td>
+        <td>等級\產品</td><td><b>期貨</b></td>
     </tr>
     <tr>
-        <td>默認</td><td>10/s</td><td>10/s</td>
+        <td>默認</td><td>10/s</td>
     </tr>
     <tr>
-        <td>VIP 1</td><td>20/s</td><td>20/s</td>
+        <td>VIP 1</td><td>20/s</td>
     </tr>
     <tr>
-        <td>VIP 2</td><td>40/s</td><td>40/s</td>
+        <td>VIP 2</td><td>40/s</td>
     </tr>
     <tr>
-        <td>VIP 3 - 至尊VIP</td><td>60/s</td><td>60/s</td>
+        <td>VIP 3 - 至尊VIP</td><td>60/s</td>
     </tr>
     <tr>
-        <td>PRO1</td><td>100/s</td><td>150/s</td>
+        <td>PRO1</td><td>100/s</td>
     </tr>
     <tr>
-        <td>PRO2</td><td>150/s</td><td>200/s</td>
+        <td>PRO2</td><td>150/s</td>
     </tr>
     <tr>
-        <td>PRO3</td><td>200/s</td><td>250/s</td>
+        <td>PRO3</td><td>200/s</td>
     </tr>
 </table>
 
 </span>
+
+
+
+### UID 層級
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <td>Level\Product</td><td><b>Futures</b></td><td><b>Spot</b></td>
+    </tr>
+    <tr>
+        <td>PRO1</td><td>200/s</td><td>200/s</td>
+    </tr>
+    <tr>
+        <td>PRO2</td><td>400/s</td><td>400/s</td>
+    </tr>
+    <tr>
+        <td>PRO3</td><td>600/s</td><td>600/s</td>
+    </tr>
+    <tr>
+        <td>PRO4</td><td>800/s</td><td>800/s</td>
+    </tr>
+    <tr>
+        <td>PRO5</td><td>1000/s</td><td>1000/s</td>
+    </tr>
+    <tr>
+        <td>PRO6</td><td>1200/s</td><td>1200/s</td>
+    </tr>
+</table>
+</span>
+
+### 主帳戶和子帳戶層級
+<span class="blocky_table">
+<table border="0.8">
+    <tr>
+        <td>Level\Product</td><td><b>Futures</b></td><td><b>Spot</b></td>
+    </tr>
+    <tr>
+        <td>PRO1</td><td>10000/s</td><td>10000/s</td>
+    </tr>
+    <tr>
+        <td>PRO2</td><td>20000/s</td><td>20000/s</td>
+    </tr>
+    <tr>
+        <td>PRO3</td><td>30000/s</td><td>30000/s</td>
+    </tr>
+    <tr>
+        <td>PRO4</td><td>40000/s</td><td>40000/s</td>
+    </tr>
+    <tr>
+        <td>PRO5</td><td>50000/s</td><td>50000/s</td>
+    </tr>
+    <tr>
+        <td>PRO6</td><td>60000/s</td><td>60000/s</td>
+    </tr>
+</table>
+</span>
+
+### 設定 API 速率限制
+::::info
+- 如果請求者是母帳戶，需要提頻的 UID 必須屬於該母帳戶。
+- 如果請求者非母帳戶，則提頻的 UID 必須是自己。
+- UID 必須屬於機構用户。
+::::
+
+#### HTTP 請求
+
+POST `/cloud/trade/v3/apilimit/set`
+
+#### 請求參數
+
+| 參數 | 是否必需 | 類型 | 說明 |
+|:----|:----:|:----|:----|
+| list | true | array | Object |
+| > uids | true | string | uid 列表，多個以逗號隔開 |
+| > [bizType](./enum#biztype) | true | string | 業務類型 |
+| > limit | true | integer | api rate limit 每秒頻率 |
+
+#### 響應參數
+
+| 參數 | 類型 | 說明 |
+|:----|:----|:----|
+| list | array | Object |
+| > uids | string | uid 列表，多個以逗號隔開 |
+| > [bizType](./enum#biztype) | string | 業務類型 |
+| > limit | integer | api rate limit 每秒頻率 |
+| > success | boolean | 是否成功 |
+| > [msg](./enum#msg) | string | 結果訊息 |
+
+#### 請求實例
+
+```http
+POST /cloud/trade/v3/apilimit/set HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXXXX
+X-BAPI-API-KEY: xxxxxxxxxxxxxxxxxx
+X-BAPI-TIMESTAMP: 1711420489915
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "list": [
+        {
+            "uids": "106293838",
+            "bizType": "DERIVATIVES",
+            "limit": 50
+        }
+    ]
+}
+```
+
+#### 響應示例
+
+```json
+{
+  "retCode": 0,
+  "retMsg": "success",
+  "result": {
+    "result": [
+      {
+        "uids": "290118",
+        "bizType": "SPOT",
+        "limit": 600,
+        "success": true,
+        "msg": "API limit updated successfully"
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1754894296913
+}
+```
+
+### 查詢 API 速率限制
+::::info
+- 母帳戶能查詢自己和子帳戶的頻率；子帳戶只能查詢自己的頻率。
+::::
+
+#### HTTP 請求
+
+GET `/cloud/trade/v3/apilimit/query`
+
+#### 請求參數
+
+| 參數 | 是否必需 | 類型 | 說明 |
+|:----|:----:|:----|:----|
+| uids | true | string | uid 列表，多個以逗號隔開 |
+
+#### 響應參數
+
+| 參數 | 類型 | 說明 |
+|:----|:----|:----|
+| list | array | Object |
+| > uids | string | uid 列表，多個以逗號隔開 |
+| > [bizType](./enum#biztype) | string | 業務類型 |
+| > limit | integer | api rate limit 每秒頻率 |
+
+#### 請求示例
+
+```http
+GET /cloud/trade/v3/apilimit/query?uids=290118 HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXXXX
+X-BAPI-API-KEY: xxxxxxxxxxxxxxxxxx
+X-BAPI-TIMESTAMP: 1728460942776
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+Content-Length: 2
+```
+
+#### 響應示例
+
+```json
+{
+  "retCode": 0,
+  "retMsg": "success",
+  "result": {
+    "list": [
+      {
+        "uids": "290118",
+        "bizType": "SPOT",
+        "limit": 600
+      },
+      {
+        "uids": "290118",
+        "bizType": "DERIVATIVES",
+        "limit": 400
+      }
+    ]
+  },
+  "retExtInfo": {},
+  "time": 1754894341984
+}
+```
 
 ## 如何提高頻率限製
 請聯繫您的客戶經理或者發送郵件到 support@zoomex.com，我們會在 1-4 個工作日內答復。郵件內容必須包含以下內容：
