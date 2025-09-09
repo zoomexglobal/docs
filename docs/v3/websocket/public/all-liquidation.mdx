@@ -1,0 +1,64 @@
+---
+title: All Liquidation
+sidebar_label: All Liquidation
+sidebar_position: 4.5
+---
+Subscribe to the liquidation stream, push all liquidations.
+> **Covers: USDT contract / Inverse contract**
+
+Push frequency: **500ms**
+
+**Topic:**<br/>
+`allLiquidation.{symbol}` e.g., allLiquidation.BTCUSDT
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|topic |string |Topic name |
+|type |string |Data type. `snapshot` |
+|ts |number |The timestamp (ms) that the system generates the data |
+|data |Object | |
+|> T |number |The updated timestamp (ms) |
+|> s |string |Symbol name |
+|> S |string |Position side. `Buy`,`Sell`. When you receive a `Buy` update, this means that a long position has been liquidated |
+|> v |string |Executed size  |
+|> p |string |<a href="https://www.bybit.com/en-US/help-center/s/article/Bankruptcy-Price-USDT-Contract">Bankruptcy price</a> |
+
+### Subscribe Example
+
+```python
+const socket = new WebSocket('wss://stream-testnet.zoomex.com/v5/public/linear');
+
+socket.onopen = function() {
+  const subscribeMsg = {
+    "op": "subscribe",
+    "args": ["allLiquidation.BTCUSDT"]
+  };
+  socket.send(JSON.stringify(subscribeMsg));
+};
+
+socket.onmessage = function(event) {
+};
+
+socket.onclose = function(event) {
+};
+```
+
+### Message Example
+
+```json
+{
+    "topic": "allLiquidation.BTCUSDT",
+    "type": "snapshot",
+    "ts": 1739502303204,
+    "data": [
+        {
+            "T": 1739502302929,
+            "s": "BTCUSDT",
+            "S": "Sell",
+            "v": "20000",
+            "p": "0.04499"
+        }
+    ]
+}
+```

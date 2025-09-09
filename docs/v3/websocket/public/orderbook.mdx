@@ -19,12 +19,13 @@ Linear & inverse level 1 data: if 3 seconds have elapsed without a change in the
 Level 1 data, push frequency: **10ms**<br/>
 Level 50 data, push frequency: **20ms**<br/>
 Level 200 data, push frequency: **100ms**<br/>
-Level 500 data, push frequency: **100ms**<br/>
+Level 1000 data, push frequency: **300ms**<br/>
 
 **Spot:**<br/>
 Level 1 data, push frequency: **10ms**<br/>
 Level 50 data, push frequency: **20ms**<br/>
 Level 200 data, push frequency: **200ms**<br/>
+Level 1000 data, push frequency: **300ms**<br/>
 
 **Topic:**<br/>
 `orderbook.{depth}.{symbol}` e.g., orderbook.1.BTCUSDT
@@ -51,7 +52,7 @@ Level 200 data, push frequency: **200ms**<br/>
 
 ```javascript
 // 创建WebSocket对象
-const socket = new WebSocket('wss://stream-testnet.zoomex.com/v3/public/linear');
+const socket = new WebSocket('wss://stream-testnet.zoomex.com/v5/public/linear');
 
 // 订阅WebSocket
 socket.onopen = function() {

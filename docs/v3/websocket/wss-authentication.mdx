@@ -3,25 +3,30 @@ title: Connect
 sidebar_label: Connect
 slug: /v3/ws/connect
 ---
+:::caution
+* The V3 version of the push is expected to go offline on September 23, 2025
+* please complete the switch as soon as possible
+* Please note: The following fields: tickDirection，price24hPcnt，fundingRate，bid1Price，bid1Size，ask1Price，ask1Size，V3 Even if there is no change, it will be pushed. V5 only pushes when there is a change
+:::
 
 **WebSocket public channel:**
 
 - **Mainnet:**<br/>
-Spot: `wss://stream.zoomex.com/v3/public/spot`<br/>
-USDT perpetual: `wss://stream.zoomex.com/v3/public/linear`<br/>
-Inverse contract: `wss://stream.zoomex.com/v3/public/inverse`<br/>
+Spot: `wss://stream.zoomex.com/v5/public/spot`<br/>
+USDT perpetual: `wss://stream.zoomex.com/v5/public/linear`<br/>
+Inverse contract: `wss://stream.zoomex.com/v5/public/inverse`<br/>
 
 - **Testnet:**<br/>
-Spot: `wss://stream-testnet.zoomex.com/v3/public/spot`<br/>
-USDT perpetual: `wss://stream-testnet.zoomex.com/v3/public/linear`<br/>
-Inverse contract: `wss://stream-testnet.zoomex.com/v3/public/inverse`<br/>
+Spot: `wss://stream-testnet.zoomex.com/v5/public/spot`<br/>
+USDT perpetual: `wss://stream-testnet.zoomex.com/v5/public/linear`<br/>
+Inverse contract: `wss://stream-testnet.zoomex.com/v5/public/inverse`<br/>
 
 **WebSocket private channel:**
 - **Mainnet:**<br/>
-`wss://stream.zoomex.com/v3/private`
+`wss://stream.zoomex.com/v5/private`
 
 - **Testnet:**<br/>
-`wss://stream-testnet.zoomex.com/v3/private`
+`wss://stream-testnet.zoomex.com/v5/private`
 
 ## Authentication
 :::info

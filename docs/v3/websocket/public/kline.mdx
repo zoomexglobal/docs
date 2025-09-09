@@ -44,7 +44,7 @@ If `confirm`=true, this means that the candle has closed. Otherwise, the candle 
 ### Subscribe Example
 
 ```javascript
-const socket = new WebSocket('wss://stream-testnet.zoomex.com/v3/public/linear');
+const socket = new WebSocket('wss://stream-testnet.zoomex.com/v5/public/linear');
 
 socket.onopen = function() {
   const subscribeMsg = {

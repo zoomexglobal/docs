@@ -21,12 +21,13 @@ USDT永續 & 反向合約 1檔數據: 若3秒內無變化，將會再次推送**
   1 檔數據, 推送頻率: **10ms**<br/>
  50 檔數據, 推送頻率: **20ms**<br/>
 200 檔數據, 推送頻率: **100ms**<br/>
-500 檔數據, 推送頻率: **100ms**<br/>
+1000 檔數據, 推送頻率: **300ms**<br/>
 
 **現貨:**<br/>
 1 檔數據, 推送頻率: **10ms**<br/>
 50 檔數據, 推送頻率: **20ms**<br/>
 200 檔數據, 推送頻率: **200ms**<br/>
+1000 檔數據, 推送頻率: **300ms**<br/>
 
 **Topic:**<br/>
 `orderbook.{depth}.{symbol}` e.g., orderbook.1.BTCUSDT
@@ -53,7 +54,7 @@ USDT永續 & 反向合約 1檔數據: 若3秒內無變化，將會再次推送**
 ### 訂閱示例
 
 ```javascript
-const socket = new WebSocket('wss://stream-testnet.zoomex.com/v3/public/linear');
+const socket = new WebSocket('wss://stream-testnet.zoomex.com/v5/public/linear');
 
 socket.onopen = function() {
   const subscribeMsg = {

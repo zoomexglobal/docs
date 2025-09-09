@@ -3,25 +3,30 @@ title: 訂閱WebSocket
 sidebar_label: 訂閱WebSocket
 slug: /v3/ws/connect
 ---
+:::caution
+* V3版本的推送预计会在2025年9月23号下线
+* 请用户尽快完成切换
+* 请注意：以下字段：tickDirection，price24hPcnt，fundingRate，bid1Price，bid1Size，ask1Price，ask1Size，V3是无变化也会推送，V5是只有发生变化才会推送
+:::
 
 **WebSocket公共頻道:**
 
 - **主網:**<br/>
-現貨: `wss://stream.zoomex.com/v3/public/spot`<br/>
-USDT永續: `wss://stream.zoomex.com/v3/public/linear`<br/>
-反向合約: `wss://stream.zoomex.com/v3/public/inverse`<br/>
+現貨: `wss://stream.zoomex.com/v5/public/spot`<br/>
+USDT永續: `wss://stream.zoomex.com/v5/public/linear`<br/>
+反向合約: `wss://stream.zoomex.com/v5/public/inverse`<br/>
 
 - **測試網:**<br/>
-現貨: `wss://stream-testnet.zoomex.com/v3/public/spot`<br/>
-USDT永續: `wss://stream-testnet.zoomex.com/v3/public/linear`<br/>
-反向合約: `wss://stream-testnet.zoomex.com/v3/public/inverse`<br/>
+現貨: `wss://stream-testnet.zoomex.com/v5/public/spot`<br/>
+USDT永續: `wss://stream-testnet.zoomex.com/v5/public/linear`<br/>
+反向合約: `wss://stream-testnet.zoomex.com/v5/public/inverse`<br/>
 
 **WebSocket私有頻道:**
 - **主網:**<br/>
-`wss://stream.zoomex.com/v3/private`
+`wss://stream.zoomex.com/v5/private`
 
 - **測試網:**<br/>
-`wss://stream-testnet.zoomex.com/v3/private`
+`wss://stream-testnet.zoomex.com/v5/private`
 
 ## 鑒權
 :::info
