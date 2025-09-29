@@ -1,0 +1,46 @@
+---
+title: 確認新的風險限額
+sidebar_label: 確認新的風險限額
+sidebar_position: 3.1
+---
+
+當用戶被標記為僅減倉（請見持倉返回的 `isReduceOnly` 字段）時，在您主動調整了風險水位（例如：降低風險限額檔位、減倉、增加保證金、撤單等）之後，調用本接口來試算調整後的風險水平。若通過（`retCode=0`），系統會移除僅減倉標記。建議隨後再次查詢持倉以確認 `isReduceOnly` 是否變為 `false`。
+
+### HTTP 請求
+POST `/cloud/trade/v3/position/confirm-pending-mmr`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>統一交易帳戶：`linear`, `inverse`</li><li>普通帳戶：`linear`, `inverse`</li></ul>|
+|symbol |**true** |string |合約名稱|
+
+### 響應參數
+無
+
+### 請求示例
+```shell
+POST /cloud/trade/v3/position/confirm-pending-mmr HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1698051123673
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "category": "linear",
+    "symbol": "BTCUSDT"
+}
+```
+
+### 響應示例
+```json
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {},
+  "retExtInfo": {},
+  "time": 1698051124588
+}
+```
