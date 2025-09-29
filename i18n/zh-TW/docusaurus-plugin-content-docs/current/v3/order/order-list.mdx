@@ -8,9 +8,10 @@ sidebar_position: 6
 > **普通帳戶覆蓋範圍: USDT永續 / 反向合約**
 
 :::info
-* 7天內的訂單: 支持查詢全狀態
-* 7天外的訂單: 可以查詢僅成交的訂單類型
-* 如果不指定时间，则默认返回最近7天的数据，您可以通過指定symbol, baseCoin, orderId 和 orderLinkId字段來查詢。如果您使用多字段組合，系統的查詢優先級如下: orderId > orderLinkId > symbol.
+* **7天內的訂單**: <br/>統一帳戶(除了inverse)支持查詢除了"Cancelled"(完全取消), "Rejected", "Deactivated"以外的[終態訂單](../enum#orderstatus) <br/>统一账户1.0(inverse)和經典帳戶支持查詢活動態+終態的訂單
+* **24小時的订单**: <br/>統一帳戶(除了inverse): 對於完全取消(Cancelled),以及"Rejected", "Deactivated"的訂單僅支持查詢過去24小時的訂單記錄
+* **7天外的訂單**: 所有账户都只能查詢到有過成交的訂單, 即完全成交, 部分成交但最終取消的訂單
+* 統一帳戶(除了inverse) 支持查詢過去2年的數據
 :::
 
 ### HTTP請求
@@ -19,12 +20,12 @@ GET `/cloud/trade/v3/order/history`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |產品類型 <ul><li>普通帳戶: `linear`, `inverse`, `spot`</li></ul> |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>统一交易账户：`spot`, `linear`, `inverse`</li><li>普通帳戶: `linear`, `inverse`, `spot`</li></ul> |
 |symbol |false |string |合約名稱|
 |orderId |false |string |訂單ID |
 |orderLinkId |false |string |用戶自定義訂單ID |
 |orderFilter |false |string |`Order`: 普通單, `StopOrder`: 條件單 <ul><li>其他: 默認是全部類型訂單</li></ul>|
-|[orderStatus](../enum#orderstatus) |false |string |訂單狀態 <ul><li>經典帳戶`spot`: 該字段無效</li><li>其他: 不傳則默認查詢所有狀態</li></ul>不傳則默認查詢所有狀態 |
+|[orderStatus](../enum#orderstatus) |false |string |訂單狀態 <ul><li>經典帳戶`spot`: 該字段無效</li><li>統一帳戶(除了inverse): 不傳則默認查詢所有終態訂單</li><li>統一帳戶(inverse)和經典帳戶: 不傳則默認查詢活動態+終態的訂單</li></ul> |
 |startTime |false |integer |開始時間戳 (毫秒) <ul><li>startTime 和 endTime要麼同時傳入，要麼同時不傳</li><li>若不傳，默認查詢過去7天的數據</li><li>startTime 和 endTime每次傳遞的間隔必須在7天內</li></ul>|
 |endTime |false |integer |結束時間戳 (毫秒) <ul><li>startTime 和 endTime每次傳遞的間隔必須在7天內</li></ul>|
 |limit |false |integer |每頁數量限制. [`1`, `50`]. 默認: `20`|
@@ -45,7 +46,7 @@ GET `/cloud/trade/v3/order/history`
 |> [orderStatus](../enum#orderstatus) |string |訂單狀態 |
 |> [cancelType](../enum#canceltype) |string |訂單被取消類型 |
 |> [rejectReason](../enum#rejectreason) |string |拒絕原因.|
-|> avgPrice |string |訂單平均成交價格. 若沒有成交，則返回`""` |
+|> avgPrice |string |訂單平均成交價格. <li>統一帳戶: 不存在avg price場景的訂單返回`""`</li><li>經典帳戶: 不存在avg price場景的訂單返回`"0"`, 以及部分成交但最終被手動取消的訂單</li> |
 |> leavesQty |string |訂單剩餘未成交的數量.|
 |> leavesValue |string |訂單剩餘未成交的價值.|
 |> cumExecQty |string |訂單累計成交數量 |

@@ -12,13 +12,17 @@ sidebar_position: 6.1
 * 您可以通過指定symbol, baseCoin, orderId 字段來查詢。如果您使用多字段組合，系統的查詢優先級如下: orderId > symbol.
 :::
 
+:::info
+* 統一帳戶支持查詢過去730天的歷史成交紀錄
+:::
+
 ### HTTP 請求
 GET `/cloud/trade/v3/execution/list`
 
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |產品類型 <ul><li>經典帳戶: `spot`, `linear`, `inverse`</li></ul> |
+|[category](../enum#category) |**true** |string |產品類型 <ul><li>统一交易账户：`spot`, `linear`, `inverse` </li><li>經典帳戶: `spot`, `linear`, `inverse`</li></ul> |
 |symbol |false |string |合約名稱 |
 |orderId |false |string |訂單Id |
 |startTime |false |integer |開始時間戳 (毫秒) <ul><li>經典帳戶的現貨: 支持時間範圍是180天</li><li>其他:<br/>startTime 和 endTime都不傳入, 則默認返回最近7天的數據;<br/>startTime 和 endTime都傳入的話, 則確保endTime - startTime &le; 7天;<br/>若只傳startTime，則查詢startTime和startTime+7天的數據;<br/>若只傳endTime，則查詢endTime-7天和endTime的數據;</li></ul>|

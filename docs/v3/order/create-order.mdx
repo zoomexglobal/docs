@@ -51,14 +51,17 @@ POST `/cloud/trade/v3/order/create`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
+|category |**true** |string |Product type <ul><li>UTA: `spot`, `linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
 |symbol |**true** |string |Symbol name|
 |side |**true** |string |`Buy`, `Sell`|
 |orderType |**true** |string |`Market`, `Limit`|
-|qty |**true** |string |Order quantity. <ul><li>Spot: The qty for buying at market price is always measured in quote coins, and in other cases, qty is measured in base coins</li><li>Futures: qty is always measured in base coins</li></ul> please note that qty should be quote curreny amount|
+|qty |**true** |string |Order quantity. <ul><li>UTA account<ul><li>Spot: set `marketUnit` for market order qty unit, `quoteCoin` for market buy by default, `baseCoin` for market sell by default</li><li>Futures: always use base coin as unit</li></ul></li><li>Classic account<ul><li>Spot: the unit of qty is quote coin for market buy order, for others, it is base coin</li><li>Futures: always use base coin as unit</li></ul></li></ul>|
+|marketUnit |false |string |The unit for `qty` when create **Spot market** orders for **UTA account**. Currently, TP/SL and conditional orders are not supported.<li>`baseCoin`: for example, buy BTCUSDT, then "qty" unit is BTC</li><li>`quoteCoin`: for example, sell BTCUSDT, then "qty" unit is USDT</li>|
+|slippageToleranceType |false |string |Slippage tolerance Type for **market order**, `TickSize`, `Percent`<ul><li>Support linear, inverse, spot trading, but take profit, stoploss, conditional orders are not supported</li><li><b>TickSize</b>: <br/>the highest price of Buy order = ask1 + <code>slippageTolerance</code> x tickSize; <br/>the lowest price of Sell order = bid1 - <code>slippageTolerance</code> x tickSize</li><li><b>Percent</b>: <br/>the highest price of Buy order = ask1 x (1 + <code>slippageTolerance</code> x 0.01); <br/>the lowest price of Sell order = bid1 x (1 - `slippageTolerance` x 0.01)</li></ul>|
+|slippageTolerance |false |string |Slippage tolerance value <li>`TickSize`: range is [1, 10000], integer only</li><li>`Percent`: range is [0.01, 10], up to 2 decimals</li>|
 |price |false |string |Order price. If you have net position, price needs to be greater than liquidation price |
 |triggerDirection |false |integer |Conditional order param. Used to identify the expected direction of the conditional order. <ul><li>`1`: triggered when market price rises to `triggerPrice`</li><li>`2`: triggered when market price falls to `triggerPrice`</li> </ul><br/>Only valid for linear and inverse|
-|orderFilter |false |string |Specify the order variety Order: regular order, tpslOrder: stop loss order If not transmitted, the default is Order, which is only valid for spot goods|
+|orderFilter |false |string |If it is not passed, `Order` by default. <ul><li>`Order`</li><li>`tpslOrder`: Spot TP/SL order, the assets are occupied even before the order is triggered</li><li>`StopOrder`: Spot conditional order, the assets will not be occupied until the price of the underlying asset reaches the trigger price, and the required assets will be occupied after the Conditional order is triggered</li></ul>Valid for `spot` **only**||
 |triggerPrice |false |string |<ul><li>For futures, it is the conditional order trigger price. If you expect the price to rise to trigger your conditional order, make sure:<br/> _triggerPrice > market price_<br/>Else, _triggerPrice < market price_</li><li>For spot, it is the TP/SL trigger price</li></ul>|
 |[triggerBy](../enum#triggerby) |false |string |Conditional order param. Trigger price type. `LastPrice`, `IndexPrice`, `MarkPrice`<br/>Only valid for linear and inverse|
 |[timeInForce](../enum#timeinforce) |false |string |<a href="https://www..com/en-US/help-center/HC_Article?language=en_US&id=000001044">Time in force</a> <ul><li>Market order will use `IOC` directly</li><li>If not passed, `GTC` is used by default</li> </ul>|
