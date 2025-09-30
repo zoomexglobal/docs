@@ -5,7 +5,15 @@ sidebar_position: 1
 ---
 
 Query real-time position data, such as position size, cumulative realizedPNL.
-> **Normal account covers: USDT perpetual / Inverse contract**
+
+:::info
+
+UTA 2.0 - Query inverse positions
+
+1. You can get all positions with "/v3/position/list?category=inverse".
+2. Querying multiple symbols at once is not supported for inverse contracts.
+
+:::
 
 ### HTTP Request
 GET `/cloud/trade/v3/position/list`
@@ -13,7 +21,7 @@ GET `/cloud/trade/v3/position/list`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../v3/enum#category) |**true** |string |Product type <ul><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|[category](../v3/enum#category) |**true** |string |Product type <ul><li>Unified account: `linear`, `inverse`</li><li>Normal account: `linear`, `inverse`. _Please note that `category` is not involved with business logic and is only used for routing_</li></ul> |
 |symbol |false |string |Symbol name<ul><li>If `symbol` passed, it returns data regardless of having position or not.</li><li>If `symbol`=null and `settleCoin` specified, it returns position size greater than zero.</li></ul>|
 |baseCoin |false |string |Base coin. |
 |settleCoin |false |string |Settle coin. For `linear` & `inverse`, either `symbol` or `settleCoin` is **required**. `symbol` has a higher priority |
@@ -29,25 +37,27 @@ GET `/cloud/trade/v3/position/list`
 |> riskId |integer |Risk limit ID.|
 |> riskLimitValue |string  | Risk limit value.|
 |> symbol |string  |Symbol name |
-|> side |string  |Position side. `Buy`: long, `Sell`: short. _Note: under one-way mode, it returns `None` if empty position_ |
+|> side |string  |Position side. `Buy`: long, `Sell`: short. <ul><li>One-way: Classic account, empty position returns `None`.</li><li>Unified account (linear): either one-way or hedge mode returns an empty string `""` for an empty position.</li></ul> |
 |> size |string  |Position size |
 |> avgPrice |string  |Average entry price |
 |> positionValue | string  |Position value|
-|> tradeMode | integer |Trade mode <ul><li>Normal: `0`: cross-margin, `1`: isolated margin</li></ul>|
+|> tradeMode | integer |Trade mode <ul><li>Classic account: `0` cross margin, `1` isolated margin</li><li>Unified account (except inverse): deprecated, always `0`. Please query account config to get the actual margin mode</li></ul>|
 |> [positionStatus](../v3/enum#positionstatus) | String |Position status. `Normal`, `Liq`, `Adl` |
-|> leverage | string  |Position leverage. Valid for contract.|
+|> leverage | string  |Position leverage. Valid for contracts only.|
 |> markPrice | string  |Last mark price |
-|> liqPrice | string  |Position liquidation price <ul><li>it is the real price for isolated and cross positions.</li></ul>|
+|> liqPrice | string  |Position liquidation price. <ul><li>For unified account (isolated) and classic account: this is the real price for isolated and cross positions; when `liqPrice <= minPrice` or `liqPrice >= maxPrice`, it returns `""`.</li><li>For unified account (cross margin): this is an estimated liquidation price for cross positions (risk rate is controlled at account level). When `liqPrice <= minPrice` or `liqPrice >= maxPrice`, it returns `""`.</li></ul>For portfolio margin mode, this field is empty and no liquidation price is provided |
 |> bustPrice | string  |Bankruptcy price. |
-|> positionIM | string  |Initial margin.|
-|> positionMM | string  |Maintenance margin. |
-|> positionBalance | string  |Position margin.|
-|> tpslMode | string  |Depreciated, meaningless here, always "Full". |
+|> positionIM | string  |Initial margin. <ul><li>Classic account: ignore this field</li><li>Unified account portfolio margin (PM): returns empty string</li></ul> |
+|> positionMM | string  |Maintenance margin. <ul><li>Classic account: ignore this field</li><li>Unified account portfolio margin (PM): returns empty string</li></ul> |
+|> positionBalance | string  |Position margin. <ul><li>Classic account can refer to this field to get position initial margin + closing fee</li></ul> |
 |> takeProfit | string  |Take profit price|
 |> stopLoss | string  |Stop loss price|
 |> trailingStop | string  |Trailing stop (The distance from market price)|
 |> unrealisedPnl | string  |Unrealised PnL|
 |> cumRealisedPnl | string  |Cumulative realised pnl|
+|> isReduceOnly | boolean | Useful when Zoomex lowers the risk limit. <ul><li><code>true</code>: Only allowed to reduce the position. You may consider a series of measures, e.g., lower the risk limit tier, decrease leverage or reduce the position, add margin, or cancel orders. After these operations, you can call the "confirm new risk limit" endpoint</li><li><code>false</code> (default): No restriction. It means your position is below the system risk level during adjustment</li><li>Only meaningful for futures isolated and cross positions</li></ul> |
+|> mmrSysUpdatedTime | string | Useful when Zoomex lowers the risk limit. <ul><li>When isReduceOnly=<code>true</code>: the timestamp when MMR will be forcibly adjusted by the system</li><li>When isReduceOnly=<code>false</code>: if not empty, the timestamp when the MMR adjustment has been completed by the system</li><li>Only set for system adjustments. Manual adjustments will not show a timestamp here</li><li>Defaults to <code>""</code>. If this symbol has been downgraded by the system previously, it shows the most recent system operation timestamp</li><li>Only meaningful for futures isolated and cross positions</li></ul> |
+|> leverageSysUpdatedTime | string | Useful when Zoomex lowers the risk limit. <ul><li>When isReduceOnly=<code>true</code>: the timestamp when leverage will be forcibly adjusted by the system</li><li>When isReduceOnly=<code>false</code>: if not empty, the timestamp when the leverage adjustment has been completed by the system</li><li>Only set for system adjustments. Manual adjustments will not show a timestamp here</li><li>Defaults to <code>""</code>. If this symbol has been downgraded by the system previously, it shows the most recent system operation timestamp</li><li>Only meaningful for futures isolated and cross positions</li></ul> |
 |> [adlRankIndicator](../v3/enum#adlrankindicator) |integer |Auto-deleverage rank indicator. <a href="https://www.zoomex.com/en-US/help-center/s/article/What-is-Auto-Deleveraging-ADL">What is Auto-Deleveraging?</a>|
 |> createdTime | string  |Position created timestamp (ms)|
 |> updatedTime | string  |Position updated timestamp (ms)|

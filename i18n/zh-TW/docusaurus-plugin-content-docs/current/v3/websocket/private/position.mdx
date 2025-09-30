@@ -20,7 +20,7 @@ sidebar_position: 1
 |> side |string |持倉方向. `Buy`,`Sell` |
 |> size |string |持倉大小 |
 |> [positionIdx](../../enum#positionidx) |integer |倉位標識|
-|> tradeMode| integer | 交易模式。<ul><li>反向合约 & USDT永续：0全仓，1逐仓</li></ul> |
+|> tradeMode| integer | 交易模式。<ul><li>反向合約 & USDT永續：`0` 全倉，`1` 逐倉</li><li>統一帳戶：該字段無效，總是 `0`，請通過接口查詢帳戶配置查詢帳戶保證金模式</li></ul> |
 |> positionValue |string |倉位價值 |
 |> riskId |integer |風險限額id.|
 |> riskLimitValue |string |風險限額id對應的風險限額度.|
@@ -29,9 +29,9 @@ sidebar_position: 1
 |> leverage |string |槓桿.|
 |> positionBalance | string  |倉位保證金.|
 |> autoAddMargin | integer |是否自動追加保證金. `0`: 否, `1`: 是. |
-|> positionMM |string |倉位維持保證金.|
-|> positionIM |string |倉位初始保證金.|
-|> liqPrice| string  | 倉位強平價格，是逐倉和全倉持仓的真實價格。 |
+|> positionMM |string |倉位維持保證金。<ul><li>經典帳戶：忽略該字段</li><li>統一帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul>|
+|> positionIM |string |倉位初始保證金。<ul><li>經典帳戶：忽略該字段</li><li>統一帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul>|
+|> liqPrice| string  | 倉位強平價格。<ul><li>普通帳戶 & 統一帳戶(開啟逐倉保證金模式)：是逐倉和全倉持倉的真實價格，當強平價 <= minPrice 或者 強平價 >= maxPrice，則為 ""</li><li>統一帳戶(全倉保證金)：是全倉持倉的預估價格（因為統一帳戶模式是按照帳戶維度控制風險率），當強平價 <= minPrice 或者 強平價 >= maxPrice，則為 ""</li><li>對於組合保證金模式，此字段為空，不會提供強平價格</li></ul> |
 |> bustPrice |string |預估破產價. |
 |> tpslMode |string |該字段廢棄, 無意義, 總是返回"Full". |
 |> takeProfit |string |止盈價格 |
@@ -39,6 +39,9 @@ sidebar_position: 1
 |> trailingStop |string |追蹤止損|
 |> unrealisedPnl |string |未結盈虧 |
 |> cumRealisedPnl |string |累計盈虧 |
+|> isReduceOnly | boolean | 僅當Zoomex需要降低某個交易對的風險限額時有用。<ul><li>`true`: 僅允許減倉操作。您可以考慮一系列的方式，比如，降低 risk limit 檔位，或者同檔位修改槓桿或減少倉位，或者增加保證金，或者撤單。這些操作做完後，可以主動調用「確認新的風險限額」接口</li><li>`false`(默認): 無交易限制，表示您的倉位在系統調整時處於風險水平之下</li><li>僅對逐倉和全倉的期貨倉位有意義</li></ul> |
+|> mmrSysUpdatedTime | string | 僅當Zoomex需要降低某個交易對的風險限額時有用。<ul><li>當 isReduceOnly=`true`: 這個時間戳表示系統強制修改 MMR 的時間</li><li>當 isReduceOnly=`false`: 若不為空，則表示系統已經完成了 MMR 調整的時間</li><li>僅當系統調整才會賦值，對於主動的調整，不會在這裡展示時間戳</li><li>默認為 ""，但如果曾經這個 symbol 有過系統降檔的操作，那麼這裡會顯示上一次操作的時間</li><li>僅對逐倉和全倉的期貨倉位有意義</li></ul> |
+|> leverageSysUpdatedTime | string | 僅當Zoomex需要降低某個交易對的風險限額時有用。<ul><li>當 isReduceOnly=`true`: 這個時間戳表示系統強制修改槓桿的時間</li><li>當 isReduceOnly=`false`: 若不為空，則表示系統已經完成了槓桿調整的時間</li><li>僅當系統調整才會賦值，對於主動的調整，不會在這裡展示時間戳</li><li>默認為 ""，但如果曾經這個 symbol 有過系統降檔的操作，那麼這裡會顯示上一次操作的時間</li><li>僅對逐倉和全倉的期貨倉位有意義</li></ul> |
 |> [positionStatus](../../enum#positionstatus) |string |倉位狀態. `Normal`,`Liq`, `Adl` |
 |> [adlRankIndicator](../../enum#adlrankindicator) |integer |自動減倉燈. <a href="https://www.zoomex.com/zh-TW/help-center/s/article/What-is-Auto-Deleveraging-ADL">什麼是自動減倉機制?</a>|
 |> createdTime |string |倉位創建時間戳 (毫秒) |

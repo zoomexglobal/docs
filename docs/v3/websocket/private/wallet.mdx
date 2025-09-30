@@ -15,7 +15,7 @@ Subscribe to the wallet stream to see changes to your wallet in **real-time**.
 |topic |string |Topic name |
 |creationTime |number |Data created timestamp (ms) |
 |data |array |Object |
-|> accountType |string |Account type. <ul><li>Normal account: `CONTRACT`</li></ul> |
+|> accountType |string |Account type. <ul><li>Unified account: `UNIFIED`</li><li>Classic account: `CONTRACT`(contract wallet), `SPOT`(spot wallet)</li></ul> |
 |> accountLTV |string |Account LTV: account total borrowed size / (account total equity + account total borrowed size). |
 |> accountIMRate |string |Initial Margin Rate: Account Total Initial Margin Base Coin / Account Margin Balance Base Coin.|
 |> accountMMRate |string |Maintenance Margin Rate: Account Total Maintenance Margin Base Coin / Account Margin Balance Base Coin.|

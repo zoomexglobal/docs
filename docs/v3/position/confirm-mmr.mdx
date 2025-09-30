@@ -1,0 +1,46 @@
+---
+title: Confirm New Risk Limit
+sidebar_label: Confirm New Risk Limit
+sidebar_position: 3.1
+---
+
+It is only applicable when the user is marked as only reducing positions (please see the isReduceOnly field in the Get Position Info interface). After the user actively adjusts the risk level, this interface is called to try to calculate the adjusted risk level, and if it passes (retCode=0), the system will remove the position reduceOnly mark. You are recommended to call Get Position Info to check `isReduceOnly` field.
+
+### HTTP Request
+POST `/cloud/trade/v3/position/confirm-pending-mmr`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |Product type <ul><li>Unified account: `linear`, `inverse`</li><li>Normal account: `linear`, `inverse`</li></ul>|
+|symbol |**true** |string |Symbol name|
+
+### Response Parameters
+None
+
+### Request Example
+```shell
+POST /cloud/trade/v3/position/confirm-pending-mmr HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1698051123673
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "category": "linear",
+    "symbol": "BTCUSDT"
+}
+```
+
+### Response Example
+```json
+{
+  "retCode": 0,
+  "retMsg": "OK",
+  "result": {},
+  "retExtInfo": {},
+  "time": 1698051124588
+}
+```

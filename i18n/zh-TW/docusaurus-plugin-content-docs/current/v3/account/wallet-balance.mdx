@@ -1,6 +1,6 @@
 ---
-title: 査詢合約帳戶資產
-sidebar_label: 査詢合約帳戶資產
+title: 查詢錢包餘額
+sidebar_label: 查詢錢包餘額
 sidebar_position: 2
 ---
 
@@ -10,13 +10,16 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |**true** |string |帳戶類型. <ul><li>普通帳戶: `CONTRACT`(期貨)</li></ul>|
+|[accountType](../enum#accounttype) |**true** |string |帳戶類型. <ul><li>統一类型帳戶: `UNIFIED`</li><li>經典帳戶: `CONTRACT`(合約錢包)</li></ul>|
 |coin |false |string |幣種名稱 <ul><li>不傳則返回非零資產信息</li><li>可以傳多個幣進行查詢，以逗號分隔</li></ul>|
 
 ### 響應參數
 | 參數 | 類型 | 說明|
 |:----- |:-----|----- |
 |list |array |Object |
+|> accountType |string |帳戶類型 |
+|> accountIMRate |string |帳戶初始保證金率 <li>下面所有帳戶維度的字段都<b>不適用於</b><br/>統一帳戶(逐倉模式), <br/>經典帳戶(CONTRACT)</li>|
+|> accountMMRate |string |帳戶維持保證金率|
 |> totalEquity |string |賬戶維度換算成usd的資產淨值：Account Margin Balance Base Coin + Account Option Value Base Coin。|
 |> totalWalletBalance |string |賬戶維度換算成usd的產錢包餘額：∑ Asset Wallet Balance By USD value of each asset。|
 |> totalMarginBalance |string |賬戶維度換算成usd的保證金餘額：totalWalletBalance + totalPerpUPL。|
@@ -28,7 +31,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |>> equity |string |當前幣種的資產淨值|
 |>> usdValue |string |當前幣種折算成 usd 的價值|
 |>> walletBalance |string |當前幣種的錢包餘額|
-|>> availableToWithdraw |string |當前幣種的可劃轉提現金額 |
+|>> availableToWithdraw |string |**注意:** 對於`accountType=UNIFIED`, 該字段從2025年1月9日起已經廢棄 <ul><li>合約可用餘額: <br/><b>逐倉</b>: walletBalance - totalPositionIM - totalOrderIM - locked - bonus<br/><b>全倉/組合保證金</b>: 使用字段`totalAvailableBalance`(USD), 但需要通過index price来轉換成對應幣種的可用餘額</li></ul> |
 |>> totalOrderIM |string |以當前幣種結算的訂單委託預佔用保證金|
 |>> totalPositionIM	|string	|以當前幣種結算的所有倉位起始保證金求和 + 所有倉位的預佔用平倉手續費.|
 |>> totalPositionMM	|string |以當前幣種結算的所有倉位維持保證金求和.|
