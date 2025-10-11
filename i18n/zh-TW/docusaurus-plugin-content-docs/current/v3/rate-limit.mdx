@@ -229,7 +229,7 @@ POST `/cloud/trade/v3/apilimit/set`
 | list | true | array | Object |
 | > uids | true | string | uid 列表，多個以逗號隔開 |
 | > [bizType](./enum#biztype) | true | string | 業務類型 |
-| > limit | true | integer | api rate limit 每秒頻率 |
+| > rate | true | integer | api rate limit 每秒頻率 |
 
 #### 響應參數
 
@@ -238,7 +238,7 @@ POST `/cloud/trade/v3/apilimit/set`
 | list | array | Object |
 | > uids | string | uid 列表，多個以逗號隔開 |
 | > [bizType](./enum#biztype) | string | 業務類型 |
-| > limit | integer | api rate limit 每秒頻率 |
+| > rate | integer | api rate limit 每秒頻率 |
 | > success | boolean | 是否成功 |
 | > [msg](./enum#msg) | string | 結果訊息 |
 
@@ -258,7 +258,7 @@ Content-Type: application/json
         {
             "uids": "106293838",
             "bizType": "DERIVATIVES",
-            "limit": 50
+            "rate": 50
         }
     ]
 }
@@ -275,7 +275,7 @@ Content-Type: application/json
       {
         "uids": "290118",
         "bizType": "SPOT",
-        "limit": 600,
+        "rate": 600,
         "success": true,
         "msg": "API limit updated successfully"
       }
@@ -308,7 +308,7 @@ GET `/cloud/trade/v3/apilimit/query`
 | list | array | Object |
 | > uids | string | uid 列表，多個以逗號隔開 |
 | > [bizType](./enum#biztype) | string | 業務類型 |
-| > limit | integer | api rate limit 每秒頻率 |
+| > rate | integer | api rate limit 每秒頻率 |
 
 #### 請求示例
 
@@ -334,12 +334,12 @@ Content-Length: 2
       {
         "uids": "290118",
         "bizType": "SPOT",
-        "limit": 600
+        "rate": 600
       },
       {
         "uids": "290118",
         "bizType": "DERIVATIVES",
-        "limit": 400
+        "rate": 400
       }
     ]
   },

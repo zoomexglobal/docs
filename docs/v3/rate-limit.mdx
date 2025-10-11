@@ -236,7 +236,7 @@ POST `/cloud/trade/v3/apilimit/set`
 | list | true | array | Object |
 | > uids | true | string | Multiple UIDs, separated by commas |
 | > [bizType](./enum#biztype) | true | string | Business type |
-| > limit | true | integer | api rate limit per second |
+| > rate | true | integer | api rate limit per second |
 
 #### Response Parameters
 
@@ -245,7 +245,7 @@ POST `/cloud/trade/v3/apilimit/set`
 | list | array | Object |
 | > uids | string | Multiple UIDs, separated by commas |
 | > [bizType](./enum#biztype) | string | Business type |
-| > limit | integer | api rate limit per second |
+| > rate | integer | api rate limit per second |
 | > success | boolean | success or not |
 | > [msg](./enum#msg) | string | result message |
 
@@ -265,7 +265,7 @@ Content-Type: application/json
         {
             "uids": "106293838",
             "bizType": "DERIVATIVES",
-            "limit": 50
+            "rate": 50
         }
     ]
 }
@@ -282,7 +282,7 @@ Content-Type: application/json
       {
         "uids": "290118",
         "bizType": "SPOT",
-        "limit": 600,
+        "rate": 600,
         "success": true,
         "msg": "API limit updated successfully"
       }
@@ -318,7 +318,7 @@ GET `/cloud/trade/v3/apilimit/query`
 | list | array | Object |
 | > uids | string | Multiple UIDs, separated by commas |
 | > [bizType](./enum#biztype) | string | Business type |
-| > limit | integer | api rate limit per second |
+| > rate | integer | api rate limit per second |
 
 #### Request Example
 
@@ -344,12 +344,12 @@ Content-Length: 2
       {
         "uids": "290118",
         "bizType": "SPOT",
-        "limit": 600
+        "rate": 600
       },
       {
         "uids": "290118",
         "bizType": "DERIVATIVES",
-        "limit": 400
+        "rate": 400
       }
     ]
   },
