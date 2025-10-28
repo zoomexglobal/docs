@@ -20,7 +20,7 @@ Subscribe to the position stream to see changes to your position data in **real-
 |> side |string |Position side. `Buy`,`Sell` |
 |> size |string |Position size |
 |> [positionIdx](../../enum#positionidx) |integer |Used to identify positions in different position modes|
-|> tradeMode | integer |Trade mode <ul><li>USDT perpetual & Inverse contract: `0`: cross-margin, `1`: isolated margin</li><li>Unified account: deprecated, always `0`. Please query account config to get actual margin mode</li></ul>|
+|> tradeMode | integer |Trade mode <ul><li>USDT perpetual & Inverse contract: `0`: cross-margin, `1`: isolated margin</li><li>Trading account deprecated, always `0`. Please query account config to get actual margin mode</li></ul>|
 |> positionValue |string |Position value |
 |> riskId |integer |Risk limit ID.|
 |> riskLimitValue |string |Risk limit value corresponding to riskId.|

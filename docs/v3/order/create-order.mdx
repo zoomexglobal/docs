@@ -51,12 +51,12 @@ POST `/cloud/trade/v3/order/create`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>UTA: `spot`, `linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
+|category |**true** |string |Product type <ul><li>Trading account: `spot`, `linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
 |symbol |**true** |string |Symbol name|
 |side |**true** |string |`Buy`, `Sell`|
 |orderType |**true** |string |`Market`, `Limit`|
-|qty |**true** |string |Order quantity. <ul><li>UTA account<ul><li>Spot: set `marketUnit` for market order qty unit, `quoteCoin` for market buy by default, `baseCoin` for market sell by default</li><li>Futures: always use base coin as unit</li></ul></li><li>Classic account<ul><li>Spot: the unit of qty is quote coin for market buy order, for others, it is base coin</li><li>Futures: always use base coin as unit</li></ul></li></ul>|
-|marketUnit |false |string |The unit for `qty` when create **Spot market** orders for **UTA account**. Currently, TP/SL and conditional orders are not supported.<li>`baseCoin`: for example, buy BTCUSDT, then "qty" unit is BTC</li><li>`quoteCoin`: for example, sell BTCUSDT, then "qty" unit is USDT</li>|
+|qty |**true** |string |Order quantity. <ul><li>Trading account<ul><li>Spot: set `marketUnit` for market order qty unit, `quoteCoin` for market buy by default, `baseCoin` for market sell by default</li><li>Futures: always use base coin as unit</li></ul></li><li>Classic account<ul><li>Spot: the unit of qty is quote coin for market buy order, for others, it is base coin</li><li>Futures: always use base coin as unit</li></ul></li></ul>|
+|marketUnit |false |string |The unit for `qty` when create **Spot market** orders for **Trading account**. Currently, TP/SL and conditional orders are not supported.<li>`baseCoin`: for example, buy BTCUSDT, then "qty" unit is BTC</li><li>`quoteCoin`: for example, sell BTCUSDT, then "qty" unit is USDT</li>|
 |slippageToleranceType |false |string |Slippage tolerance Type for **market order**, `TickSize`, `Percent`<ul><li>Support linear, inverse, spot trading, but take profit, stoploss, conditional orders are not supported</li><li><b>TickSize</b>: <br/>the highest price of Buy order = ask1 + <code>slippageTolerance</code> x tickSize; <br/>the lowest price of Sell order = bid1 - <code>slippageTolerance</code> x tickSize</li><li><b>Percent</b>: <br/>the highest price of Buy order = ask1 x (1 + <code>slippageTolerance</code> x 0.01); <br/>the lowest price of Sell order = bid1 x (1 - `slippageTolerance` x 0.01)</li></ul>|
 |slippageTolerance |false |string |Slippage tolerance value <li>`TickSize`: range is [1, 10000], integer only</li><li>`Percent`: range is [0.01, 10], up to 2 decimals</li>|
 |price |false |string |Order price. If you have net position, price needs to be greater than liquidation price |

@@ -26,7 +26,7 @@ POST `/cloud/trade/v3/order/cancel-all`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type <ul><li>UTA: `spot`,`linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
+|[category](../enum#category) |**true** |string |Product type <ul><li>Trading account: `spot`,`linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
 |symbol |false|string |Symbol name. `linear` & `inverse`: **Required** if not passing baseCoin or settleCoin|
 |baseCoin |false|string |Base coin, uppercase only <ul><li>`linear` & `inverse`(classic account): If cancel all by baseCoin, it will cancel all linear & inverse orders. **Required** if not passing symbol or settleCoin</li><li>`linear` & `inverse`(Unified account): If cancel all by baseCoin, it will cancel all corresponding category orders. **Required** if not passing symbol or settleCoin</li><li>`spot`(classic account): invalid</li></ul>|
 |settleCoin |false|string |Settle coin <ul><li>`linear` & `inverse`: **Required** if not passing symbol or baseCoin</li><li>Does not support `spot`</li></ul>|
@@ -42,7 +42,7 @@ POST `/cloud/trade/v3/order/cancel-all`
 |list |array |Object|
 |> orderId |string |Order ID |
 |> orderLinkId |string |User customised order ID |
-|success |string |"1": success, "0": fail<li>uta(inverse), classic(linear, inverse) do not return this field</li>|
+|success |string |"1": success, "0": fail<li>Trading account(inverse), classic(linear, inverse) do not return this field</li>|
 
 ### Request Example
 

@@ -8,7 +8,7 @@ Query real-time position data, such as position size, cumulative realizedPNL.
 
 :::info
 
-UTA 2.0 - Query inverse positions
+Trading account 2.0 - Query inverse positions
 
 1. You can get all positions with "/v3/position/list?category=inverse".
 2. Querying multiple symbols at once is not supported for inverse contracts.
@@ -21,7 +21,7 @@ GET `/cloud/trade/v3/position/list`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../v3/enum#category) |**true** |string |Product type <ul><li>Unified account: `linear`, `inverse`</li><li>Normal account: `linear`, `inverse`. _Please note that `category` is not involved with business logic and is only used for routing_</li></ul> |
+|[category](../v3/enum#category) |**true** |string |Product type <ul><li>Trading account `linear`, `inverse`</li><li>Normal account: `linear`, `inverse`. _Please note that `category` is not involved with business logic and is only used for routing_</li></ul> |
 |symbol |false |string |Symbol name<ul><li>If `symbol` passed, it returns data regardless of having position or not.</li><li>If `symbol`=null and `settleCoin` specified, it returns position size greater than zero.</li></ul>|
 |baseCoin |false |string |Base coin. |
 |settleCoin |false |string |Settle coin. For `linear` & `inverse`, either `symbol` or `settleCoin` is **required**. `symbol` has a higher priority |

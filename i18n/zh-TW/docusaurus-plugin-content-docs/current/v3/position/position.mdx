@@ -7,7 +7,7 @@ sidebar_position: 1
 該接口可以獲取用戶的持倉信息，比如持倉數量，累計盈虧等
 :::info 信息
 
-**統一帳戶2.0 - 查詢反向合約倉位**
+**交易帳戶2.0 - 查詢反向合約倉位**
 
 1. 通過這種查詢方式 "/v3/position/list?category=inverse", 可以獲得所有持倉數據
 2. 不支持傳入多個symbol來查詢 關於反向合約的額外查詢規則
@@ -20,7 +20,7 @@ GET `/cloud/trade/v3/position/list`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[category](../v3/enum#category) |**true** |string |產品類型 <ul><li>统一交易账户：`linear`, `inverse`</li><li>普通帳戶: `linear`, `inverse`. 這裡`category`字段不參與業務邏輯，僅做路由使用</li></ul> |
+|[category](../v3/enum#category) |**true** |string |產品類型 <ul><li>交易帳戶：`linear`, `inverse`</li><li>普通帳戶: `linear`, `inverse`. 這裡`category`字段不參與業務邏輯，僅做路由使用</li></ul> |
 |symbol |false |string |合約名稱<ul><li>若傳了`symbol`, 則不管是否有倉位都返回該symbol數據</li><li>若`symbol`不傳但傳了`settleCoin`, 則僅返回有實際倉位的數據</li></ul>|
 |baseCoin |false |string |交易幣種. |
 |settleCoin |false |string |結算幣種. 對於期貨而言，`symbol`和`settleCon`**必傳**其中一個, 若都傳，則`symbol`有更高的優先級 |
@@ -36,18 +36,18 @@ GET `/cloud/trade/v3/position/list`
 |> riskId | integer | 风险限额ID，參見[風險限額](../v3/market/risk-limit#)接口. |
 |> riskLimitValue | string | 當前風險限額ID對應的持倉限制量. |
 |> symbol | string | 合約名称 |
-|> side| string | 持倉方向, Buy: 多头; Sell: 空头. <ul><li>單向持倉: 經典帳戶, 空倉返回<code>None</code>.</li><li>統一帳戶(linear): 空倉時, 單向或者雙向持倉模式都返回空字符串 <code>""</code>.</li></ul> |
+|> side| string | 持倉方向, Buy: 多头; Sell: 空头. <ul><li>單向持倉: 經典帳戶, 空倉返回<code>None</code>.</li><li>交易帳戶(linear): 空倉時, 單向或者雙向持倉模式都返回空字符串 <code>""</code>.</li></ul> |
 |> size| string | 當前倉位的合约數量 |
 |> avgPrice| string | 當前倉位的平均入場價格 |
 |> positionValue | string |仓位的價值 |
-|> tradeMode| integer | 交易模式。<ul><li>經典帳戶: <code>0</code> 全倉保證金, <code>1</code> 逐倉保證金</li><li>統一帳戶(除了反向): 該字段無效, 總是 <code>0</code>，請通過接口查詢帳戶配置以獲取帳戶保證金模式</li></ul> |
+|> tradeMode| integer | 交易模式。<ul><li>經典帳戶: <code>0</code> 全倉保證金, <code>1</code> 逐倉保證金</li><li>交易帳戶(除了反向): 該字段無效, 總是 <code>0</code>，請通過接口查詢帳戶配置以獲取帳戶保證金模式</li></ul> |
 |> [positionStatus](../v3/enum#positionstatus) | String |倉位状态. `Normal`,`Liq`, `Adl` |
 |> leverage| string | 當前倉位的槓桿，**仅适用于合约**.|
 |> markPrice| string  | symbol 的最新標記價格  |
-|> liqPrice| string  | 倉位強平價格。<ul><li>對於統一帳戶(逐倉)、經典帳戶: 是逐倉和全倉持倉的真實價格；當強平價 <= minPrice 或者 強平價 >= maxPrice，則為 <code>""</code>。</li><li>對於統一帳戶(全倉保證金): 請注意, 這是預計強平價格僅供參考。僅當帳戶維持保證金率達到100%時會觸發強平, 當強平價 <= minPrice或者 強平價 >= maxPrice, 則為 <code>""</code>。</li></ul>對於組合保證金模式，此字段為空，不會提供強平價格 |
+|> liqPrice| string  | 倉位強平價格。<ul><li>對於交易帳戶(逐倉)、經典帳戶: 是逐倉和全倉持倉的真實價格；當強平價 <= minPrice 或者 強平價 >= maxPrice，則為 <code>""</code>。</li><li>對於交易帳戶(全倉保證金): 請注意, 這是預計強平價格僅供參考。僅當帳戶維持保證金率達到100%時會觸發強平, 當強平價 <= minPrice或者 強平價 >= maxPrice, 則為 <code>""</code>。</li></ul>對於組合保證金模式，此字段為空，不會提供強平價格 |
 |> bustPrice| string  | 倉位破產價格. |
-|> positionIM| string  | 倉位起始保證金。<ul><li>經典帳戶: 忽略該字段</li><li>統一帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul> |
-|> positionMM| string  | 倉位維持保證金。<ul><li>經典帳戶: 忽略該字段</li><li>統一帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul> |
+|> positionIM| string  | 倉位起始保證金。<ul><li>經典帳戶: 忽略該字段</li><li>交易帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul> |
+|> positionMM| string  | 倉位維持保證金。<ul><li>經典帳戶: 忽略該字段</li><li>交易帳戶組合保證金模式(PM)下，該字段返回為空字符串</li></ul> |
 |> tpslMode| string  | 該字段廢棄, 無意義, 總是返回"Full". |
 |> positionBalance | string  | 倉位保證金. <ul><li>經典帳戶可以根據這個字段了解倉位初始保證金 + 平倉手續費</li></ul> |
 |> takeProfit| string  | 止盈價格 |

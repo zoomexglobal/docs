@@ -7,7 +7,7 @@ Query unfilled or partially filled orders in **real-time**. To query older order
 > **Normal account covers:  Spot / USDT perpetual / Inverse contract**
 
 :::tip
-- uta can query filled, cancelled, and rejected orders to the most recent 500 orders for spot, linear, inverse categories
+- Trading account can query filled, cancelled, and rejected orders to the most recent 500 orders for spot, linear, inverse categories
 - You can query by symbol, baseCoin, orderId and orderLinkId, and if you pass multiple params, the system will process them according to this priority: orderId > orderLinkId > symbol > baseCoin.
 - The records are sorted by the `createdTime` from newest to oldest.
 :::
@@ -23,13 +23,13 @@ GET `/cloud/trade/v3/order/realtime`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>UTA: `spot`, `linear`, `inverse` </li><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
+|category |**true** |string |Product type <ul><li>Trading account: `spot`, `linear`, `inverse` </li><li>Normal account: `spot`, `linear`, `inverse`</li></ul>|
 |symbol |false |string |Symbol name. For **linear**, either `symbol`, `baseCoin`, `settleCoin` is **required** |
 |baseCoin |false |string |Base coin. Supports `linear`, `inverse`|
 |settleCoin |false |string |Settle coin <ul><li><b>linear</b>: either `symbol`, `baseCoin` or `settleCoin` is **required**</li><li>`spot`: not supported</li></ul> |
 |orderId |false |string |Order ID |
 |orderLinkId |false |string |User customised order ID |
-|openOnly |false |integer |<ul><li>`0`(default): UTA2.0, classic account query open status orders (e.g., New, PartiallyFilled) **only**</li><li>`1`: UTA</li><li>`2`: classic account</li></ul><ul>Query a maximum of recent 500 closed status records are kept under each account each category (e.g., Cancelled, Rejected, Filled orders).<br/><i>If the Zoomex service is restarted due to an update, this part of the data will be cleared and accumulated again, but the order records will still be queried in [order history](order-list#)</i><li>`openOnly` param will be ignored when query by _orderId_ or _orderLinkId_</li><li>Classic `spot`: not supported</li></ul>|
+|openOnly |false |integer |<ul><li>`0`(default): Trading account2.0, classic account query open status orders (e.g., New, PartiallyFilled) **only**</li><li>`1`: Trading account</li><li>`2`: classic account</li></ul><ul>Query a maximum of recent 500 closed status records are kept under each account each category (e.g., Cancelled, Rejected, Filled orders).<br/><i>If the Zoomex service is restarted due to an update, this part of the data will be cleared and accumulated again, but the order records will still be queried in [order history](order-list#)</i><li>`openOnly` param will be ignored when query by _orderId_ or _orderLinkId_</li><li>Classic `spot`: not supported</li></ul>|
 |orderFilter |false |string|`Order`: activity order, `StoppOrder`: condition order, only supports futures, `tpslOrder`: stop loss order, only valid for spot|
 |limit |false |integer |Limit for data size per page. [`1`, `50`]. Default: `20`|
 |cursor |false |string |Cursor. Use the `nextPageCursor` token from the response to retrieve the next page of the result set|
@@ -53,7 +53,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> [OrderStatus](../enum#orderstatus) |string |Order status |
 |> [CancelType](../enum#canceltype) |string |Cancel type |
 |> [RejectReason](../enum#rejectreason) |string |Reject reason. |
-|> AvgPrice |string |Average filled price <li>UTA: returns `""` for those orders without avg price</li><li>classic account: returns `"0"` for those orders without avg price, and also for those orders have partilly filled but cancelled at the end</li> |
+|> AvgPrice |string |Average filled price <li>Trading account: returns `""` for those orders without avg price</li><li>classic account: returns `"0"` for those orders without avg price, and also for those orders have partilly filled but cancelled at the end</li> |
 |> LeavesQty |string |The remaining qty not executed. |
 |> LeavesValue |string |The estimated value not executed. |
 |> CumExecQty |string |Cumulative executed order qty |
@@ -63,7 +63,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> OrderType |string |Order type. `Market`,`Limit`. For TP/SL order, it means the order type after triggered |
 |> [StopOrderType](../enum#stopordertype) |string |Stop order type |
 |> OrderIv |string |Implied volatility |
-|> MarketUnit |string |The unit for `qty` when create **Spot market** orders for **UTA account**. `baseCoin`, `quoteCoin` |
+|> MarketUnit |string |The unit for `qty` when create **Spot market** orders for **Trading account**. `baseCoin`, `quoteCoin` |
 |> TriggerPrice |string |Trigger price. If `stopOrderType`=_TrailingStop_, it is activate price. Otherwise, it is trigger price|
 |> TakeProfit |string |Take profit price |
 |> StopLoss |string |Stop loss price |

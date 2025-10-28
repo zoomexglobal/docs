@@ -10,7 +10,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |**true** |string |Account type <ul><li>uta: `UNIFIED`</li><li>Classic account: `CONTRACT`</li></ul> |
+|[accountType](../enum#accounttype) |**true** |string |Account type <ul><li>Trading account: `UNIFIED`</li><li>Classic account: `CONTRACT`</li></ul> |
 |coin |false |string |Coin name <ul><li>If not passed, it returns non-zero asset info</li><li>You can pass multiple coins to query, separated by comma. </li></ul>|
 
 ### Response Parameters
@@ -18,7 +18,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |:----- |:-----|----- |
 |list |array |Object |
 |> accountType |string |Account type|
-|> accountIMRate |string |Account IM rate <li>All account wide fields are <b>not</b> applicable to <br/>UTA(isolated margin), <br/>classic account(CONTRACT)</li>|
+|> accountIMRate |string |Account IM rate <li>All account wide fields are <b>not</b> applicable to <br/>Trading account(isolated margin), <br/>classic account(CONTRACT)</li>|
 |> accountMMRate |string |Account MM rate||> totalEquity |string |Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin.|
 |> totalWalletBalance |string |Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。|
 |> totalMarginBalance |string |Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL.|

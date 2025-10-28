@@ -7,14 +7,14 @@ sidebar_position: 4
 > **普通帳戶覆蓋範圍: Spot / USDT永續 / 反向合約**
 
 :::tip
-- 統一帳戶: 支持查詢已成交, 取消和拒絕類型的最近500條訂單信息對於spot, linear, inverse類別.
+- 交易帳戶: 支持查詢已成交, 取消和拒絕類型的最近500條訂單信息對於spot, linear, inverse類別.
 - 您可以通過指定symbol, baseCoin, orderId 和 orderLinkId字段來查詢。如果您使用多字段組合，系統的查詢優先級如下: orderId > orderLinkId > symbol > baseCoin.
 - 返回的結果將以`createdTime`從新到舊排序.
 :::
 
 :::info
 * 經典帳戶現貨交易僅能查詢活動狀態的委託單
-* 針對統一帳戶, 服務器重啓或發佈後請使用[查詢歷史訂單](order-list#)接口去查詢已成交，取消和拒絕類型的訂單信息
+* 針對交易帳戶, 服務器重啓或發佈後請使用[查詢歷史訂單](order-list#)接口去查詢已成交，取消和拒絕類型的訂單信息
 :::
 
 
@@ -24,13 +24,13 @@ GET `/cloud/trade/v3/order/realtime`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |產品類型 <ul><li>统一交易账户：`spot`, `linear`, `inverse` </li><li>普通帳戶: `spot`, `linear`, `inverse`</li></ul>|
+|category |**true** |string |產品類型 <ul><li>交易帳戶：`spot`, `linear`, `inverse` </li><li>普通帳戶: `spot`, `linear`, `inverse`</li></ul>|
 |symbol |false |string |合約名稱. 對於**linear**, `symbol`, `baseCoin` 和 `settleCoin`**必傳**其中一個|
 |baseCoin |false |string |交易幣種. 支持`linear`, `inverse`.|
 |settleCoin |false |string |結算幣種 <ul><li><b>linear</b>: `symbol` 和 `settleCoin`**必傳**其中一個</li><li>`spot`: 該字段無效</li></ul>|
 |orderId |false |string |訂單Id |
 |orderLinkId |false |string |用戶自定義訂單Id |
-|openOnly |false |integer |<ul><li>`0`(默認): 統一帳戶, 經典帳戶: 僅查詢活動委託訂單, 比如New, PartiallyFilled訂單</li><li>`1`: 統一帳戶</li><li>`2`: 經典帳戶:</li></ul>返回僅終態（已取消/拒絕/完全成交）的訂單數據, 每個帳戶每個category下最多保留500條紀錄. <i>如果因Bybit服務更新重啟則該部分數據會情況並重新累計, 但是訂單紀錄仍然可以從[歷史訂單](order-list#)中查詢到</i><ul><li>當查詢是按照_orderId_ 或者 _orderLinkId_時, `openOnly`入参將會被忽略</li><li>經典帳戶現貨: 該字段無效, 僅返回活動委託單</li></ul>|
+|openOnly |false |integer |<ul><li>`0`(默認): 交易帳戶, 經典帳戶: 僅查詢活動委託訂單, 比如New, PartiallyFilled訂單</li><li>`1`: 交易帳戶</li><li>`2`: 經典帳戶:</li></ul>返回僅終態（已取消/拒絕/完全成交）的訂單數據, 每個帳戶每個category下最多保留500條紀錄. <i>如果因Bybit服務更新重啟則該部分數據會情況並重新累計, 但是訂單紀錄仍然可以從[歷史訂單](order-list#)中查詢到</i><ul><li>當查詢是按照_orderId_ 或者 _orderLinkId_時, `openOnly`入参將會被忽略</li><li>經典帳戶現貨: 該字段無效, 僅返回活動委託單</li></ul>|
 |orderFilter |false |string|`Order`: 活動單, `StopOrder`: 條件單, 仅支持期貨, `tpslOrder`: 止盈止損單, 僅現貨有效|
 |limit |false |integer |每頁數量限制. [`1`, `50`]. 默認: `20`|
 |cursor |false |string |游標，用於翻頁|
@@ -54,7 +54,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> [OrderStatus](../enum#orderstatus) |string |訂單狀態 |
 |> [CancelType](../enum#canceltype) |string |訂單被取消類型 |
 |> [RejectReason](../enum#rejectreason) |string |拒絕原因. |
-|> AvgPrice |string |訂單平均成交價格 <li>統一帳戶: 不存在avg price場景的訂單返回`""`</li><li>經典帳戶: 不存在avg price場景的訂單返回`"0"`, 以及部分成交但最終被手動取消的訂單</li> |
+|> AvgPrice |string |訂單平均成交價格 <li>交易帳戶: 不存在avg price場景的訂單返回`""`</li><li>經典帳戶: 不存在avg price場景的訂單返回`"0"`, 以及部分成交但最終被手動取消的訂單</li> |
 |> LeavesQty |string |訂單剩餘未成交的數量.  |
 |> LeavesValue |string |訂單剩餘未成交的價值.  |
 |> CumExecQty |string |訂單累計成交數量 |
@@ -64,7 +64,7 @@ GET `/cloud/trade/v3/order/realtime`
 |> OrderType |string |訂單類型. `Market`,`Limit`. 對於止盈止損單, 則表示為觸發後的訂單類型 |
 |> [StopOrderType](../enum#stopordertype) |string |條件單類型 |
 |> OrderIv |string |隱含波動率 |
-|> marketUnit |string |統一帳戶現貨交易時給入參`qty`選擇的單位. `baseCoin`, `quoteCoin` |
+|> marketUnit |string |交易帳戶現貨交易時給入參`qty`選擇的單位. `baseCoin`, `quoteCoin` |
 |> TriggerPrice |string |觸發價格. 若`stopOrderType`=_TrailingStop_, 則這是激活價格. 否則, 它是觸發價格|
 |> TakeProfit |string |止盈價格 |
 |> StopLoss |string |止損價格 |

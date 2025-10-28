@@ -13,7 +13,7 @@ POST `/cloud/trade/v3/position/switch-isolated`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>Unified account: not supported</li><li>Classic account: `linear`, `inverse`</li></ul> |
+|category |**true** |string |Product type <ul><li>Trading account not supported</li><li>Classic account: `linear`, `inverse`</li></ul> |
 |symbol |**true** |string |Symbol name |
 |tradeMode |**true** |integer |`0`: cross margin. `1`: isolated margin |
 |buyLeverage |**true** |string |The value must be equal to `sellLeverage` value|
