@@ -1,0 +1,123 @@
+---
+title: 查詢升級前成交記錄
+sidebar_label: 查詢升級前成交記錄
+sidebar_position: 6.1
+---
+
+支持查詢升級到統一帳戶之前發生的USDT永續, 反向合約, 現貨成交记录
+
+:::info
+* 通過category=linear, 查詢到在經典帳戶期間產生的USDT永續數據
+* 通過category=spot, 查詢到在經典帳戶期間產生的現貨數據
+* 通過category=inverse, 查詢到在經典帳戶期間產生的反向合約數據
+:::
+
+### HTTP 請求
+GET `/cloud/trade/v3/pre-upgrade/execution/list`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../enum#category) |**true** |string |產品類型. linear, inverse, spot |
+|symbol |false |string |合約名稱 |
+|startTime |false |integer |開始時間戳 (毫秒) <ul><li>startTime 和 endTime都不傳入, 則默認返回最近7天的數據</li><li>startTime 和 endTime都傳入的話, 則確保endTime - startTime <= 7天</li><li>若只傳startTime，則查詢startTime和startTime+7天的數據</li><li>若只傳endTime，則查詢endTime-7天和endTime的數據</li></ul>|
+|endTime |false |integer |結束時間戳 (毫秒) |
+|[execType](../enum#exectype) |false |string |執行類型|
+|limit |false |integer |每頁數量限制. [`1`, `100`]. 默認: `50`|
+|cursor |false |string |游標，用於翻頁|
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+| [category](../enum#category) | string  | 產品類型 |
+| list | array | Object |
+|> symbol |string |合約名稱|
+|> orderId |string |訂單Id |
+|> side |string |訂單方向.買： `Buy`,賣：`Sell` |
+|> orderPrice |string |訂單價格 |
+|> orderQty |string |訂單數量 |
+|> leavesQty |string |剩餘委託未成交數量|
+|> [orderType](../enum#ordertype) |string |訂單類型. 市價單：`Market`,限價單：`Limit` |
+|> [stopOrderType](../enum#stopordertype) |string |条件单的订单类型。如果该订单不是条件单，则不会返回任何类型 |
+|> execFee |string |交易手續費 |
+|> execId |string |成交Id |
+|> execPrice |string |成交價格 |
+|> execQty |string |成交數量 |
+|> [execType](../enum#exectype) |string |交易類型 |
+|> execValue |string |成交價值 |
+|> execTime |string |成交時間（毫秒） |
+|> isMaker |Bool |是否是 Maker 訂單,`true` 為 maker 訂單，`false` 為 taker 訂單 |
+|> feeRate |string |手續費率 |
+|> markPrice |string |成交執行時，該 symbol 當時的標記價格. _現貨交易不支持_ |
+|> closedSize |string |平倉數量 |
+|nextPageCursor |string |游標，用於翻頁|
+
+---
+
+### 請求示例
+
+```shell
+GET /cloud/trade/v3/pre-upgrade/execution/list?category=spot&symbol=BTCUSDT HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672221263407
+X-BAPI-RECV-WINDOW: 5000
+```
+
+### 響應示例
+
+```json
+{
+  "result": {
+    "list": [
+      {
+        "symbol": "BTCUSDT",
+        "orderId": "1896284562024596224",
+        "side": "Buy",
+        "orderPrice": "",
+        "orderQty": "",
+        "leavesQty": "",
+        "orderType": "Market",
+        "stopOrderType": "",
+        "execFee": "0.0000000198",
+        "execId": "2100000000136808695",
+        "execPrice": "83877.09",
+        "execType": "",
+        "execValue": "",
+        "execTime": "1740790735426",
+        "isMaker": false,
+        "feeRate": "",
+        "markPrice": "",
+        "closedSize": 0,
+      },
+      {
+        "symbol": "BTCUSDT",
+        "orderId": "1893483376007480064",
+        "side": "Buy",
+        "orderPrice": "",
+        "orderQty": "",
+        "leavesQty": "",
+        "orderType": "Market",
+        "stopOrderType": "",
+        "execFee": "0.0000000198",
+        "execId": "2100000000135856467",
+        "execPrice": "90800",
+        "execType": "",
+        "execValue": "",
+        "execTime": "1740456808031",
+        "isMaker": false,
+        "feeRate": "",
+        "markPrice": "",
+        "closedSize": 0,
+      }
+    ],
+    "nextPageCursor": "2100000000135856467",
+    "category": "spot"
+  },
+  "retCode": 0,
+  "retExtInfo": {},
+  "retMsg": "OK",
+  "time": 1740966707907
+}
+```
