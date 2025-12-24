@@ -95,6 +95,10 @@
         "message": "帳戶",
         "description": "帳戶目錄"
     },
+    "sidebar.v3SideBar.category.Pre-upgrade": {
+        "message": "升級前相關紀錄",
+        "description": "升級前相關紀錄"
+    },
     "sidebar.v3SideBar.category.Asset": {
         "message": "資產",
         "description": "資產目錄"
