@@ -18,6 +18,7 @@ const sidebars = {
 
   // But you can create a sidebar manually
   v3SideBar: [
+    'v3/changelog',
     'v3/intro',
     {
       type: 'category',

@@ -1,0 +1,16 @@
+---
+title: 变更记录
+sidebar_name: 变更记录
+---
+
+### 2025-12-24
+
+1.  升級UTA後，用戶需要申請新的APIkey來調用接口
+2.  升級UTA後，查詢升級前歷史記錄使用該接口：[升級前訂單記錄](pre-upgrade/pre-upgrade-order-list#)
+3.  升級UTA後，查詢升級前成交記錄使用該接口：[升級前成交記錄](pre-upgrade/pre-upgrade-execution#)
+4.  升級UTA後，查詢升級前平倉盈虧使用該接口：[升級前平倉盈虧](pre-upgrade/pre-upgrade-close-pnl#)
+5.  **交易-創建委托單：** `qty`: 現貨，可以通過設置`marketUnit`來表示市價單qty的單位，市價買單默認是`quoteCoin`，市價賣單默認是`baseCoin`
+6.  **交易-查詢歷史訂單：** 可查詢的狀態和範圍有調整，具體參考：[查詢歷史訂單](order/order-list#)
+7.  **持倉-設置杠桿：** UTA雙倉模式，`buyLeverage`必須等於`sellLeverage`
+8.  **資產-查詢可劃轉金額：** 新增接口，可查詢交易賬戶可以劃轉的金額
+9.  **資產-查詢錢包余額：** 傳入`UNIFIED`，可查詢交易賬戶余額
