@@ -1,0 +1,103 @@
+---
+title: Get Orders (Paginated)
+sidebar_label: Get Orders (Paginated)
+sidebar_position: 4
+slug: /copy-trade/trade/get-order-page-list
+---
+
+Query orders with pagination
+
+### HTTP Request
+
+GET `/cloud/contract/v3/private/copytrading/order/page-list`
+
+### Request Parameters
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|[symbol](../enum#symbol) |false |string |Symbol |
+|orderId |false |string |Order Id|
+|orderLinkId |false |string |Unique user-set order ID. Maximum length of 36 characters|
+|copyTradeOrderType |false |string |[copyTradeOrderType](../enum#copytradeordertype): All, Active, Closed, Cancelled|
+|preIndex |false |string |Index of the last order from the previous query. Omit for first query|
+|pageSize |false |integer |Number of records per page. Default: 10, Max: 50|
+
+### Response Parameters
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|list |array |Order list. See [Get Orders](order-list.mdx) for order structure |
+|hasNext |boolean |Whether there is more data |
+|nextIndex |string |Index for next page query. Pass this value as preIndex in the next request |
+
+### Order Fields (in list)
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order Id |
+|orderLinkId |string |Unique user-set order ID. Maximum length of 36 characters  |
+|symbol |string |Symbol |
+|side |string |Side |
+|price  |string |Order price |
+|qty  |string |Order quantity in USD |
+|[timeInForce](../enum#timeinforce) |string |Time in force  |
+|isIsolated |boolean |true means isolated margin mode; false means cross margin mode |
+|leverage |string |In Isolated Margin mode, the value is set by the user. In Cross Margin mode, the value is the max leverage at current risk level |
+|[copyTradeOrderStatus](../enum#copytradeorderstatus) |string |Copy trade order type |
+|leavesQty |string |Number of unfilled contracts from the order's size |
+|leavesValue |string |The estimated value corresponding to the number of remaining orders |
+|cumExecValue |string |Cumulative value of trading  |
+|cumExecFee |string |Cumulative trading fees |
+|takeProfit |string |Take profit price |
+|stopLoss |string |Stop loss price |
+|[tpTriggerBy](../enum#triggerby) |string |Type of take-profit activation price, LastPrice by default. |
+|[slTriggerBy](../enum#triggerby) |string |Type of stop-loss activation price, LastPrice by default. |
+|createdTime |string |Creation time (when the order_status was Created) |
+|updatedTime |string |Update time |
+
+### Request Example
+
+``` shell
+# First page
+curl --location --request GET 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/page-list?timestamp=1689845343595&api_key=XXXXX&recv_window=5000&sign=XXXXX&pageSize=20'
+
+# Next page (use nextIndex from previous response as preIndex)
+curl --location --request GET 'https://openapi-testnet.zoomex.com/cloud/contract/v3/private/copytrading/order/page-list?timestamp=1689845343595&api_key=XXXXX&recv_window=5000&sign=XXXXX&pageSize=20&preIndex=eyJvcmRlcklkIjoiMjQxNTg4ZmItMWU2OS00NmYyLTg0NDYtOTI3OGU0MDkwMmJmIn0='
+```
+
+### Response Example
+
+``` json
+{
+    "retCode": 0,
+    "retMsg": "success",
+    "result": {
+        "list": [
+            {
+                "orderId": "241588fb-1e69-46f2-8446-9278e40902bf",
+                "symbol": "BTCUSDT",
+                "orderLinkId": "",
+                "side": "Sell",
+                "copyTradeOrderStatus": "OpenOrderFilled",
+                "price": "30285.00",
+                "qty": "1",
+                "timeInForce": "GoodTillCancel",
+                "leavesQty": "0",
+                "isIsolated": true,
+                "leavesValue": "0",
+                "leverage": "25",
+                "cumExecValue": "30287.6",
+                "cumExecFee": "18.17256",
+                "createdTime": "1689845238176",
+                "updatedTime": "1689845238192",
+                "takeProfit": "29000.00",
+                "stopLoss": "32000.00",
+                "tpTriggerBy": "MarkPrice",
+                "slTriggerBy": "IndexPrice"
+            }
+        ],
+        "hasNext": true,
+        "nextIndex": "eyJvcmRlcklkIjoiMjQxNTg4ZmItMWU2OS00NmYyLTg0NDYtOTI3OGU0MDkwMmJmIn0="
+    }
+}
+```
