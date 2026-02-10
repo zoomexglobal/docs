@@ -18,7 +18,7 @@ GET `/cloud/contract/v3/private/copytrading/order/page-list`
 |[symbol](../enum#symbol) |false |string |合約類型 |
 |orderId |false |string |訂單ID|
 |orderLinkId |false |string |機構自定義訂單ID, 最大長度36位，且同一機構下自定義ID不可重復|
-|copyTradeOrderType |false |string |[copyTradeOrderType](../enum#copytradeordertype): All-全部訂單；Active-持倉中的訂單；Closed-已平倉訂單；Cancelled-已取消訂單|
+|copyTradeOrderType |false |string |[copyTradeOrderType](../enum#copytradeordertype): All-全部訂單；Active-持倉中的訂單；Closed-已平倉訂單；Cancelled-已取消訂單；Tpsl-止盈止損訂單|
 |preIndex |false |string |上一次查詢的最後一條訂單的索引，首次查詢無需傳遞|
 |pageSize |false |integer |每頁顯示條數，默認為 10，最大為 50|
 
