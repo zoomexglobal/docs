@@ -78,6 +78,12 @@ GET `/cloud/trade/v3/market/tickers`
             <td>> nextFundingTime</td><td>string</td><td>下次結算資金費用的時間 (毫秒) </td>
         </tr>
         <tr>
+            <td>> fundingIntervalHour</td><td>string</td><td>資金費結算間隔（小時）<ul><li>目前僅支持整點小時</li></ul></td>
+        </tr>
+        <tr>
+            <td>> fundingCap</td><td>string</td><td>資金費率上限和下限</td>
+        </tr>
+        <tr>
             <td>> ask1Size</td><td>string</td><td>買1價的數量 </td>
         </tr>
         <tr>
@@ -179,6 +185,8 @@ Host: openapi-testnet.zoomex.com
             "volume24h": "49337318",
             "fundingRate": "-0.001034",
             "nextFundingTime": "1672387200000",
+            "fundingIntervalHour": "8",
+            "fundingCap": "0.002025",
             "predictedDeliveryPrice": "",
             "basisRate": "",
             "deliveryFeeRate": "",
@@ -228,4 +236,3 @@ Host: openapi-testnet.zoomex.com
     ```
 </TabItem>
 </Tabs>
-
