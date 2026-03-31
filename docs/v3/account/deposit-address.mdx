@@ -1,0 +1,114 @@
+---
+title: Get Deposit Address
+sidebar_label: Get Deposit Address
+sidebar_position: 3.5
+slug: /v3/account/deposit-address
+---
+
+Query deposit addresses by coin.
+
+- If the user already has assigned deposit addresses, this API returns the existing addresses.
+- If the user has no assigned address, querying by coin will allocate addresses for all supported chains of that coin.
+- Query by coin dimension: pass `chain` to return one chain address, omit `chain` to return all chain addresses.
+
+> API rate limit: 30 req / min
+
+### HTTP Request
+GET `/private/v1/asset/deposit/query-address`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|coin |true |string |Name of coin |
+|chain |false |string |Please use the chain information from [Get Coin Info](coin-info) as the input for this field. |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|addresses |array|Object |
+|> coin |string |Name of coin |
+|> chain |string |Name of chain |
+|> address |string |Deposit address |
+|> tag |string |The memo or tag of the address |
+|> contractAddress |string |Contract address. If no contract address is provided, an empty string is returned. |
+
+---
+
+### Request Example
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/deposit/query-address'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("response status:", response.status_code)
+    print("response info:", response.json())
+    print("response time:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### Response Example
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "addresses": [
+            {
+                "coin": "USDT",
+                "chain": "ETH",
+                "address": "0x1234567890abcdef",
+                "tag": "",
+                "contractAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+            },
+            {
+                "coin": "USDT",
+                "chain": "TRX",
+                "address": "TABCDEF1234567890",
+                "tag": "",
+                "contractAddress": ""
+            }
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1718476267321
+}
+```
