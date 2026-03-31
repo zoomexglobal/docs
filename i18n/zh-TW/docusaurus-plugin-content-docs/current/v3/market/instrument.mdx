@@ -115,6 +115,10 @@ GET `/cloud/trade/v3/market/instruments-info`
         <tr>
             <td>> settleCoin</td><td>string</td><td>結算幣種 </td>
         </tr>
+        <tr>
+            <td>> offlineTime</td><td>string</td><td>幣對下線時間，UTC時間
+            若幣對未上線或使用中，則返回為空；若即將下線狀態，則返回下線時間； </td>
+        </tr>
     </table>
 </TabItem>
 <TabItem value="spot" label="Spot">
@@ -175,6 +179,10 @@ GET `/cloud/trade/v3/market/instruments-info`
             </tr>
             <tr>
                 <td>>> marketParameter</td><td>string</td><td>市價單價格限制. 如果預估成交價與最新成交價的偏差大於限定的百分比，市價單將被部分執行. 舉例說明，接口返回0.05, 則表示限價為5%. 假如當前MNT/USDT限價為5%，用戶下單 10 萬 USDT 市價買入（當前最新成交價為 2 USDT）。凡在2.1 USDT以上成交的部分將被取消。假設只有價值2萬 USDT的MNT可以在2.1 USDT及以下的價格成交，剩餘的8萬 USDT訂單價值將因為偏差超過5%的閾值而被取消。</td>
+            </tr>
+            <tr>
+                <td>> offlineTime</td><td>string</td><td>幣對下線時間，UTC時間
+                若幣對未上線或使用中，則返回為空；若即將下線狀態，則返回下線時間； </td>
             </tr>
         </table>
 </TabItem>
@@ -258,7 +266,8 @@ Host: openapi-testnet.zoomex.com
                 },
                 "unifiedMarginTrade": true,
                 "fundingInterval": 480,
-                "settleCoin": "USDT"
+                "settleCoin": "USDT",
+                "offlineTime": "0"
             }
         ],
         "nextPageCursor": ""
@@ -298,7 +307,8 @@ Host: openapi-testnet.zoomex.com
                 "riskParameters": {
                     "limitParameter": "0.05",
                     "marketParameter": "0.05"
-                }
+                },
+                "offlineTime": "0"
             }
         ]
     },
@@ -309,4 +319,3 @@ Host: openapi-testnet.zoomex.com
 
 </TabItem>
 </Tabs>
-

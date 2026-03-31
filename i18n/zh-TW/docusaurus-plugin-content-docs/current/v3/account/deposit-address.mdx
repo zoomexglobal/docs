@@ -1,0 +1,114 @@
+---
+title: 查詢入金地址
+sidebar_label: 查詢入金地址
+sidebar_position: 3.5
+slug: /v3/account/deposit-address
+---
+
+按幣種查詢入金地址。
+
+- 若使用者已分配過入金地址，直接返回已分配地址。
+- 若使用者尚未分配過入金地址，按幣種查詢時會為該幣種支持的所有鏈分配地址。
+- 查詢維度為幣種：傳入 `chain` 返回對應鏈地址，不傳 `chain` 返回全部鏈地址。
+
+> API頻率: 30次/分
+
+### HTTP 請求
+GET `/private/v1/asset/deposit/query-address`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|coin |true |string |幣種名稱 |
+|chain |false |string |請使用 [查詢幣種信息](coin-info) 接口中的 `chain` 信息作為該字段輸入內容。 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|addresses |array|Object |
+|> coin |string |幣種名稱 |
+|> chain |string |鏈名 |
+|> address |string |充值地址 |
+|> tag |string |地址的 memo 或 tag |
+|> contractAddress |string |合約地址；若無合約地址，返回空字符串。 |
+
+---
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/deposit/query-address'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("響應狀態:", response.status_code)
+    print("響應信息:", response.json())
+    print("響應時間:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "addresses": [
+            {
+                "coin": "USDT",
+                "chain": "ETH",
+                "address": "0x1234567890abcdef",
+                "tag": "",
+                "contractAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+            },
+            {
+                "coin": "USDT",
+                "chain": "TRX",
+                "address": "TABCDEF1234567890",
+                "tag": "",
+                "contractAddress": ""
+            }
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1718476267321
+}
+```
