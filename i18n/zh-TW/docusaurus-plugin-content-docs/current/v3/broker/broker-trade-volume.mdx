@@ -1,0 +1,116 @@
+---
+title: 查詢代理商直客交易量
+sidebar_label: 查詢代理商直客交易量
+sidebar_position: 7
+---
+
+:::info
+* 自定義時間區間，合約與現貨聚合統計；`productType`、`contractType` 過濾與同產品返佣接口一致。
+* 每個幣種行的 `trade_volume`、`fee` 均為**原幣種**（不折算）。已成交口徑（Maker+Taker）；不含未成交、撤單、失敗；合約按面值、現貨按成交金額。
+:::
+> API頻率: 5次/秒
+
+### HTTP 請求
+GET `/private/v1/broker/trade-volume`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+| from | false | long | 開始時間，Unix 時間戳，**毫秒**（含） |
+| to | false | long | 結束時間，Unix 時間戳，**毫秒**（不含） |
+| uid | false | string |<ul><li>輸入子UID查詢指定直客</li><li>不傳則返回當前代理商下全部子UID（仍按 UID 分頁）</li></ul> |
+| cursor | false | string | 游標，用於按 UID 翻頁，首次調用時不用傳 |
+| limit | false | integer | 每頁最多 UID 數，取值 `[1, 50]`，默認 `20` |
+| productType | false | string | 業務類型：不傳或 `ALL` 表示現貨+合約；`SPOT`；`DERIVATIVES`（與返佣接口一致） |
+| contractType | false | string | 合約類型過濾，僅在統計含合約時有效；不傳表示全部。如 `LinearPerpetual`、`InversePerpetual`、`LinearFutures`、`InverseFutures` |
+| coin | false | string | 幣種篩選：不傳則每個 UID 下 `coins` 含全部幣種；傳值則每個 UID 下僅保留該幣種 |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+| list | array | 本頁每個 UID 一條 |
+| > user_id | string | 直客UID |
+| > coins | array | 按幣種明細 |
+| > > coin | string | 幣種 |
+| > > trade_volume | string | 該時間區間內該幣種已成交量/金額（見上方說明） |
+| > > fee | string | 該時間區間內該幣種累計手續費；無數據為 `0` |
+| next_cursor | string | 下一頁 UID 游標；無更多 UID 時為空 |
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/broker/trade-volume'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("响应状态:", response.status_code)
+    print("响应信息:", response.json())
+    print("响应时间:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "from": 1704067200000,
+    "to": 1706745600000,
+    "productType": "ALL",
+    "limit": 20,
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "list": [
+            {
+                "user_id": "101479471",
+                "coins": [
+                    {
+                        "coin": "USDT",
+                        "trade_volume": "125000.5",
+                        "fee": "12.5"
+                    }
+                ]
+            }
+        ],
+        "next_cursor": ""
+    },
+    "ext_info": null,
+    "time_now": 1718353045150
+}
+```
