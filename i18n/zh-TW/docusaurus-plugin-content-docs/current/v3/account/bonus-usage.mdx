@@ -1,0 +1,120 @@
+---
+title: 查詢體驗金使用記錄
+sidebar_label: 查詢體驗金使用記錄
+sidebar_position: 13
+---
+
+查詢體驗金和抵扣金的使用記錄。
+
+> API頻率: 60次/分鐘
+
+### HTTP 請求
+GET `/private/v1/asset/bonus/usage`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|coin |true |string |幣種。目前僅支持 `USDT` |
+|awardType |false |integer |獎勵類型。`1`: 體驗金。`2`: 抵扣金。不傳則返回全部類型 |
+|startTime |false |integer |開始時間戳（秒）。返回該時間之後的記錄 |
+|endTime |false |integer |結束時間戳（秒）。返回該時間之前的記錄 |
+|limit |false |integer |每頁數量限制。[`1`, `50`]。默認: `10` |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|rows |array|Object |
+|> award_type |integer |獎勵類型。`1`: 體驗金。`2`: 抵扣金 |
+|> symbol |string |使用該筆獎勵的交易幣對 |
+|> time |integer |獎勵使用時間戳（秒），UTC |
+|> type |integer |使用類型。`1`: 交易。`2`: 手續費。`3`: 資金費用 |
+|> coin |string |幣種 |
+|> amount |string |使用數量 |
+|> order_id |string |交易訂單ID。未關聯訂單時返回空 |
+
+---
+
+### 請求示例
+
+```python
+import time
+import hmac
+import hashlib
+import requests
+import urllib.parse
+
+def create_request(apiKey, secret, params):
+    url = 'https://openapi-testnet.zoomex.com/private/v1/asset/bonus/usage'
+    timestamp = int(time.time() * 1000)
+    recv_window = 1000000
+
+    params['api_key'] = apiKey
+    params['timestamp'] = timestamp
+    params['recv_window'] = recv_window
+
+    ordered_params = '&'.join([f"{key}={params[key]}" for key in sorted(params.keys())])
+
+    signature = hmac.new(secret.encode('utf-8'), ordered_params.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    params['sign'] = signature
+
+    headers = {
+        'X-BAPI-API-KEY': apiKey,
+        'X-BAPI-SIGN': signature,
+        'X-BAPI-TIMESTAMP': str(timestamp),
+        'X-BAPI-RECV-WINDOW': str(recv_window)
+    }
+
+    query_string = urllib.parse.urlencode(params)
+    full_url = f"{url}?{query_string}"
+
+    response = requests.get(full_url, headers=headers)
+
+    print("響應狀態:", response.status_code)
+    print("響應信息:", response.json())
+    print("響應時間:", response.elapsed.total_seconds())
+
+apiKey = 'your key'
+secret = 'your secret'
+params = {
+    "coin": "USDT",
+    "awardType": 1,
+    "limit": 10,
+}
+
+create_request(apiKey, secret, params)
+```
+
+### 響應示例
+
+```json
+{
+    "ret_code": 0,
+    "ret_msg": "OK",
+    "ext_code": "",
+    "result": {
+        "rows": [
+            {
+                "award_type": 1,
+                "symbol": "BTCUSDT",
+                "time": 1718353508,
+                "type": 1,
+                "coin": "USDT",
+                "amount": "10",
+                "order_id": "1234567890"
+            },
+            {
+                "award_type": 2,
+                "symbol": "ETHUSDT",
+                "time": 1718353600,
+                "type": 2,
+                "coin": "USDT",
+                "amount": "1.5",
+                "order_id": ""
+            }
+        ]
+    },
+    "ext_info": null,
+    "time_now": 1718353700000
+}
+```
