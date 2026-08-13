@@ -1,0 +1,51 @@
+---
+title: 設置保證金模式(帳戶)
+sidebar_label: 設置保證金模式(帳戶)
+sidebar_position: 2.9
+---
+用戶如果不設置，默認按全倉保證金
+
+### HTTP 請求
+POST `/cloud/trade/v3/position/set-margin-mode`
+
+### 請求參數
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|setMarginMode |**true** |string |<ul><li>`ISOLATED_MARGIN`(逐倉保證金模式)</li><li>`REGULAR_MARGIN`（全倉保證金模式）</li></ul> |
+
+### 響應參數
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|reasons |array |Object. 請求成功時返回空數組 |
+|> reasonCode |string |失敗錯誤碼 |
+|> reasonMsg |string |失敗錯誤信息 |
+
+---
+
+### 請求示例
+
+```shell
+POST /cloud/trade/v3/position/set-margin-mode HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672279325035
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "setMarginMode": "REGULAR_MARGIN"
+}
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "reasons": []
+    }
+}
+```

@@ -10,7 +10,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |**true** |string |Account type <ul><li>Trading account: `UNIFIED`</li><li>Classic account: `CONTRACT`</li></ul> |
+|[accountType](../enum#accounttype) |**true** |string |Account type. Trading account: `UNIFIED` |
 |coin |false |string |Coin name <ul><li>If not passed, it returns non-zero asset info</li><li>You can pass multiple coins to query, separated by comma. </li></ul>|
 
 ### Response Parameters
@@ -18,7 +18,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |:----- |:-----|----- |
 |list |array |Object |
 |> accountType |string |Account type|
-|> accountIMRate |string |Account IM rate <li>All account wide fields are <b>not</b> applicable to <br/>Trading account(isolated margin), <br/>classic account(CONTRACT)</li>|
+|> accountIMRate |string |Account IM rate. All account wide fields are **not** applicable to Trading account (isolated margin) |
 |> accountMMRate |string |Account MM rate||> totalEquity |string |Equity of account converted to usd：Account Margin Balance Base Coin + Account Option Value Base Coin.|
 |> totalWalletBalance |string |Wallet Balance of account converted to usd：∑ Asset Wallet Balance By USD value of each asset。|
 |> totalMarginBalance |string |Margin Balance of account converted to usd：totalWalletBalance + totalPerpUPL.|
@@ -30,7 +30,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |>> equity |string |Equity of current coin |
 |>> usdValue |string |USD value of current coin. |
 |>> walletBalance |string |Wallet balance of current coin |
-|>> availableToWithdraw |string |**Note:** this field is deprecated for `accountType=UNIFIED` from 9 Jan, 2025 <ul><li>Derivatives available balance: <br/><b>isolated margin</b>: walletBalance - totalPositionIM - totalOrderIM - locked - bonus<br/><b>cross & portfolio margin</b>: look at field `totalAvailableBalance`(USD), which needs to be converted into the available balance of accordingly coin through index price</li></ul>|
+|>> availableToWithdraw |string |**Note:** this field is deprecated for `accountType=UNIFIED` from 9 Jan, 2025 <ul><li>Derivatives available balance: <br/><b>isolated margin</b>: walletBalance - totalPositionIM - totalOrderIM - locked - bonus<br/><b>cross margin</b>: look at field `totalAvailableBalance`(USD), which needs to be converted into the available balance of accordingly coin through index price</li></ul>|
 |>> totalOrderIM |string |Pre-occupied margin for order.|
 |>> totalPositionIM	|string	|Sum of initial margin of all positions + Pre-occupied liquidation fee.|
 |>> totalPositionMM	|string |Sum of maintenance margin for all positions.|
@@ -43,7 +43,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### Request Example
 
 ```shell
-GET /cloud/trade/v3/account/wallet-balance?accountType=CONTRACT HTTP/1.1
+GET /cloud/trade/v3/account/wallet-balance?accountType=UNIFIED HTTP/1.1
 Host: openapi-testnet.zoomex.com
 X-BAPI-SIGN: XXXXX
 X-BAPI-API-KEY: XXXXX
@@ -60,7 +60,7 @@ X-BAPI-RECV-WINDOW: 5000
     "result": {
         "list": [
             {
-                "accountType": "CONTRACT",
+                "accountType": "UNIFIED",
                 "accountIMRate": "",
                 "accountMMRate": "",
                 "totalEquity": "",
@@ -70,7 +70,6 @@ X-BAPI-RECV-WINDOW: 5000
                 "totalPerpUPL": "",
                 "totalInitialMargin": "",
                 "totalMaintenanceMargin": "",
-                "accountLTV": "",
                 "coin": [
                     {
                         "coin": "BTC",

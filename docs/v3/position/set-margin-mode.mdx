@@ -1,0 +1,51 @@
+---
+title: Set Margin Mode (Account)
+sidebar_label: Set Margin Mode (Account)
+sidebar_position: 2.9
+---
+If not set, cross margin mode is used by default.
+
+### HTTP Request
+POST `/cloud/trade/v3/position/set-margin-mode`
+
+### Request Parameters
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|setMarginMode |**true** |string |<ul><li>`ISOLATED_MARGIN`: isolated margin mode</li><li>`REGULAR_MARGIN`: cross margin mode</li></ul> |
+
+### Response Parameters
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|reasons |array |Object. Returns empty array if request is successful |
+|> reasonCode |string |Failure error code |
+|> reasonMsg |string |Failure error message |
+
+---
+
+### Request Example
+
+```shell
+POST /cloud/trade/v3/position/set-margin-mode HTTP/1.1
+Host: openapi-testnet.zoomex.com
+X-BAPI-SIGN: XXXXX
+X-BAPI-API-KEY: XXXXX
+X-BAPI-TIMESTAMP: 1672279325035
+X-BAPI-RECV-WINDOW: 5000
+Content-Type: application/json
+
+{
+    "setMarginMode": "REGULAR_MARGIN"
+}
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "result": {
+        "reasons": []
+    }
+}
+```

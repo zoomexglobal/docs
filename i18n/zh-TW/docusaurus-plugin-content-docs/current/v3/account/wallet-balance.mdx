@@ -10,7 +10,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[accountType](../enum#accounttype) |**true** |string |帳戶類型. <ul><li>交易帳戶: `UNIFIED`</li><li>經典帳戶: `CONTRACT`(合約錢包)</li></ul>|
+|[accountType](../enum#accounttype) |**true** |string |帳戶類型. 交易帳戶: `UNIFIED` |
 |coin |false |string |幣種名稱 <ul><li>不傳則返回非零資產信息</li><li>可以傳多個幣進行查詢，以逗號分隔</li></ul>|
 
 ### 響應參數
@@ -18,7 +18,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |:----- |:-----|----- |
 |list |array |Object |
 |> accountType |string |帳戶類型 |
-|> accountIMRate |string |帳戶初始保證金率 <li>下面所有帳戶維度的字段都<b>不適用於</b><br/>交易帳戶(逐倉模式), <br/>經典帳戶(CONTRACT)</li>|
+|> accountIMRate |string |帳戶初始保證金率. 下面所有帳戶維度的字段都不適用於交易帳戶(逐倉模式) |
 |> accountMMRate |string |帳戶維持保證金率|
 |> totalEquity |string |賬戶維度換算成usd的資產淨值：Account Margin Balance Base Coin + Account Option Value Base Coin。|
 |> totalWalletBalance |string |賬戶維度換算成usd的產錢包餘額：∑ Asset Wallet Balance By USD value of each asset。|
@@ -31,7 +31,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 |>> equity |string |當前幣種的資產淨值|
 |>> usdValue |string |當前幣種折算成 usd 的價值|
 |>> walletBalance |string |當前幣種的錢包餘額|
-|>> availableToWithdraw |string |**注意:** 對於`accountType=UNIFIED`, 該字段從2025年1月9日起已經廢棄 <ul><li>合約可用餘額: <br/><b>逐倉</b>: walletBalance - totalPositionIM - totalOrderIM - locked - bonus<br/><b>全倉/組合保證金</b>: 使用字段`totalAvailableBalance`(USD), 但需要通過index price来轉換成對應幣種的可用餘額</li></ul> |
+|>> availableToWithdraw |string |**注意:** 對於`accountType=UNIFIED`, 該字段從2025年1月9日起已經廢棄 <ul><li>合約可用餘額: <br/><b>逐倉</b>: walletBalance - totalPositionIM - totalOrderIM - locked - bonus<br/><b>全倉</b>: 使用字段`totalAvailableBalance`(USD), 但需要通過index price来轉換成對應幣種的可用餘額</li></ul> |
 |>> totalOrderIM |string |以當前幣種結算的訂單委託預佔用保證金|
 |>> totalPositionIM	|string	|以當前幣種結算的所有倉位起始保證金求和 + 所有倉位的預佔用平倉手續費.|
 |>> totalPositionMM	|string |以當前幣種結算的所有倉位維持保證金求和.|
@@ -44,7 +44,7 @@ GET `/cloud/trade/v3/account/wallet-balance`
 ### 請求示例
 
 ```shell
-GET /cloud/trade/v3/account/wallet-balance?accountType=CONTRACT HTTP/1.1
+GET /cloud/trade/v3/account/wallet-balance?accountType=UNIFIED HTTP/1.1
 Host: openapi-testnet.zoomex.com
 X-BAPI-SIGN: XXXXX
 X-BAPI-API-KEY: XXXXX
@@ -61,7 +61,7 @@ X-BAPI-RECV-WINDOW: 5000
     "result": {
         "list": [
             {
-                "accountType": "CONTRACT",
+                "accountType": "UNIFIED",
                 "accountIMRate": "",
                 "accountMMRate": "",
                 "totalEquity": "",
@@ -71,7 +71,6 @@ X-BAPI-RECV-WINDOW: 5000
                 "totalPerpUPL": "",
                 "totalInitialMargin": "",
                 "totalMaintenanceMargin": "",
-                "accountLTV": "",
                 "coin": [
                     {
                         "coin": "BTC",

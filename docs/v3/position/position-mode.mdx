@@ -3,8 +3,8 @@ title: Switch Position Mode
 sidebar_label: Switch Position Mode
 sidebar_position: 2.8
 ---
-It supports to switch the position mode for **USDT perpetual** . If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
-> **Normal account covers: USDT perpetual**
+It supports to switch the position mode for **USDT perpetual** and **inverse contract**. If you are in one-way Mode, you can only open one position on Buy or Sell side. If you are in hedge mode, you can open both Buy and Sell side positions simultaneously.
+> **Trading products covered: Spot / Linear/Inverse**
 
 :::tip
 * Priority for configuration to take effect: symbol > coin > system default
@@ -56,25 +56,13 @@ It supports to switch the position mode for **USDT perpetual** . If you are in o
 ### The position-switch ability for each contract
 <table class="custom_table">
     <tr>
-        <th></th><th>Classic account</th><th>Unified account</th>
+        <th></th><th>Trading account</th>
     </tr>
     <tr>
-        <td>USDT Perpetual</td><td><b>Support one-way & hedge</b></td><td><b>Support one-way & hedge</b></td>
+        <td>USDT Perpetual</td><td><b>Support one-way & hedge</b></td>
     </tr>
     <tr>
-        <td>USDT Futures</td><td>N/A</td><td>Support one-way only</td>
-    </tr>
-    <tr>
-        <td>USDC Perpetual</td><td>N/A</td><td>Support one-way only</td>
-    </tr>
-    <tr>
-        <td>USDC Futures</td><td>N/A</td><td>Support one-way only</td>
-    </tr>
-    <tr>
-        <td>Inverse Perpetual</td><td>Support one-way only</td><td>Support one-way only</td>
-    </tr>
-    <tr>
-        <td>Inverse Futures</td><td><b>Support one-way & hedge</b></td><td>Support one-way only</td>
+        <td>Inverse Perpetual</td><td>Support one-way only</td>
     </tr>
 </table>
 
@@ -84,7 +72,7 @@ POST `/cloud/trade/v3/position/switch-mode`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|category |**true** |string |Product type <ul><li>Normal account: `linear`, USDT Perp; `inverse`, Inverse Futures. _Please note that `category` is **not** involved with business logic_</li></ul> |
+|category |**true** |string |Product type: `linear`, `inverse` |
 |symbol |false |string |Symbol name. Either `symbol` or `coin` is **required**. `symbol` has a higher priority |
 |coin |false |string |Coin |
 |mode |**true** |integer |Position mode. `0`: Merged Single. `3`: Both Sides|

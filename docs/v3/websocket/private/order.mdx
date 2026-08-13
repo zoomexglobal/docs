@@ -16,7 +16,7 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |topic |string |Topic name |
 |creationTime |number |Data created timestamp (ms) |
 |data |array |Object |
-|> category |string |Product type <ul><li>Trading account `spot`, `linear`, `inverse`</li><li>Classic account: `spot`, `linear`, `inverse`</li></ul>|
+|> category |string |Product type: `spot`, `linear`, `inverse` |
 |> orderId  |string |Order ID |
 |> orderLinkId |string |User customised order ID |
 |> symbol |string |Symbol name |
@@ -27,7 +27,7 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |> [orderStatus](../../enum#orderstatus) |string |Order status |
 |> [cancelType](../../enum#canceltype) |string |Cancel type |
 |> [rejectReason](../../enum#rejectreason) |string |Reject reason.|
-|> avgPrice |string |Average filled price. If unfilled, it is `""` <ul><li>If a partially filled order, and the final orderStatus is Cancelled, then avgPrice is "0"</li><li>Classic Spot: not supported, always `""`</li></ul> |
+|> avgPrice |string |Average filled price. If unfilled, it is `""` |
 |> leavesQty |string |The remaining qty not executed.|
 |> leavesValue |string |The remaining value not executed.|
 |> cumExecQty |string |Cumulative executed order qty |
@@ -50,7 +50,6 @@ Subscribe to the order stream to see changes to your orders in **real-time**.
 |> lastPriceOnCreated |string |Last price when place the order|
 |> reduceOnly |boolean |Reduce only. `true` means reduce position size |
 |> closeOnTrigger |boolean |Close on trigger. |
-|> placeType |string |Place type|
 |> createdTime |string |Order created timestamp (ms) |
 |> updatedTime |string |Order updated timestamp (ms) |
 
@@ -144,8 +143,7 @@ client.on('pong', function (data, flags) {
             "triggerDirection": 0,
             "triggerBy": "",
             "closeOnTrigger": false,
-            "category": "linear",
-            "placeType": "price"
+            "category": "linear"
         }
     ]
 }

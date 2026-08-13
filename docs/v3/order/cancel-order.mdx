@@ -3,7 +3,7 @@ title: Cancel Order
 sidebar_label: Cancel Order
 sidebar_position: 3
 ---
-> **Normal account covers:  Spot / USDT perpetual / Inverse contract**
+> **Trading products covered: Spot/Linear/Inverse**
 
 :::info important
 - You must specify `orderId` or `orderLinkId` to cancel the order.
@@ -17,7 +17,7 @@ POST `/cloud/trade/v3/order/cancel`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type <ul><li>Trading account: `spot`,`linear`, `inverse`</li><li>Normal account: `spot`, `linear`, `inverse`</li></ul> |
+|[category](../enum#category) |**true** |string |Product type: `spot`, `linear`, `inverse` |
 |symbol |**true** |string |Symbol name|
 |orderId |false |string |Order ID. Either `orderId` or `orderLinkId` is **required** |
 |orderLinkId |false |string |User customised order ID. Either `orderId` or `orderLinkId` is **required** |

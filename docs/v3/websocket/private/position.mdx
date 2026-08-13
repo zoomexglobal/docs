@@ -20,7 +20,6 @@ Subscribe to the position stream to see changes to your position data in **real-
 |> side |string |Position side. `Buy`,`Sell` |
 |> size |string |Position size |
 |> [positionIdx](../../enum#positionidx) |integer |Used to identify positions in different position modes|
-|> tradeMode | integer |Trade mode <ul><li>USDT perpetual & Inverse contract: `0`: cross-margin, `1`: isolated margin</li><li>Trading account deprecated, always `0`. Please query account config to get actual margin mode</li></ul>|
 |> positionValue |string |Position value |
 |> riskId |integer |Risk limit ID.|
 |> riskLimitValue |string |Risk limit value corresponding to riskId.|
@@ -29,11 +28,10 @@ Subscribe to the position stream to see changes to your position data in **real-
 |> leverage |string |Leverage.|
 |> positionBalance |string |Position margin.|
 |> autoAddMargin | integer |Whether to add margin automatically. `0`: false, `1`: true.|
-|> positionMM |string |Position maintenance margin. <ul><li>Classic account: ignore this field</li><li>Unified account Portfolio Margin (PM): returns empty string</li></ul>|
-|> positionIM |string |Position initial margin. <ul><li>Classic account: ignore this field</li><li>Unified account Portfolio Margin (PM): returns empty string</li></ul>|
-|> liqPrice | string  | Position liquidation price. <ul><li>Normal account & Unified account (isolated): it is the real price for isolated and cross positions; when `liqPrice <= minPrice` or `liqPrice >= maxPrice`, it returns ""</li><li>Unified account (cross): it is an estimated price for cross positions (risk rate is controlled at account level); when `liqPrice <= minPrice` or `liqPrice >= maxPrice`, it returns ""</li><li>For Portfolio Margin mode, this field is empty and no liquidation price is provided</li></ul> |
+|> positionMM |string |Position maintenance margin. |
+|> positionIM |string |Position initial margin. |
+|> liqPrice | string  | Position liquidation price <ul><li>Isolated margin: it is the real price for isolated and cross positions, and keeps `""` when liqPrice <= minPrice or liqPrice >= maxPrice</li><li>Cross margin: it is an **estimated** price for cross positions (because the unified mode controls the risk rate according to the account), and keeps `""` when liqPrice <= minPrice or liqPrice >= maxPrice</li></ul> |
 |> bustPrice |string |Est.bankruptcy price. |
-|> tpslMode |string |Depreciated, meaningless here, always "Full". |
 |> takeProfit |string |Take profit price |
 |> stopLoss |string |Stop loss price |
 |> trailingStop |string |Trailing stop |
@@ -102,7 +100,6 @@ client.on('pong', function (data, flags) {
     "data": [
         {
             "positionIdx": 0,
-            "tradeMode": 0,
             "riskId": 41,
             "riskLimitValue": "200000",
             "symbol": "XRPUSDT",
@@ -122,7 +119,6 @@ client.on('pong', function (data, flags) {
             "cumRealisedPnl": "0.64782276",
             "createdTime": "1672121182216",
             "updatedTime": "1672364174449",
-            "tpslMode": "Full",
             "liqPrice": "",
             "bustPrice": "",
             "category": "linear",

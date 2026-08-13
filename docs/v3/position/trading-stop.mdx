@@ -5,7 +5,7 @@ sidebar_position: 4
 ---
 
 Set the take profit, stop loss or trailing stop for the position.
-> **Normal account covers: USDT perpetual / Inverse contract**
+> **Trading products covered: Spot / Linear/Inverse**
 
 :::tip
 Passing these parameters will create conditional orders by the system internally. The system will cancel these orders if the position is closed, and adjust the qty according to the size of the open position.
@@ -30,8 +30,9 @@ POST `/cloud/trade/v3/position/trading-stop`
 ### Request Parameters
 | Parameter | Required | Type | Comments|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |Product type <ul><li>Trading account `linear`, `inverse`</li><li>Normal account: `linear`, `inverse`. _Please note that `category` is **not** involved with business logic_</li></ul>|
+|[category](../enum#category) |**true** |string |Product type: `spot`, `linear`, `inverse`|
 |symbol |**true** |string |Symbol name|
+|tpslMode |true |string |`Full`: entire position TP/SL, option supports "tpslMode"=Full only, `Partial`: partial position TP/SL. |
 |takeProfit |false |string |Cannot be less than 0, 0 means cancel TP |
 |stopLoss |false |string |Cannot be less than 0, 0 means cancel SL |
 |trailingStop |false |string |Trailing stop by price distance. Cannot be less than 0, 0 means cancel TS |

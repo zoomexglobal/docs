@@ -17,7 +17,7 @@ sidebar_position: 3
 |topic |string |Topic名 |
 |creationTime |number |消息數據創建時間 |
 |data |array |Object |
-|> category |string |產品類型 <ul><li>交易帳戶: `spot`, `linear`, `inverse`</li><li>經典帳戶: `spot`, `linear`, `inverse`</li></ul>|
+|> category |string |產品類型: `spot`, `linear`, `inverse` |
 |> orderId  |string |訂單ID |
 |> orderLinkId |string |用戶自定義ID |
 |> symbol |string |合約名稱 |
@@ -28,7 +28,7 @@ sidebar_position: 3
 |> [orderStatus](../../enum#orderstatus) |string |訂單狀態 |
 |> [cancelType](../../enum#canceltype) |string |訂單被取消類型. |
 |> [rejectReason](../../enum#rejectreason) |string |拒絕原因. |
-|> avgPrice |string |訂單平均成交價格. 若沒有成交，則返回`""`. <ul><li>如果是一筆部分成交訂單且終態是Cancelled, 則avgPrice是`"0"`</li><li>經典帳戶現貨交易: 該字段不支持, 總是`""`</li></ul> |
+|> avgPrice |string |訂單平均成交價格. 對於不存在avg price的場景, 總返回`""` |
 |> leavesQty |string |訂單剩餘未成交的數量.|
 |> leavesValue |string |訂單剩餘未成交的價值. |
 |> cumExecQty |string |訂單累計成交數量 |
@@ -51,7 +51,6 @@ sidebar_position: 3
 |> lastPriceOnCreated |string |下單時的市場價格 |
 |> reduceOnly |boolean |只減倉. `true`表明這是只減倉單 |
 |> closeOnTrigger |boolean |觸發後平倉委託. |
-|> placeType |string |Place type|
 |> createdTime |string |創建訂單的時間戳 (毫秒) |
 |> updatedTime |string |訂單更新的時間戳 (毫秒) |
 
@@ -145,8 +144,7 @@ client.on('pong', function (data, flags) {
             "triggerDirection": 0,
             "triggerBy": "",
             "closeOnTrigger": false,
-            "category": "linear",
-            "placeType": "price"
+            "category": "linear"
         }
     ]
 }

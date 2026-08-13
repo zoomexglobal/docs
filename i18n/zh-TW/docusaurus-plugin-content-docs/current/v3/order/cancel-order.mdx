@@ -3,7 +3,7 @@ title: 撤銷委託單
 sidebar_label: 撤銷委託單
 sidebar_position: 3
 ---
-> **普通帳戶覆蓋範圍:  現貨 / USDT永續 / 反向合約**
+> **交易产品覆盖范围：现货/USDT永续/反向合约**
 
 :::info 重要
 - 您必須指定`orderId`或者`orderLinkId`.
@@ -17,7 +17,7 @@ POST `/cloud/trade/v3/order/cancel`
 ### 請求參數
 | 參數 | 是否必需 | 類型 | 說明|
 |:----- |:-------|:-----|------ |
-|[category](../enum#category) |**true** |string |產品類型 <ul><li>交易帳戶：`spot`, `linear`, `inverse`</li><li>普通帳戶: `spot`, `linear`, `inverse`</li></ul>|
+|[category](../enum#category) |**true** |string |产品类型：`spot`，`linear`，`inverse`|
 |symbol |**true** |string |合約名稱|
 |orderId |false |string |訂單Id. `orderId`和`orderLinkId`**必傳**其中一個 |
 |orderLinkId |false |string |用戶自定義訂單Id. `orderId`和`orderLinkId`**必傳**其中一個 |
