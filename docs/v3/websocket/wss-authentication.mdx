@@ -28,6 +28,8 @@ Inverse contract: `wss://stream-testnet.zoomex.com/v5/public/inverse`<br/>
 - **Testnet:**<br/>
 `wss://stream-testnet.zoomex.com/v3/private`
 
+Order create, amend and cancel do not use `/v3/private`. The address and authentication are in the [Websocket Trade Guideline](/v3/websocket/trade/guideline). The signature string is the same; the connection is not.
+
 ## Authentication
 :::info
 <b>Public</b> topics do not require authentication. The following section applies to <b>private</b> topics only.

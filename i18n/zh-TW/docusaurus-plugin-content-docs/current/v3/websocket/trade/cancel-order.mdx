@@ -1,0 +1,78 @@
+---
+title: 撤銷委託單
+sidebar_label: 撤銷委託單
+sidebar_position: 4
+---
+
+`op` = `order.cancel`。連接、鑒權和信封見 [Websocket 下單指南](guideline)。`args` 裡有且只有一個訂單對象。業務規則與 [撤銷委託單](../../order/cancel-order) 相同。
+
+> **交易產品覆蓋範圍：現貨 / USDT 永續 / 反向合約**
+
+:::info 重要
+- 必須指定 `orderId` 或 `orderLinkId`。
+- 若兩者不匹配，系統優先處理 `orderId`。
+- 只能撤銷未成交和部分成交的訂單。
+:::
+
+本連接不支持全部撤單。全部撤單請走 REST [撤銷全部委託單](../../order/cancel-all)。
+
+### Websocket
+`order.cancel`，主網 `wss://stream.zoomex.com/v5/trade`，測試網 `wss://stream-testnet.zoomex.com/v5/trade`
+
+### 請求參數
+以下字段放在 `args` 的唯一對象裡。
+
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|[category](../../enum#category) |**true** |string |產品類型：`spot`，`linear`，`inverse` |
+|symbol |**true** |string |合約名稱 |
+|orderId |false |string |訂單 Id。`orderId` 和 `orderLinkId` 必傳其中一個 |
+|orderLinkId |false |string |用戶自定義訂單 Id。`orderId` 和 `orderLinkId` 必傳其中一個 |
+|orderFilter |false |string |僅 `spot` 有效。`Order`、`tpslOrder`。若不傳，默認 `Order` |
+
+### 響應參數
+字段在 `data` 裡，不在 REST 的 `result` 裡。
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|orderId |string |訂單 Id |
+|orderLinkId |string |用戶自定義訂單 Id |
+
+業務校驗失敗時，`retCode` 和 `retMsg` 與 REST [撤銷委託單](../../order/cancel-order) 一致。
+
+### 請求示例
+
+```json
+{
+    "reqId": "cancel-001",
+    "header": {
+        "X-BAPI-TIMESTAMP": "1672217376681",
+        "X-BAPI-RECV-WINDOW": "5000"
+    },
+    "op": "order.cancel",
+    "args": [
+        {
+            "category": "linear",
+            "symbol": "BTCUSDT",
+            "orderId": "c6f055d9-7f21-4079-913d-e6523a9cfffa"
+        }
+    ]
+}
+```
+
+### 響應示例
+
+```json
+{
+    "reqId": "cancel-001",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "order.cancel",
+    "data": {
+        "orderId": "c6f055d9-7f21-4079-913d-e6523a9cfffa",
+        "orderLinkId": "linear-004"
+    },
+    "retExtInfo": {},
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```

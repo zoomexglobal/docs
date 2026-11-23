@@ -6,6 +6,8 @@ sidebar_position: 1
 This endpoint supports to create the order for Spot, USDT perpetual and inverse futures.
 > **Trading products covered: Spot / Linear/Inverse**
 
+The same order can also be placed over [Websocket](../websocket/trade/create-order). Fields match this page and are placed in the single object inside `args`.
+
 :::info
 - **Supported order type (`orderType`):**<br/>
 Limit order: `orderType`=_Limit_, it is necessary to specify order qty and price.<br/>

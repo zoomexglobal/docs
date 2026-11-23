@@ -1,0 +1,227 @@
+---
+title: Websocket Trade Guideline
+sidebar_label: Websocket Trade Guideline
+sidebar_position: 1
+---
+
+Place, amend and cancel orders over a persistent connection. This channel is not the public market stream, and it is not the [private order stream](../private/order).
+
+> **Trading products covered: Spot / Linear / Inverse**
+
+- **Mainnet:** `wss://stream.zoomex.com/v5/trade`
+- **Testnet:** `wss://stream-testnet.zoomex.com/v5/trade`
+
+`retCode=0` means the request was accepted. It does not mean the order is filled. Use the private `order` topic on `wss://stream.zoomex.com/v3/private` (testnet: `wss://stream-testnet.zoomex.com/v3/private`) to track order status.
+
+Batch order ops and `order.cancel-all` are not supported on this connection. Sending them returns `retCode=10404` and `retMsg=op not found`. Cancel all orders with the REST endpoint [Cancel All Orders](../../order/cancel-all).
+
+Account rate limits are shared with the matching REST paths. See the [Trade rate limit table](../../rate-limit#trade). `order.create`, `order.amend` and `order.cancel` are each 10 requests per second.
+
+## Authentication
+
+Send `auth` within 10 seconds of connecting. Otherwise the server closes the connection.
+
+The signature string is `GET/realtime` concatenated with `expires`. `expires` is a millisecond timestamp and must be greater than the current time. Do not send the REST `X-BAPI-SIGN` header on this connection. The same algorithm is shown on [Connect](/v3/ws/connect).
+
+| Parameter | Required | Type | Comments |
+|:-----|:-------|:-----|------|
+| reqId | false | string | Matches the response. Maximum length 36 |
+| op | true | string | `auth` |
+| args | true | array | `[apiKey, expires, signature]` |
+
+Successful response: `retCode=0`, `retMsg=OK`, `op=auth`, and `connId` for this connection. `reqId` is returned when the request includes it.
+
+A second `auth` on the same connection returns `retCode=20001`, `retMsg=repeat auth`.
+
+The API key must have trade permission. A read-only key fails with `retCode=1002`. If the key is deleted, or its bound IP changes, the server closes the connection. Connect and authenticate again.
+
+```python
+import hmac
+import json
+import time
+
+def send_auth():
+    key = "XXXXXXXX"
+    secret = "XXXXXXXX"
+    expires = int((time.time() + 10) * 1000)
+    signature = hmac.new(
+        bytes(secret, "utf-8"),
+        bytes(f"GET/realtime{expires}", "utf-8"),
+        digestmod="sha256",
+    ).hexdigest()
+    print(json.dumps({
+        "reqId": "auth-001",
+        "op": "auth",
+        "args": [key, expires, signature],
+    }))
+```
+
+### Request Example
+
+```json
+{
+    "reqId": "auth-001",
+    "op": "auth",
+    "args": [
+        "XXXXXX",
+        1711010121452,
+        "ec71040eff72b163a36153d770b69d6637bcb29348fbfbb16c269a76595ececf"
+    ]
+}
+```
+
+### Response Example
+
+```json
+{
+    "reqId": "auth-001",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "auth",
+    "connId": "cnt5leec0hvan15eukcg-2t"
+}
+```
+
+## Create / Amend / Cancel
+
+Business fields are documented on the order pages. Put exactly one order object in `args`.
+
+- [Place Order](create-order): `order.create`
+- [Amend Order](amend-order): `order.amend`
+- [Cancel Order](cancel-order): `order.cancel`
+
+Use the same symbol you use on REST. `symbol` in the examples below is `BTCUSDT`.
+
+| Parameter | Required | Type | Comments |
+|:-----|:-------|:-----|------|
+| reqId | false | string | Maximum length 36. Must be unique on this connection, or the response is `20006`. If omitted, the response still returns a server-generated value |
+| header | true | object | Request header |
+| > X-BAPI-TIMESTAMP | true | string | Current timestamp in milliseconds |
+| > X-BAPI-RECV-WINDOW | false | string | Default `5000`. `serverTime - recvWindow <= timestamp < serverTime + 1000` |
+| > Referer | false | string | Optional. Forwarded as sent |
+| op | true | string | `order.create`, `order.amend`, `order.cancel` |
+| args | true | array | Exactly one order object |
+
+A timestamp outside the window returns `retCode=1004` and is not forwarded. Do not put `X-BAPI-SIGN` or `X-BAPI-API-KEY` in `header`.
+
+### Response Parameters
+
+| Parameter | Type | Comments |
+|:-----|:-----|------|
+| reqId | string | Value from the request, or the server-generated value |
+| retCode | integer | `0`: accepted |
+| retMsg | string | `OK` on success |
+| op | string | Same as the request |
+| data | object | Same fields as the REST `result`. A single order returns `orderId` and `orderLinkId` |
+| retExtInfo | object | Returned as the upstream sent it. Usually `{}` for a single order |
+| header | object | Present after the upstream accepts the order. Includes `X-Bapi-Limit`, `X-Bapi-Limit-Status`, `X-Bapi-Limit-Reset-Timestamp`, `Traceid`, `Timenow`. Absent when the request is rejected before forwarding |
+| connId | string | Connection id |
+
+### Request Example
+
+```json
+{
+    "reqId": "test-005",
+    "header": {
+        "X-BAPI-TIMESTAMP": "1711001595207",
+        "X-BAPI-RECV-WINDOW": "8000"
+    },
+    "op": "order.create",
+    "args": [
+        {
+            "category": "linear",
+            "symbol": "BTCUSDT",
+            "side": "Buy",
+            "orderType": "Limit",
+            "qty": "1",
+            "price": "25000",
+            "timeInForce": "GTC",
+            "positionIdx": 0,
+            "orderLinkId": "usdt-test-01",
+            "reduceOnly": false
+        }
+    ]
+}
+```
+
+### Response Example
+
+```json
+{
+    "reqId": "test-005",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "order.create",
+    "data": {
+        "orderId": "1321003749386327552",
+        "orderLinkId": "usdt-test-01"
+    },
+    "retExtInfo": {},
+    "header": {
+        "X-Bapi-Limit": "10",
+        "X-Bapi-Limit-Status": "9",
+        "X-Bapi-Limit-Reset-Timestamp": "1711001595208",
+        "Traceid": "38b7977b430f9bd228f4b19724794dfd",
+        "Timenow": "1711001595209"
+    },
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```
+
+## Ping
+
+Send a ping about every 20 seconds. After a successful `auth`, the server closes the connection if it receives no inbound message for 75 seconds. On testnet the gateway may close an idle connection sooner than 75 seconds, so keep sending `ping`.
+
+Unauthenticated connections are closed after 10 seconds.
+
+### Request Example
+
+```json
+{
+    "op": "ping"
+}
+```
+
+### Response Example
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "pong",
+    "data": [
+        "1711002002529"
+    ],
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```
+
+## Connection Limits
+
+| Limit | Value | When exceeded |
+|:-----|:-----|------|
+| Connections per API key | 5 | During `auth`: `10429`, `too many connections` |
+| Connections per IP | 20 | During `auth`: `10429`, `too many connections` |
+| In-flight requests per connection | 100 | `10429`, `too many inflight` |
+| Text frame size | 64 KiB | The connection is closed |
+
+## Errors Returned Before Forwarding
+
+Business errors returned after the request is forwarded use the same `retCode` and `retMsg` as the matching REST endpoint. Upstream errors are returned as received.
+
+| retCode | When | retMsg |
+|:-----|:-----|------|
+| 0 | Success | `OK` |
+| 400 | Invalid frame, or `reqId` longer than 36 | `参数错误` |
+| 401 | Order frame before `auth` | `未授权` |
+| 1002 | Key invalid, expired, or missing trade permission for the category | `API Key无效或已过期` |
+| 1004 | `X-BAPI-TIMESTAMP` missing or outside the receive window | `时间戳无效或超出允许范围` |
+| 1008 | Authentication signature does not match | `签名验证失败` |
+| 1010 | `expires` is not greater than the current time | `请求已过期` |
+| 1012 | IP is not in the key binding list | `请求IP校验失败` |
+| 1013 | Account rate limit shared with REST | `请求超出限频` |
+| 10404 | Unknown op, including batch ops and `order.cancel-all` | `op not found` |
+| 10429 | Too many connections or in-flight requests | `too many connections` or `too many inflight` |
+| 20001 | `auth` repeated on the same connection | `repeat auth` |
+| 20006 | Duplicate `reqId` | `reqId duplicated` |
+| 10016 | Upstream unavailable, or no ack within 8 seconds | `upstream unavailable` or `upstream timeout` |

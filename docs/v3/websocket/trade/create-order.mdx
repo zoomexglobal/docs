@@ -1,0 +1,115 @@
+---
+title: Place Order
+sidebar_label: Place Order
+sidebar_position: 2
+---
+
+`op` = `order.create`. The connection, authentication and envelope are in the [Websocket Trade Guideline](guideline). `args` contains exactly one order object. Business rules match [Place Order](../../order/create-order).
+
+> **Trading products covered: Spot / Linear / Inverse**
+
+:::info
+- **Supported order type (`orderType`):** Limit order requires `qty` and `price`. Market order leaves `price` empty.
+- **Supported timeInForce:** `GTC`, `IOC`, `FOK`, `PostOnly`. Market orders use `IOC`. If omitted, `GTC` is used.
+- **Conditional order:** set `triggerPrice`. A conditional order does not occupy margin until it triggers.
+- **orderLinkId:** maximum 36 characters and unique. If both `orderId` and `orderLinkId` are sent on a later amend or cancel, `orderId` is used first.
+- **Rate limit:** shared with REST. See the [rate limit table](../../rate-limit#trade).
+:::
+
+### Websocket
+`order.create` on `wss://stream.zoomex.com/v5/trade` (testnet: `wss://stream-testnet.zoomex.com/v5/trade`)
+
+### Request Parameters
+These fields are the single object in `args`.
+
+| Parameter | Required | Type | Comments|
+|:----- |:-------|:-----|------ |
+|category |**true** |string |Product type: `spot`, `linear`, `inverse` |
+|symbol |**true** |string |Symbol name. Use the same symbol as REST |
+|side |**true** |string |`Buy`, `Sell`|
+|orderType |**true** |string |`Market`, `Limit`|
+|qty |**true** |string |<ul><li>Spot: set `marketUnit` for market order qty unit, `quoteCoin` for market buy by default, `baseCoin` for market sell by default</li><li>Futures: always use base coin as unit</li></ul>|
+|marketUnit |false |string |Select the unit for `qty` when create **Spot market** orders. <ul><li>`baseCoin`: for example, buy BTCUSDT, then "qty" unit is BTC</li><li>`quoteCoin`: for example, sell BTCUSDT, then "qty" unit is USDT</li></ul>|
+|slippageToleranceType |false |string |Slippage tolerance Type for **market order**, `TickSize`, `Percent`<ul><li>Support linear, inverse, spot trading, but take profit, stoploss, conditional orders are not supported</li><li><b>TickSize</b>: the highest price of Buy order = ask1 + <code>slippageTolerance</code> x tickSize; the lowest price of Sell order = bid1 - <code>slippageTolerance</code> x tickSize</li><li><b>Percent</b>: the highest price of Buy order = ask1 x (1 + <code>slippageTolerance</code> x 0.01); the lowest price of Sell order = bid1 x (1 - <code>slippageTolerance</code> x 0.01)</li></ul>|
+|slippageTolerance |false |string |Slippage tolerance value <li>`TickSize`: range is [1, 10000], integer only</li><li>`Percent`: range is [0.01, 10], up to 2 decimals</li>|
+|price |false |string |Order price. If you have net position, price needs to be greater than liquidation price. Required for `Limit`. See `priceFilter` > `tickSize` in [instruments-info](../../market/instrument#) |
+|triggerDirection |false |integer |Conditional order param. <ul><li>`1`: triggered when market price rises to `triggerPrice`</li><li>`2`: triggered when market price falls to `triggerPrice`</li></ul>Only valid for linear and inverse|
+|orderFilter |false |string |If it is not passed, `Order` by default. <ul><li>`Order`</li><li>`tpslOrder`: Spot TP/SL order</li><li>`StopOrder`: Spot conditional order</li></ul>Valid for `spot` **only**|
+|triggerPrice |false |string |<ul><li>For futures, the conditional order trigger price</li><li>For spot, the TP/SL trigger price</li></ul>|
+|[triggerBy](../../enum#triggerby) |false |string |Conditional order param. Trigger price type. `LastPrice`, `IndexPrice`, `MarkPrice`. Only valid for linear and inverse|
+|[timeInForce](../../enum#timeinforce) |false |string |<ul><li>Market order will use `IOC` directly</li><li>If not passed, `GTC` is used by default</li></ul>|
+|[positionIdx](../../enum#positionidx) |false |integer |<ul><li>`0`: one-way mode</li><li>`1`: hedge-mode Buy side</li><li>`2`: hedge-mode Sell side</li></ul>Under hedge-mode, this param is **required**. Only valid for linear and inverse|
+|orderLinkId |false |string |User customised order ID. A max of 36 characters. Combinations of numbers, letters (upper and lower cases), dashes, and underscores are supported|
+|takeProfit |false |string |Take profit price|
+|stopLoss |false |string |Stop loss price|
+|[tpTriggerBy](../../enum#triggerby) |false |string |The price type to trigger take profit. `MarkPrice`, `IndexPrice`, default: `LastPrice`. Only valid for linear and inverse|
+|[slTriggerBy](../../enum#triggerby) |false |string |The price type to trigger stop loss. `MarkPrice`, `IndexPrice`, default: `LastPrice`. Only valid for linear and inverse|
+|reduceOnly |false |boolean |`true` means your position can only reduce in size. When reduceOnly is true, take profit/stop loss cannot be set. Only valid for linear and inverse|
+|closeOnTrigger |false |boolean |For a closing order. It can only reduce your position, not increase it. Only valid for linear and inverse|
+|[smpType](../../enum#smptype) |false |string |Smp execution type|
+|tpslMode |false |string |<ul><li>`Full`: entire position TP/SL. Then, tpOrderType or slOrderType must be `Market`</li><li>`Partial`: partial position TP/SL. Limit TP/SL orders are supported</li></ul>Only valid for linear and inverse|
+|tpLimitPrice |false |string |The limit order price when take profit price is triggered. Only works when tpslMode=Partial and tpOrderType=Limit|
+|slLimitPrice |false |string |The limit order price when stop loss price is triggered. Only works when tpslMode=Partial and slOrderType=Limit|
+|tpOrderType |false |string |The order type when take profit is triggered. `Market`(default), `Limit`. For tpslMode=Full, it only supports tpOrderType=Market|
+|slOrderType |false |string |The order type when stop loss is triggered. `Market`(default), `Limit`. For tpslMode=Full, it only supports slOrderType=Market|
+
+### Response Parameters
+Returned inside `data`, not REST `result`.
+
+| Parameter | Type | Comments|
+|:----- |:-----|----- |
+|orderId |string |Order ID |
+|orderLinkId |string |User customised order ID |
+
+If business validation fails, `retCode` and `retMsg` match the REST [Place Order](../../order/create-order) response.
+
+### Request Example
+
+```json
+{
+    "reqId": "usdt-test-01",
+    "header": {
+        "X-BAPI-TIMESTAMP": "1672211928338",
+        "X-BAPI-RECV-WINDOW": "5000"
+    },
+    "op": "order.create",
+    "args": [
+        {
+            "category": "linear",
+            "symbol": "BTCUSDT",
+            "side": "Buy",
+            "orderType": "Limit",
+            "qty": "1",
+            "price": "25000",
+            "timeInForce": "GTC",
+            "positionIdx": 0,
+            "orderLinkId": "usdt-test-01",
+            "reduceOnly": false,
+            "takeProfit": "28000",
+            "stopLoss": "20000",
+            "tpslMode": "Partial",
+            "tpOrderType": "Limit",
+            "slOrderType": "Limit",
+            "tpLimitPrice": "27500",
+            "slLimitPrice": "20500"
+        }
+    ]
+}
+```
+
+### Response Example
+
+```json
+{
+    "reqId": "usdt-test-01",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "order.create",
+    "data": {
+        "orderId": "1321003749386327552",
+        "orderLinkId": "usdt-test-01"
+    },
+    "retExtInfo": {},
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```

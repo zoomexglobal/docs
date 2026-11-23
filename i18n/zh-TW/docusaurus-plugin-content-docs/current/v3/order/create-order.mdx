@@ -6,6 +6,8 @@ sidebar_position: 1
 本接口提供合約以及現貨的訂單創建。
 > **交易产品覆盖范围：现货/USDT永续/反向合约**
 
+同一操作也可以走 [Websocket](../websocket/trade/create-order)。字段與本頁相同，放在 `args` 的唯一對象裡。
+
 :::info
 - **支持的訂單類型 (`orderType`):**<br/>
 限價單: <code>orderType</code>=<i>Limit</i>, 需要指定訂單數量和價格.<br/>
