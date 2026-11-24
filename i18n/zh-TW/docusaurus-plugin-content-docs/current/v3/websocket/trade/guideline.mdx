@@ -209,6 +209,8 @@ def send_auth():
 
 轉發之後的業務錯誤，`retCode` 和 `retMsg` 與對應 REST 接口一致。主站返回的錯誤原樣回傳。
 
+這條連接不返回 `1013`（`请求超出限频`）。該錯誤碼只在 REST 交易接口超出賬戶頻率時返回。
+
 | retCode | 場景 | retMsg |
 |:-----|:-----|------|
 | 0 | 成功 | `OK` |
@@ -219,7 +221,6 @@ def send_auth():
 | 1008 | 鑒權簽名不匹配 | `签名验证失败` |
 | 1010 | `expires` 不大於當前時間 | `请求已过期` |
 | 1012 | IP 不在 Key 的綁定列表 | `请求IP校验失败` |
-| 1013 | 超出與 REST 共用的賬戶頻率 | `请求超出限频` |
 | 10404 | 未知 op，含批量 op 和 `order.cancel-all` | `op not found` |
 | 10429 | 連接數或在途數超限 | `too many connections` 或 `too many inflight` |
 | 20001 | 同一連接重複 auth | `repeat auth` |

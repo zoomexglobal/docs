@@ -209,6 +209,8 @@ Unauthenticated connections are closed after 10 seconds.
 
 Business errors returned after the request is forwarded use the same `retCode` and `retMsg` as the matching REST endpoint. Upstream errors are returned as received.
 
+This connection does not return `1013` (`请求超出限频`). That code is only returned by the REST trade endpoints when their account rate limit is exceeded.
+
 | retCode | When | retMsg |
 |:-----|:-----|------|
 | 0 | Success | `OK` |
@@ -219,7 +221,6 @@ Business errors returned after the request is forwarded use the same `retCode` a
 | 1008 | Authentication signature does not match | `签名验证失败` |
 | 1010 | `expires` is not greater than the current time | `请求已过期` |
 | 1012 | IP is not in the key binding list | `请求IP校验失败` |
-| 1013 | Account rate limit shared with REST | `请求超出限频` |
 | 10404 | Unknown op, including batch ops and `order.cancel-all` | `op not found` |
 | 10429 | Too many connections or in-flight requests | `too many connections` or `too many inflight` |
 | 20001 | `auth` repeated on the same connection | `repeat auth` |
