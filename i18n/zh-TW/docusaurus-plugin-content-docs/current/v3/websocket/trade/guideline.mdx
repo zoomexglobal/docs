@@ -226,3 +226,11 @@ def send_auth():
 | 20001 | 同一連接重複 auth | `repeat auth` |
 | 20006 | `reqId` 重複 | `reqId duplicated` |
 | 10016 | 上游不可用，或 8 秒內沒有回包 | `upstream unavailable` 或 `upstream timeout` |
+
+## 主站回傳的錯誤碼
+
+訂單轉發到主站後，主站的 `retCode` 和 `retMsg` 原樣返回。
+
+| retCode | 場景 | retMsg |
+|:-----|:-----|------|
+| 10006 | 超出主站賬戶頻率。這條連接與對應 REST 交易接口共用限頻 | `Too many visits. Exceeded the API Rate Limit.` |

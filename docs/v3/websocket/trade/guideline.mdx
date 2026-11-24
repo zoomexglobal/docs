@@ -226,3 +226,11 @@ This connection does not return `1013` (`请求超出限频`). That code is only
 | 20001 | `auth` repeated on the same connection | `repeat auth` |
 | 20006 | Duplicate `reqId` | `reqId duplicated` |
 | 10016 | Upstream unavailable, or no ack within 8 seconds | `upstream unavailable` or `upstream timeout` |
+
+## Errors Returned By The Upstream
+
+After the order is forwarded, the upstream `retCode` and `retMsg` are returned unchanged.
+
+| retCode | When | retMsg |
+|:-----|:-----|------|
+| 10006 | The upstream account rate limit is exceeded. This connection uses the same limit as the matching REST trade endpoint | `Too many visits. Exceeded the API Rate Limit.` |
