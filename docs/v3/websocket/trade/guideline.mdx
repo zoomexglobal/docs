@@ -219,16 +219,9 @@ Business errors returned after the request is forwarded use the same `retCode` a
 | 1008 | Authentication signature does not match | `签名验证失败` |
 | 1010 | `expires` is not greater than the current time | `请求已过期` |
 | 1012 | IP is not in the key binding list | `请求IP校验失败` |
+| 10006 | Account rate limit exceeded. Same limit as the matching REST trade endpoint | `Too many visits. Exceeded the API Rate Limit.` |
+| 10016 | Upstream unavailable, or no ack within 8 seconds | `upstream unavailable` or `upstream timeout` |
 | 10404 | Unknown op, including batch ops and `order.cancel-all` | `op not found` |
 | 10429 | Too many connections or in-flight requests | `too many connections` or `too many inflight` |
 | 20001 | `auth` repeated on the same connection | `repeat auth` |
 | 20006 | Duplicate `reqId` | `reqId duplicated` |
-| 10016 | Upstream unavailable, or no ack within 8 seconds | `upstream unavailable` or `upstream timeout` |
-
-## Errors Returned By The Upstream
-
-After the order is forwarded, the upstream `retCode` and `retMsg` are returned unchanged.
-
-| retCode | When | retMsg |
-|:-----|:-----|------|
-| 10006 | The upstream account rate limit is exceeded. This connection uses the same limit as the matching REST trade endpoint | `Too many visits. Exceeded the API Rate Limit.` |

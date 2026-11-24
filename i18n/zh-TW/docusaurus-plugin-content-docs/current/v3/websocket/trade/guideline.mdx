@@ -219,16 +219,9 @@ def send_auth():
 | 1008 | 鑒權簽名不匹配 | `签名验证失败` |
 | 1010 | `expires` 不大於當前時間 | `请求已过期` |
 | 1012 | IP 不在 Key 的綁定列表 | `请求IP校验失败` |
+| 10006 | 超出賬戶頻率，與對應 REST 交易接口共用限頻 | `Too many visits. Exceeded the API Rate Limit.` |
+| 10016 | 上游不可用，或 8 秒內沒有回包 | `upstream unavailable` 或 `upstream timeout` |
 | 10404 | 未知 op，含批量 op 和 `order.cancel-all` | `op not found` |
 | 10429 | 連接數或在途數超限 | `too many connections` 或 `too many inflight` |
 | 20001 | 同一連接重複 auth | `repeat auth` |
 | 20006 | `reqId` 重複 | `reqId duplicated` |
-| 10016 | 上游不可用，或 8 秒內沒有回包 | `upstream unavailable` 或 `upstream timeout` |
-
-## 主站回傳的錯誤碼
-
-訂單轉發到主站後，主站的 `retCode` 和 `retMsg` 原樣返回。
-
-| retCode | 場景 | retMsg |
-|:-----|:-----|------|
-| 10006 | 超出主站賬戶頻率。這條連接與對應 REST 交易接口共用限頻 | `Too many visits. Exceeded the API Rate Limit.` |
