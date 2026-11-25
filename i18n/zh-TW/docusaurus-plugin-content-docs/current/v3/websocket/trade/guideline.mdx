@@ -1,0 +1,227 @@
+---
+title: Websocket 下單指南
+sidebar_label: Websocket 下單指南
+sidebar_position: 1
+---
+
+透過長連接創建、修改、撤銷委託單。這條連接不是公共行情，也不是[私有訂單推送](../private/order)。
+
+> **交易產品覆蓋範圍：現貨 / USDT 永續 / 反向合約**
+
+- **主網:** `wss://stream.zoomex.com/v5/trade`
+- **測試網:** `wss://stream-testnet.zoomex.com/v5/trade`
+
+`retCode=0` 只表示請求被受理，不表示成交。訂單狀態請訂閱私有頻道 `order`，主網 `wss://stream.zoomex.com/v3/private`，測試網 `wss://stream-testnet.zoomex.com/v3/private`。
+
+本連接不支持批量下改撤，也不支持 `order.cancel-all`。發送這些 op 會返回 `retCode=10404`、`retMsg=op not found`。全部撤單請走 REST [撤銷全部委託單](../../order/cancel-all)。
+
+賬戶頻率與對應 REST 共用，見[交易頻率表](../../rate-limit#交易)。`order.create`、`order.amend`、`order.cancel` 目前各為 10 次/秒。
+
+## 鑒權
+
+建連後 10 秒內需發送 `auth`，否則服務端斷開連接。
+
+簽名原文是 `GET/realtime` 拼接 `expires`。`expires` 是毫秒時間戳，必須大於當前時間。不要在這條連接上再帶 REST 的 `X-BAPI-SIGN`。算法與[訂閱 WebSocket](/v3/ws/connect)相同。
+
+| 參數 | 是否必需 | 類型 | 說明 |
+|:-----|:-------|:-----|------|
+| reqId | false | string | 用於匹配響應，最長 36 |
+| op | true | string | `auth` |
+| args | true | array | `[apiKey, expires, signature]` |
+
+鑒權成功：`retCode=0`，`retMsg=OK`，`op=auth`，`connId` 為本次連接 id。請求帶了 `reqId` 時響應會帶回。
+
+同一連接重複 `auth`：`retCode=20001`，`retMsg=repeat auth`。
+
+API Key 需要交易權限。只讀 Key 鑒權失敗，`retCode=1002`。Key 被刪除，或綁定 IP 發生變更後，服務端會斷開連接，需要重新建連並鑒權。
+
+```python
+import hmac
+import json
+import time
+
+def send_auth():
+    key = "XXXXXXXX"
+    secret = "XXXXXXXX"
+    expires = int((time.time() + 10) * 1000)
+    signature = hmac.new(
+        bytes(secret, "utf-8"),
+        bytes(f"GET/realtime{expires}", "utf-8"),
+        digestmod="sha256",
+    ).hexdigest()
+    print(json.dumps({
+        "reqId": "auth-001",
+        "op": "auth",
+        "args": [key, expires, signature],
+    }))
+```
+
+### 請求示例
+
+```json
+{
+    "reqId": "auth-001",
+    "op": "auth",
+    "args": [
+        "XXXXXX",
+        1711010121452,
+        "ec71040eff72b163a36153d770b69d6637bcb29348fbfbb16c269a76595ececf"
+    ]
+}
+```
+
+### 響應示例
+
+```json
+{
+    "reqId": "auth-001",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "auth",
+    "connId": "cnt5leec0hvan15eukcg-2t"
+}
+```
+
+## 下單 / 改單 / 撤單
+
+業務字段見各訂單頁。`args` 裡有且只有一個訂單對象。
+
+- [創建委託單](create-order)：`order.create`
+- [修改委託單](amend-order)：`order.amend`
+- [撤銷委託單](cancel-order)：`order.cancel`
+
+`symbol` 與 REST 相同，使用 Zoomex 交易對，例如 `BTCUSDT`。
+
+| 參數 | 是否必需 | 類型 | 說明 |
+|:-----|:-------|:-----|------|
+| reqId | false | string | 最長 36。同一連接內不可重複，否則返回 `20006`。不傳時，響應仍會帶回服務端生成的值 |
+| header | true | object | 請求頭 |
+| > X-BAPI-TIMESTAMP | true | string | 當前毫秒時間戳 |
+| > X-BAPI-RECV-WINDOW | false | string | 默認 `5000`。需滿足 `服務器時間 - recvWindow <= timestamp < 服務器時間 + 1000` |
+| > Referer | false | string | 可選，原樣轉發 |
+| op | true | string | `order.create`、`order.amend`、`order.cancel` |
+| args | true | array | 有且只有一個訂單對象 |
+
+時間戳不在窗口內時返回 `retCode=1004`，不會轉發。`header` 裡不要帶 `X-BAPI-SIGN` 或 `X-BAPI-API-KEY`。
+
+### 響應參數
+
+| 參數 | 類型 | 說明 |
+|:-----|:-----|------|
+| reqId | string | 請求中的值，或服務端生成的值 |
+| retCode | integer | `0` 表示受理成功 |
+| retMsg | string | 成功時為 `OK` |
+| op | string | 與請求相同 |
+| data | object | 與對應 REST 的 `result` 相同。單筆返回 `orderId`、`orderLinkId` |
+| retExtInfo | object | 主站受理後原樣返回，單筆通常為 `{}` |
+| header | object | 主站受理後帶回 `X-Bapi-Limit`、`X-Bapi-Limit-Status`、`X-Bapi-Limit-Reset-Timestamp`、`Traceid`、`Timenow`。轉發前被拒絕時沒有這組字段 |
+| connId | string | 連接 id |
+
+### 請求示例
+
+```json
+{
+    "reqId": "test-005",
+    "header": {
+        "X-BAPI-TIMESTAMP": "1711001595207",
+        "X-BAPI-RECV-WINDOW": "8000"
+    },
+    "op": "order.create",
+    "args": [
+        {
+            "category": "linear",
+            "symbol": "BTCUSDT",
+            "side": "Buy",
+            "orderType": "Limit",
+            "qty": "1",
+            "price": "25000",
+            "timeInForce": "GTC",
+            "positionIdx": 0,
+            "orderLinkId": "usdt-test-01",
+            "reduceOnly": false
+        }
+    ]
+}
+```
+
+### 響應示例
+
+```json
+{
+    "reqId": "test-005",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "order.create",
+    "data": {
+        "orderId": "1321003749386327552",
+        "orderLinkId": "usdt-test-01"
+    },
+    "retExtInfo": {},
+    "header": {
+        "X-Bapi-Limit": "10",
+        "X-Bapi-Limit-Status": "9",
+        "X-Bapi-Limit-Reset-Timestamp": "1711001595208",
+        "Traceid": "38b7977b430f9bd228f4b19724794dfd",
+        "Timenow": "1711001595209"
+    },
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```
+
+## Ping
+
+建議每 20 秒發送一次 ping。鑒權成功後，75 秒沒有任何入站消息，服務端會斷開。測試網網關可能更早斷開空閒連接，請保持發送 `ping`。
+
+未鑒權的連接在 10 秒後斷開。
+
+### 請求示例
+
+```json
+{
+    "op": "ping"
+}
+```
+
+### 響應示例
+
+```json
+{
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "pong",
+    "data": [
+        "1711002002529"
+    ],
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```
+
+## 連接限制
+
+| 限制 | 值 | 超過時 |
+|:-----|:-----|------|
+| 同一 API Key 的連接數 | 5 | 鑒權階段 `10429`，`too many connections` |
+| 同一 IP 的連接數 | 20 | 鑒權階段 `10429`，`too many connections` |
+| 單連接在途請求 | 100 | `10429`，`too many inflight` |
+| 單幀大小 | 64 KiB | 連接被斷開 |
+
+## 轉發前返回的錯誤碼
+
+轉發之後的業務錯誤，`retCode` 和 `retMsg` 與對應 REST 接口一致。主站返回的錯誤原樣回傳。
+
+| retCode | 場景 | retMsg |
+|:-----|:-----|------|
+| 0 | 成功 | `OK` |
+| 400 | 幀結構不合法，或 `reqId` 超過 36 | `参数错误` |
+| 401 | 未鑒權就發送下改撤 | `未授权` |
+| 1002 | Key 無效、過期，或沒有對應品類的交易權限 | `API Key无效或已过期` |
+| 1004 | `X-BAPI-TIMESTAMP` 缺失或不在接收窗口內 | `时间戳无效或超出允许范围` |
+| 1008 | 鑒權簽名不匹配 | `签名验证失败` |
+| 1010 | `expires` 不大於當前時間 | `请求已过期` |
+| 1012 | IP 不在 Key 的綁定列表 | `请求IP校验失败` |
+| 10006 | 超出賬戶頻率，與對應 REST 交易接口共用限頻 | `Too many visits. Exceeded the API Rate Limit.` |
+| 10016 | 上游不可用，或 8 秒內沒有回包 | `upstream unavailable` 或 `upstream timeout` |
+| 10404 | 未知 op，含批量 op 和 `order.cancel-all` | `op not found` |
+| 10429 | 連接數或在途數超限 | `too many connections` 或 `too many inflight` |
+| 20001 | 同一連接重複 auth | `repeat auth` |
+| 20006 | `reqId` 重複 | `reqId duplicated` |

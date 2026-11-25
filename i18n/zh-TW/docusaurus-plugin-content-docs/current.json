@@ -51,6 +51,10 @@
         "message": "WebSocket推送",
         "description": "WebSocket推送的目錄"
     },
+    "sidebar.v3SideBar.category.Websocket Trade": {
+        "message": "Websocket 下單",
+        "description": "Websocket 下單目錄"
+    },
     "sidebar.v3SideBar.category.Public": {
         "message": "公共頻道",
         "description": "公共頻道目錄"

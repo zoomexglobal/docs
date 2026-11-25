@@ -1,0 +1,115 @@
+---
+title: 創建委託單
+sidebar_label: 創建委託單
+sidebar_position: 2
+---
+
+`op` = `order.create`。連接、鑒權和信封見 [Websocket 下單指南](guideline)。`args` 裡有且只有一個訂單對象。業務規則與 [創建委託單](../../order/create-order) 相同。
+
+> **交易產品覆蓋範圍：現貨 / USDT 永續 / 反向合約**
+
+:::info
+- **支持的訂單類型 (`orderType`)：** 限價單需要 `qty` 和 `price`。市價單不傳 `price`。
+- **支持的 timeInForce：** `GTC`、`IOC`、`FOK`、`PostOnly`。市價單直接使用 `IOC`。不傳時默認 `GTC`。
+- **條件單：** 設置 `triggerPrice` 後即為條件單。條件單觸發前不佔用保證金。
+- **orderLinkId：** 最長 36 個字符且唯一。之後改單或撤單同時傳入 `orderId` 和 `orderLinkId` 時，優先使用 `orderId`。
+- **頻率：** 與 REST 共用，見[接口頻率限制表](../../rate-limit#交易)。
+:::
+
+### Websocket
+`order.create`，主網 `wss://stream.zoomex.com/v5/trade`，測試網 `wss://stream-testnet.zoomex.com/v5/trade`
+
+### 請求參數
+以下字段放在 `args` 的唯一對象裡。
+
+| 參數 | 是否必需 | 類型 | 說明|
+|:----- |:-------|:-----|------ |
+|category |**true** |string |產品類型：`spot`，`linear`，`inverse` |
+|symbol |**true** |string |合約名稱，與 REST 相同 |
+|side |**true** |string |`Buy`, `Sell`|
+|orderType |**true** |string |訂單類型. `Market`, `Limit`|
+|qty |**true** |string |<ul><li>現貨: 可通過設置 `marketUnit` 表示市價單 qty 的單位，市價買單默認為 `quoteCoin`，市價賣單默認為 `baseCoin`</li><li>期貨: 總是以 base coin 作為單位</li></ul>|
+|marketUnit |false |string |**現貨交易**創建市價單時給入參`qty`指定的單位 <ul><li>`baseCoin`: 比如, 買BTCUSDT, 則"qty"的單位是BTC</li><li>`quoteCoin`: 比如, 賣BTCUSDT, 則"qty"的單位是USDT</li></ul>|
+|slippageToleranceType |false |string |市價單滑點容差類型, `TickSize`, `Percent`。支持現貨和期貨訂單，不支持止盈止損、條件單|
+|slippageTolerance |false |string |滑點容差數值。`TickSize` 範圍是 [1, 10000]，僅整數。`Percent` 範圍是 [0.01, 10]，最多 2 位小數|
+|price |false |string |訂單價格。限價單必傳。價格步長見 [instruments-info](../../market/instrument#) 的 `priceFilter` > `tickSize` |
+|triggerDirection |false |integer |條件單參數。`1`：市場價上漲到 `triggerPrice` 觸發。`2`：市場價下跌到 `triggerPrice` 觸發。僅對 linear 和 inverse 有效|
+|orderFilter |false |string |`Order`：普通單，`tpslOrder`：止盈止損單，`StopOrder`：條件單。若不傳，默認 `Order`。僅對現貨有效|
+|triggerPrice |false |string |期貨為條件單觸發價。現貨為止盈止損觸發價|
+|[triggerBy](../../enum#triggerby) |false |string |條件單參數. 觸發價格類型. `LastPrice`, `IndexPrice`, `MarkPrice`。僅對 linear 和 inverse 有效|
+|[timeInForce](../../enum#timeinforce) |false |string |市價單直接使用 `IOC`。若不傳，默認 `GTC`|
+|[positionIdx](../../enum#positionidx) |false |integer |`0` 單向持倉，`1` 買側雙向持倉，`2` 賣側雙向持倉。雙向持倉必傳。僅對 linear 和 inverse 有效|
+|orderLinkId |false |string |用戶自定義訂單 Id，最長 36 |
+|takeProfit |false |string |止盈價格 |
+|stopLoss |false |string |止損價格 |
+|[tpTriggerBy](../../enum#triggerby) |false |string |觸發止盈的價格類型. `MarkPrice`, `IndexPrice`，默認 `LastPrice`。僅對 linear 和 inverse 有效|
+|[slTriggerBy](../../enum#triggerby) |false |string |觸發止損的價格類型. `MarkPrice`, `IndexPrice`，默認 `LastPrice`。僅對 linear 和 inverse 有效|
+|reduceOnly |false |boolean |`true` 表示只減倉。只減倉時不能設置止盈止損。僅對 linear 和 inverse 有效|
+|closeOnTrigger |false |boolean |平倉單，只減倉不加倉。僅對 linear 和 inverse 有效|
+|[smpType](../../enum#smptype) |false |string |Smp 執行類型 |
+|tpslMode |false |string |`Full`：全部倉位止盈止損，此時 tpOrderType 或 slOrderType 必須為 `Market`。`Partial`：部分倉位止盈止損。僅對 linear 和 inverse 有效|
+|tpLimitPrice |false |string |觸發止盈後轉換為限價單的價格。僅 tpslMode=Partial 且 tpOrderType=Limit 時有效|
+|slLimitPrice |false |string |觸發止損後轉換為限價單的價格。僅 tpslMode=Partial 且 slOrderType=Limit 時有效|
+|tpOrderType |false |string |止盈觸發後的訂單類型。`Market`（默認），`Limit`。tpslMode=Full 時只支持 Market|
+|slOrderType |false |string |止損觸發後的訂單類型。`Market`（默認），`Limit`。tpslMode=Full 時只支持 Market|
+
+### 響應參數
+字段在 `data` 裡，不在 REST 的 `result` 裡。
+
+| 參數 | 類型 | 說明|
+|:----- |:-----|----- |
+|orderId |string |訂單 ID |
+|orderLinkId |string |用戶自定義訂單 ID |
+
+業務校驗失敗時，`retCode` 和 `retMsg` 與 REST [創建委託單](../../order/create-order) 一致。
+
+### 請求示例
+
+```json
+{
+    "reqId": "usdt-test-01",
+    "header": {
+        "X-BAPI-TIMESTAMP": "1672211928338",
+        "X-BAPI-RECV-WINDOW": "5000"
+    },
+    "op": "order.create",
+    "args": [
+        {
+            "category": "linear",
+            "symbol": "BTCUSDT",
+            "side": "Buy",
+            "orderType": "Limit",
+            "qty": "1",
+            "price": "25000",
+            "timeInForce": "GTC",
+            "positionIdx": 0,
+            "orderLinkId": "usdt-test-01",
+            "reduceOnly": false,
+            "takeProfit": "28000",
+            "stopLoss": "20000",
+            "tpslMode": "Partial",
+            "tpOrderType": "Limit",
+            "slOrderType": "Limit",
+            "tpLimitPrice": "27500",
+            "slLimitPrice": "20500"
+        }
+    ]
+}
+```
+
+### 響應示例
+
+```json
+{
+    "reqId": "usdt-test-01",
+    "retCode": 0,
+    "retMsg": "OK",
+    "op": "order.create",
+    "data": {
+        "orderId": "1321003749386327552",
+        "orderLinkId": "usdt-test-01"
+    },
+    "retExtInfo": {},
+    "connId": "cnt5leec0hvan15eukcg-2v"
+}
+```

@@ -209,6 +209,16 @@ const sidebars = {
               dirName: 'v3/websocket/private'
             }
           ]
+        },
+        {
+          type: 'category',
+          label: 'Websocket Trade',
+          items: [
+            'v3/websocket/trade/guideline',
+            'v3/websocket/trade/create-order',
+            'v3/websocket/trade/amend-order',
+            'v3/websocket/trade/cancel-order',
+          ]
         }
       ]
     },

@@ -5,6 +5,8 @@ sidebar_position: 3
 ---
 > **Trading products covered: Spot/Linear/Inverse**
 
+The same cancel can also be sent over [Websocket](../websocket/trade/cancel-order). Fields match this page and are placed in the single object inside `args`.
+
 :::info important
 - You must specify `orderId` or `orderLinkId` to cancel the order.
 - If `orderId` and `orderLinkId` do not match, the system will process `orderId` first.
